@@ -1,0 +1,32 @@
+[
+    {
+        "id": "pl",
+        "name": "Premier League",
+        "country": "England",
+        "icon": "trophy"
+    },
+    {
+        "id": "laliga",
+        "name": "La Liga",
+        "country": "Spain",
+        "icon": "trophy"
+    },
+    {
+        "id": "bundesliga",
+        "name": "Bundesliga",
+        "country": "Germany",
+        "icon": "trophy"
+    },
+    {
+        "id": "seriea",
+        "name": "Serie A",
+        "country": "Italy",
+        "icon": "trophy"
+    },
+    {
+        "id": "ligue1",
+        "name": "Ligue 1",
+        "country": "France",
+        "icon": "trophy"
+    }
+]

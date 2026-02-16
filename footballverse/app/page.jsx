@@ -13,7 +13,7 @@ export default function EntryPage() {
         e.preventDefault();
         if (name.trim()) {
             localStorage.setItem('userName', name.trim());
-            router.push('/home');
+            router.push('/welcome');
         }
     };
 
@@ -88,19 +88,49 @@ export default function EntryPage() {
                 </div>
             </section>
 
-            {/* DEEP DIVE SECTION */}
+            {/* DEEP DIVE SECTION - PREMIUM FEATURES */}
             <section className="deep-dive">
-                <div className="info-panel align-left">
-                    <div className="grid-2col">
-                        <div className="info-card-plain">
+                <div className="section-header mb-12" style={{ textAlign: 'center' }}>
+                    <span className="section-label text-600">Pro Management</span>
+                    <h2 className="section-title text-700">Experience Global Football</h2>
+                </div>
+
+                <div className="info-panel-grid">
+                    <div className="info-panel-premium glow-blue">
+                        <div className="panel-header">
                             <Globe className="card-icon" />
                             <h2 className="text-600">Global Integration</h2>
-                            <p className="text-400">Join a community of managers worldwide. Compete in seasonal tournaments and climb the global leaderboard.</p>
                         </div>
-                        <div className="info-card-plain">
+                        <div className="panel-content">
+                            <p className="text-400">
+                                Join a massive multiplayer ecosystem where your decisions echo across the globe.
+                                Compete in synchronized seasonal tournaments, manage multi-club ownerships,
+                                and climb the real-time global leaderboard against thousands of managers.
+                            </p>
+                            <ul className="feature-bullets">
+                                <li className="text-500">• Cross-Continental Leagues</li>
+                                <li className="text-500">• Real-time Market Economy</li>
+                                <li className="text-500">• Global Manager Rankings</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="info-panel-premium glow-green">
+                        <div className="panel-header">
                             <Star className="card-icon" />
-                            <h2 className="text-600">Talent Scouting</h2>
-                            <p className="text-400">Our database updates weekly with real-world performance metrics. Discover the next wonderkid before anyone else.</p>
+                            <h2 className="text-600">Pro Scouting Network</h2>
+                        </div>
+                        <div className="panel-content">
+                            <p className="text-400">
+                                Our proprietary scouting engine updates weekly with real-world performance metrics.
+                                Deploy a network of scouts to every corner of the world to discover the next generation
+                                of wonderkids before they hit the mainstream headlines.
+                            </p>
+                            <ul className="feature-bullets">
+                                <li className="text-500">• Real 2026/27 Player Data</li>
+                                <li className="text-500">• AI Performance Predictions</li>
+                                <li className="text-500">• Dynamic Talent Potential</li>
+                            </ul>
                         </div>
                     </div>
                 </div>

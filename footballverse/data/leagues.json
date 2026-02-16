@@ -3,30 +3,35 @@
         "id": "pl",
         "name": "Premier League",
         "country": "England",
+        "code": "gb-eng",
         "icon": "trophy"
     },
     {
         "id": "laliga",
         "name": "La Liga",
         "country": "Spain",
+        "code": "es",
         "icon": "trophy"
     },
     {
         "id": "bundesliga",
         "name": "Bundesliga",
         "country": "Germany",
+        "code": "de",
         "icon": "trophy"
     },
     {
         "id": "seriea",
         "name": "Serie A",
         "country": "Italy",
+        "code": "it",
         "icon": "trophy"
     },
     {
         "id": "ligue1",
         "name": "Ligue 1",
         "country": "France",
+        "code": "fr",
         "icon": "trophy"
     }
 ]

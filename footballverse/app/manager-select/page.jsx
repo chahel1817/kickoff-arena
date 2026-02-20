@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, ChevronLeft, ChevronRight, Star, Users, Globe, Trophy, Search, Cpu, Check, Scan } from 'lucide-react';
+import { Shield, ChevronLeft, ChevronRight, Star, Users, Globe, Trophy, Search, Cpu, Check, Scan, Layers } from 'lucide-react';
 import managersData from '../../data/managers.json';
 import '../entry.css';
 
@@ -38,7 +38,7 @@ export default function ManagerSelectPage() {
     };
 
     const handleFinalProceed = () => {
-        router.push('/squad/defenders');
+        router.push('/formation-select');
     };
 
     return (
@@ -93,19 +93,20 @@ export default function ManagerSelectPage() {
                             <div className="recap-grid-premium">
                                 <div className="recap-card-v2 glass-premium">
                                     <div className="card-top-tag">ESTABLISHED CLUB</div>
-                                    <div className="recap-main-content">
-                                        <div className="recap-visual-box club-visual">
-                                            <div className="visual-glow" style={{ background: selectedTeam?.colors?.[0] || 'var(--primary)' }}></div>
+                                    <div className="recap-hero-visual">
+                                        <div className="recap-img-showcase club-showcase">
+                                            <div className="showcase-glow" style={{ background: selectedTeam?.colors?.[0] || 'var(--primary)' }}></div>
+                                            <div className="showcase-ring"></div>
                                             {selectedTeam?.logo ? (
-                                                <img src={selectedTeam.logo} alt="" className="recap-img-v2" />
+                                                <img src={selectedTeam.logo} alt="" className="showcase-img" />
                                             ) : (
-                                                <Shield size={40} className="text-white" />
+                                                <Shield size={64} className="text-white" />
                                             )}
                                         </div>
-                                        <div className="recap-text-stack">
-                                            <span className="recap-item-title">{selectedTeam?.name}</span>
-                                            <span className="recap-item-sub">PRIMARY OPERATIONAL BASE</span>
-                                        </div>
+                                    </div>
+                                    <div className="recap-text-center">
+                                        <span className="recap-item-title-lg">{selectedTeam?.name}</span>
+                                        <span className="recap-item-sub">PRIMARY OPERATIONAL BASE</span>
                                     </div>
                                     <div className="recap-card-footer">
                                         <div className="rcf-item">
@@ -121,17 +122,18 @@ export default function ManagerSelectPage() {
 
                                 <div className="recap-card-v2 glass-premium">
                                     <div className="card-top-tag">APPOINTED LEADER</div>
-                                    <div className="recap-main-content">
-                                        <div className="recap-visual-box manager-visual">
-                                            <div className="visual-glow" style={{ background: 'var(--primary)' }}></div>
+                                    <div className="recap-hero-visual">
+                                        <div className="recap-img-showcase manager-showcase">
+                                            <div className="showcase-glow" style={{ background: 'var(--primary)' }}></div>
+                                            <div className="showcase-ring"></div>
                                             {selectedManager?.image && (
-                                                <img src={selectedManager.image} alt="" className="recap-img-v2" />
+                                                <img src={selectedManager.image} alt="" className="showcase-img" />
                                             )}
                                         </div>
-                                        <div className="recap-text-stack">
-                                            <span className="recap-item-title">{selectedManager?.name}</span>
-                                            <span className="recap-item-sub">{selectedManager?.style?.toUpperCase()} TACTICIAN</span>
-                                        </div>
+                                    </div>
+                                    <div className="recap-text-center">
+                                        <span className="recap-item-title-lg">{selectedManager?.name}</span>
+                                        <span className="recap-item-sub">{selectedManager?.style?.toUpperCase()} TACTICIAN</span>
                                     </div>
                                     <div className="recap-card-footer">
                                         <div className="rcf-item">
@@ -182,30 +184,30 @@ export default function ManagerSelectPage() {
                             <div className="next-preview-card glass-premium">
                                 <div className="npc-top">
                                     <span className="npc-label">UPCOMING MISSION</span>
-                                    <h2 className="npc-title">SQUAD <span className="text-gradient">CONSTRUCTION</span></h2>
+                                    <h2 className="npc-title">TACTICAL <span className="text-gradient">BLUEPRINT</span></h2>
                                     <p className="npc-desc">
-                                        Select your defenders, midfielders, and forwards to build a
-                                        championship-winning Starting XI. Every position matters.
+                                        Choose your battle formation. Attacking, defensive, balanced—your
+                                        tactical DNA defines how your squad will be assembled.
                                     </p>
                                 </div>
 
                                 <div className="npc-positions-row">
                                     <div className="pos-chip">
                                         <Shield size={14} />
-                                        <span>4 DEFENDERS</span>
+                                        <span>DEFENSIVE</span>
                                     </div>
                                     <div className="pos-chip">
-                                        <Star size={14} />
-                                        <span>4 MIDFIELDERS</span>
+                                        <Layers size={14} />
+                                        <span>BALANCED</span>
                                     </div>
                                     <div className="pos-chip">
                                         <Trophy size={14} />
-                                        <span>2 FORWARDS</span>
+                                        <span>ATTACKING</span>
                                     </div>
                                 </div>
 
                                 <button onClick={handleFinalProceed} className="action-btn-neon giant-btn">
-                                    <span>ASSEMBLE STARTING XI</span>
+                                    <span>SELECT FORMATION</span>
                                     <ChevronRight size={22} />
                                 </button>
                             </div>
@@ -484,45 +486,90 @@ export default function ManagerSelectPage() {
                 .phase-recap-section {
                     padding: 6rem 2rem;
                     display: flex; flex-direction: column; align-items: center;
-                    max-width: 800px; margin: 0 auto; width: 100%;
+                    max-width: 900px; margin: 0 auto; width: 100%;
                 }
 
                 .recap-grid-premium {
-                    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%;
+                    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; width: 100%;
                 }
 
                 .recap-card-v2 {
-                    padding: 2rem 1.5rem; border-radius: 24px; text-align: left;
+                    padding: 2.5rem 2rem; border-radius: 28px; text-align: center;
                     border: 1px solid rgba(255,255,255,0.05); position: relative;
                     transition: all 0.4s ease;
+                    display: flex; flex-direction: column; align-items: center;
                 }
-                .recap-card-v2:hover { border-color: rgba(0, 255, 136, 0.15); transform: translateY(-4px); }
+                .recap-card-v2:hover { border-color: rgba(0, 255, 136, 0.15); transform: translateY(-6px); }
 
                 .card-top-tag {
-                    font-size: 0.55rem; font-weight: 900; color: var(--primary);
-                    letter-spacing: 0.2em; margin-bottom: 1.25rem; opacity: 0.6;
+                    font-size: 0.6rem; font-weight: 900; color: var(--primary);
+                    letter-spacing: 0.25em; margin-bottom: 2rem; opacity: 0.6;
                 }
 
-                .recap-main-content { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; }
-
-                .recap-visual-box {
-                    width: 64px; height: 64px; border-radius: 16px;
-                    background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;
-                    position: relative; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;
+                /* Large Showcase Images */
+                .recap-hero-visual {
+                    display: flex; justify-content: center;
+                    margin-bottom: 2rem;
                 }
-                .visual-glow { position: absolute; inset: 0; opacity: 0.15; filter: blur(15px); }
-                .recap-img-v2 { width: 80%; height: 80%; object-fit: contain; z-index: 2; }
-                .manager-visual .recap-img-v2 { width: 100%; height: 100%; object-fit: cover; }
 
-                .recap-text-stack { display: flex; flex-direction: column; gap: 0.25rem; }
-                .recap-item-title { font-size: 1.1rem; font-weight: 900; color: white; letter-spacing: -0.01em; }
-                .recap-item-sub { font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.3); letter-spacing: 0.05em; }
+                .recap-img-showcase {
+                    width: 160px; height: 160px; border-radius: 50%;
+                    background: rgba(0,0,0,0.4);
+                    display: flex; align-items: center; justify-content: center;
+                    position: relative; flex-shrink: 0;
+                    border: 2px solid rgba(255,255,255,0.08);
+                    overflow: hidden;
+                }
+
+                .showcase-glow {
+                    position: absolute; inset: -20px; opacity: 0.2;
+                    filter: blur(30px); border-radius: 50%;
+                }
+
+                .showcase-ring {
+                    position: absolute; inset: -8px;
+                    border: 1px solid rgba(0, 255, 136, 0.12);
+                    border-radius: 50%;
+                    animation: orbitSpin 10s linear infinite;
+                    border-top-color: var(--primary);
+                }
+
+                .showcase-img {
+                    width: 85%; height: 85%; object-fit: contain;
+                    z-index: 2; position: relative;
+                }
+
+                .manager-showcase .showcase-img {
+                    width: 100%; height: 100%; object-fit: cover;
+                    border-radius: 50%;
+                }
+
+                .club-showcase .showcase-img {
+                    width: 70%; height: 70%;
+                    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
+                }
+
+                .recap-text-center {
+                    display: flex; flex-direction: column;
+                    align-items: center; gap: 0.35rem; margin-bottom: 1.5rem;
+                }
+
+                .recap-item-title-lg {
+                    font-size: 1.5rem; font-weight: 900; color: white;
+                    letter-spacing: -0.01em;
+                }
+
+                .recap-item-sub {
+                    font-size: 0.65rem; font-weight: 700;
+                    color: rgba(255,255,255,0.3); letter-spacing: 0.1em;
+                }
 
                 .recap-card-footer {
-                    display: flex; gap: 1.5rem; padding-top: 1.25rem;
+                    display: flex; gap: 2rem; padding-top: 1.25rem;
                     border-top: 1px solid rgba(255,255,255,0.04);
+                    width: 100%; justify-content: center;
                 }
-                .rcf-item { display: flex; flex-direction: column; gap: 0.2rem; }
+                .rcf-item { display: flex; flex-direction: column; gap: 0.2rem; text-align: center; }
                 .rcf-label { font-size: 0.5rem; font-weight: 900; color: rgba(255,255,255,0.25); letter-spacing: 0.15em; }
                 .rcf-value { font-size: 0.9rem; font-weight: 800; color: white; }
                 .rcf-active { color: var(--primary); }
@@ -1072,8 +1119,10 @@ export default function ManagerSelectPage() {
                     /* Phase Complete Mobile */
                     .phase-mega-title { font-size: 2rem; }
                     .phase-hero-desc { font-size: 0.9rem; }
-                    .recap-grid-premium { grid-template-columns: 1fr; gap: 1rem; }
-                    .recap-card-v2 { padding: 1.25rem; }
+                    .recap-grid-premium { grid-template-columns: 1fr; gap: 1.5rem; }
+                    .recap-card-v2 { padding: 1.75rem 1.25rem; }
+                    .recap-img-showcase { width: 120px; height: 120px; }
+                    .recap-item-title-lg { font-size: 1.25rem; }
                     .pillars-grid { grid-template-columns: 1fr; }
                     .pillar-card { padding: 1.5rem 1.25rem; }
                     .next-preview-card { padding: 2.5rem 1.75rem; }

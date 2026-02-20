@@ -1,0 +1,282 @@
+[
+    {
+        "name": "4-4-2",
+        "defenders": 4,
+        "midfielders": 4,
+        "forwards": 2,
+        "category": "Balanced",
+        "description": "The classic formation. Solid all-round structure with width in midfield and a strike partnership."
+    },
+    {
+        "name": "4-3-3",
+        "defenders": 4,
+        "midfielders": 3,
+        "forwards": 3,
+        "category": "Balanced",
+        "description": "Three forwards terrorize defenses while a midfield trio controls the tempo."
+    },
+    {
+        "name": "4-2-3-1",
+        "defenders": 4,
+        "midfielders": 5,
+        "forwards": 1,
+        "category": "Balanced",
+        "description": "A double pivot shields the defense while a creative number 10 runs the show."
+    },
+    {
+        "name": "3-5-2",
+        "defenders": 3,
+        "midfielders": 5,
+        "forwards": 2,
+        "category": "Balanced",
+        "description": "Wing-back domination. Five across the middle creates overloads with two strikers central."
+    },
+    {
+        "name": "5-3-2",
+        "defenders": 5,
+        "midfielders": 3,
+        "forwards": 2,
+        "category": "Balanced",
+        "description": "Defensive solidity with counter-attacking potential. Wing-backs provide the only width."
+    },
+    {
+        "name": "4-1-4-1",
+        "defenders": 4,
+        "midfielders": 5,
+        "forwards": 1,
+        "category": "Balanced",
+        "description": "A deep-lying midfielder screens the back four. Four runners ahead transition play rapidly."
+    },
+    {
+        "name": "3-4-3",
+        "defenders": 3,
+        "midfielders": 4,
+        "forwards": 3,
+        "category": "Attacking",
+        "description": "All-out attack with three forwards backed by four energetic midfielders. High risk, high reward."
+    },
+    {
+        "name": "4-2-4",
+        "defenders": 4,
+        "midfielders": 2,
+        "forwards": 4,
+        "category": "Attacking",
+        "description": "Four forwards! An audacious setup that overwhelms opponents with sheer attacking firepower."
+    },
+    {
+        "name": "4-3-1-2",
+        "defenders": 4,
+        "midfielders": 4,
+        "forwards": 2,
+        "category": "Attacking",
+        "description": "A trequartista behind two strikers creates unpredictable passing patterns in the final third."
+    },
+    {
+        "name": "4-1-2-1-2",
+        "defenders": 4,
+        "midfielders": 4,
+        "forwards": 2,
+        "category": "Attacking",
+        "description": "The Diamond. A narrow midfield shape that dominates centrally with creative overloads."
+    },
+    {
+        "name": "3-3-4",
+        "defenders": 3,
+        "midfielders": 3,
+        "forwards": 4,
+        "category": "Attacking",
+        "description": "Tactical insanity. Just three defenders — total commitment to attack. Dominate or be destroyed."
+    },
+    {
+        "name": "2-3-5",
+        "defenders": 2,
+        "midfielders": 3,
+        "forwards": 5,
+        "category": "Attacking",
+        "description": "Five forwards! The ultimate attacking formation. Score more than you concede — if you can."
+    },
+    {
+        "name": "5-4-1",
+        "defenders": 5,
+        "midfielders": 4,
+        "forwards": 1,
+        "category": "Defensive",
+        "description": "The fortress. Five defenders and a compact midfield make this near-impossible to break down."
+    },
+    {
+        "name": "4-5-1",
+        "defenders": 4,
+        "midfielders": 5,
+        "forwards": 1,
+        "category": "Defensive",
+        "description": "Midfield dominance with five across the middle. A lone striker holds up play for runners."
+    },
+    {
+        "name": "6-3-1",
+        "defenders": 6,
+        "midfielders": 3,
+        "forwards": 1,
+        "category": "Defensive",
+        "description": "Park the bus. Six defenders create an impenetrable wall with minimal attacking commitment."
+    },
+    {
+        "name": "5-2-3",
+        "defenders": 5,
+        "midfielders": 2,
+        "forwards": 3,
+        "category": "Defensive",
+        "description": "Five at the back with three forwards. A hybrid of solid defense and rapid counter-attacks."
+    },
+    {
+        "name": "5-1-3-1",
+        "defenders": 5,
+        "midfielders": 4,
+        "forwards": 1,
+        "category": "Defensive",
+        "description": "Ultra-compact with a lone anchor. Wing-backs push high while center-backs hold the line."
+    },
+    {
+        "name": "3-2-4-1",
+        "defenders": 3,
+        "midfielders": 6,
+        "forwards": 1,
+        "category": "Possession",
+        "description": "Designed for total control. Two pivots and four attacking midfielders suffocate opposition."
+    },
+    {
+        "name": "4-3-2-1",
+        "defenders": 4,
+        "midfielders": 5,
+        "forwards": 1,
+        "category": "Possession",
+        "description": "The Christmas Tree. Two trequartistas behind a lone striker create beautiful passing triangles."
+    },
+    {
+        "name": "4-1-2-3",
+        "defenders": 4,
+        "midfielders": 3,
+        "forwards": 3,
+        "category": "Possession",
+        "description": "A single pivot allows two creative midfielders to dictate play with three mobile forwards."
+    },
+    {
+        "name": "3-1-4-2",
+        "defenders": 3,
+        "midfielders": 5,
+        "forwards": 2,
+        "category": "Possession",
+        "description": "A regista controls from deep while four midfielders create rotational passing networks."
+    },
+    {
+        "name": "4-4-2 (Flat)",
+        "defenders": 4,
+        "midfielders": 4,
+        "forwards": 2,
+        "category": "Counter-Attack",
+        "description": "Classic shape that absorbs pressure centrally and releases via rapid wing transitions."
+    },
+    {
+        "name": "3-4-2-1",
+        "defenders": 3,
+        "midfielders": 6,
+        "forwards": 1,
+        "category": "Counter-Attack",
+        "description": "Wing-backs push high on transition while two shadow strikers float behind a target man."
+    },
+    {
+        "name": "4-4-1-1",
+        "defenders": 4,
+        "midfielders": 5,
+        "forwards": 1,
+        "category": "Counter-Attack",
+        "description": "A split striker pair — one drops deep, one stays high on the shoulder for quick breaks."
+    },
+    {
+        "name": "5-3-2 (Counter)",
+        "defenders": 5,
+        "midfielders": 3,
+        "forwards": 2,
+        "category": "Counter-Attack",
+        "description": "Rock-solid defense with two speedy forwards ready to exploit space on the break."
+    },
+    {
+        "name": "4-3-3 (Wide)",
+        "defenders": 4,
+        "midfielders": 3,
+        "forwards": 3,
+        "category": "Wide-Play",
+        "description": "Wide forwards hug the sideline creating 1v1 situations for direct wingers and overlapping fullbacks."
+    },
+    {
+        "name": "3-4-3 (Wing)",
+        "defenders": 3,
+        "midfielders": 4,
+        "forwards": 3,
+        "category": "Wide-Play",
+        "description": "Wing-backs and wide forwards stretch the pitch to its maximum width."
+    },
+    {
+        "name": "4-2-4 (Cross)",
+        "defenders": 4,
+        "midfielders": 2,
+        "forwards": 4,
+        "category": "Wide-Play",
+        "description": "Two wide forwards + two central strikers create constant crossing opportunities."
+    },
+    {
+        "name": "4-1-2-1-2 (Narrow)",
+        "defenders": 4,
+        "midfielders": 4,
+        "forwards": 2,
+        "category": "Narrow",
+        "description": "The narrow diamond. Attack through the middle with creative central overloads."
+    },
+    {
+        "name": "4-3-1-2 (Central)",
+        "defenders": 4,
+        "midfielders": 4,
+        "forwards": 2,
+        "category": "Narrow",
+        "description": "A number 10 links midfield to attack in tight central spaces. Perfect for playmakers."
+    },
+    {
+        "name": "3-5-2 (Narrow)",
+        "defenders": 3,
+        "midfielders": 5,
+        "forwards": 2,
+        "category": "Narrow",
+        "description": "Five midfielders dominate the center. Wing-backs tuck in to create numerical superiority."
+    },
+    {
+        "name": "2-4-4",
+        "defenders": 2,
+        "midfielders": 4,
+        "forwards": 4,
+        "category": "Experimental",
+        "description": "Two defenders? Absolute madness. A chaotic setup for the truly adventurous manager."
+    },
+    {
+        "name": "1-4-5",
+        "defenders": 1,
+        "midfielders": 4,
+        "forwards": 5,
+        "category": "Experimental",
+        "description": "One lonely defender. Five forwards. Utter mayhem. Not recommended for competitive play."
+    },
+    {
+        "name": "2-2-6",
+        "defenders": 2,
+        "midfielders": 2,
+        "forwards": 6,
+        "category": "Experimental",
+        "description": "SIX forwards. A hattrick of insanity. Your defense is a suggestion, not a priority."
+    },
+    {
+        "name": "3-1-6",
+        "defenders": 3,
+        "midfielders": 1,
+        "forwards": 6,
+        "category": "Experimental",
+        "description": "One midfielder connects three defenders to six forwards. Football reimagined — or ruined."
+    }
+]

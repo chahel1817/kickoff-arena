@@ -33,5 +33,40 @@
         "country": "France",
         "code": "fr",
         "icon": "trophy"
+    },
+    {
+        "id": "eredivisie",
+        "name": "Eredivisie",
+        "country": "Netherlands",
+        "code": "nl",
+        "icon": "trophy"
+    },
+    {
+        "id": "spl",
+        "name": "Saudi Pro League",
+        "country": "Saudi Arabia",
+        "code": "sa",
+        "icon": "trophy"
+    },
+    {
+        "id": "superlig",
+        "name": "Süper Lig",
+        "country": "Turkey",
+        "code": "tr",
+        "icon": "trophy"
+    },
+    {
+        "id": "jupiler",
+        "name": "Pro League",
+        "country": "Belgium",
+        "code": "be",
+        "icon": "trophy"
+    },
+    {
+        "id": "isl",
+        "name": "Indian Super League",
+        "country": "India",
+        "code": "in",
+        "icon": "trophy"
     }
 ]

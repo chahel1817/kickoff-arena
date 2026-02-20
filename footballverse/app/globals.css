@@ -1,10 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
     --background: #05070a;
     --foreground: #ffffff;
     --primary: #00ff88;
     --primary-hover: #00e67a;
+    --primary-dim: rgba(0, 255, 136, 0.15);
     --secondary: #1a1f2e;
     --accent: #3b82f6;
     --muted: #64748b;
@@ -12,12 +13,25 @@
     --card-border: rgba(255, 255, 255, 0.1);
     --glass-bg: rgba(255, 255, 255, 0.03);
     --glass-border: rgba(255, 255, 255, 0.08);
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --shadow-glow: 0 0 30px rgba(0, 255, 136, 0.15);
+    --transition-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-smooth: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -27,8 +41,8 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     background-image:
-        radial-gradient(circle at 50% 0%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 50% 0%, rgba(0, 255, 136, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
     background-attachment: fixed;
 }
 
@@ -37,15 +51,45 @@ a {
     text-decoration: none;
 }
 
+::selection {
+    background: rgba(0, 255, 136, 0.3);
+    color: white;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 136, 0.2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 136, 0.4);
+}
+
 .glass {
     background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border);
 }
 
+.glass-premium {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 .card-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s var(--transition-smooth);
 }
 
 .card-hover:hover {
@@ -58,20 +102,21 @@ a {
     background: var(--primary);
     color: #000;
     padding: 0.75rem 1.5rem;
-    border-radius: 0.75rem;
-    font-weight: 600;
+    border-radius: var(--radius-md);
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s var(--transition-spring);
     border: none;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    letter-spacing: 0.02em;
 }
 
 .btn-primary:hover {
     background: var(--primary-hover);
-    transform: scale(1.02);
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+    transform: scale(1.03) translateY(-1px);
+    box-shadow: 0 0 25px rgba(0, 255, 136, 0.4);
 }
 
 .page-container {
@@ -89,10 +134,14 @@ h3 {
 }
 
 .text-gradient {
-    background: linear-gradient(to right, #00ff88, #3b82f6);
+    background: linear-gradient(135deg, #00ff88 0%, #3b82f6 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.text-primary {
+    color: var(--primary) !important;
 }
 
 @keyframes progress-bar {
@@ -111,4 +160,21 @@ h3 {
 
 .animate-progress-bar {
     animation: progress-bar 2.5s ease-in-out infinite;
+}
+
+/* Page-wide fade-in */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
 }

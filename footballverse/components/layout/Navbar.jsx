@@ -1,10 +1,18 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Trophy, Users, LayoutDashboard, Search } from 'lucide-react';
 import './navbar.css';
 
 export default function Navbar() {
+    const [username, setUsername] = useState('Manager');
+
+    useEffect(() => {
+        const name = localStorage.getItem('userName');
+        if (name) setUsername(name);
+    }, []);
+
     return (
         <nav className="navbar">
             <Link href="/home" className="navbar-brand">
@@ -28,7 +36,7 @@ export default function Navbar() {
 
             <div className="navbar-user">
                 <div className="navbar-avatar"></div>
-                <span className="navbar-username">Manager</span>
+                <span className="navbar-username">{username}</span>
             </div>
         </nav>
     );

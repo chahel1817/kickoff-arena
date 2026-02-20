@@ -139,41 +139,77 @@ export default function EntryPage() {
             {/* ENTRY ACTION SECTION - THE FINAL FOLD */}
             <section id="join-section" className="join-fold">
                 <div className="join-bg"></div>
-                <div className="main-action">
-                    <h2 className="headline text-700">Create Your Manager Profile</h2>
 
-                    <form onSubmit={handleStart} className="entry-form">
-                        <div className="input-group">
+                <div className="init-card">
+                    {/* Decorative top glow line */}
+                    <div className="card-top-glow"></div>
+
+                    {/* Badge */}
+                    <div className="init-badge">
+                        <Trophy size={28} className="init-badge-icon" />
+                        <div className="init-badge-ring"></div>
+                    </div>
+
+                    <div className="init-header">
+                        <span className="init-label">SYSTEM AUTHORIZATION</span>
+                        <h2 className="init-title text-700">Initialize Your <span className="text-gradient">Account</span></h2>
+                        <p className="init-desc">Enter your managerial identity to begin your journey across the world's most elite leagues.</p>
+                    </div>
+
+                    <form onSubmit={handleStart} className="init-form">
+                        <div className="init-input-wrapper">
+                            <div className="input-glow-ring"></div>
                             <input
                                 type="text"
-                                placeholder="Your Manager Name"
+                                placeholder="Enter Your Manager Name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
-                                className="name-input text-600"
+                                className="init-input text-600"
                             />
-                            <p className="input-helper text-400">This name will be used throughout your career.</p>
                         </div>
+                        <p className="init-hint">This identity will be used to track your legacy across all competitions.</p>
 
-                        <div className="divider"></div>
+                        <button
+                            type="submit"
+                            className={`init-submit text-700 ${!name.trim() ? 'btn-disabled' : ''}`}
+                            disabled={!name.trim()}
+                        >
+                            <span>START YOUR LEGACY</span>
+                            <ChevronDown size={18} style={{ transform: 'rotate(-90deg)' }} />
+                        </button>
 
-                        <div className="button-group">
-                            <button
-                                type="submit"
-                                className={`continue-btn text-700 ${!name.trim() ? 'btn-disabled' : ''}`}
-                                disabled={!name.trim()}
-                            >
-                                START YOUR LEGACY →
-                            </button>
-                            <p className="enter-hint text-600">Press Enter to continue</p>
-                        </div>
-
-                        <div className="progress-indicator">
-                            <span className="progress-step text-600">Step 1 of 5</span>
-                            <span className="progress-separator">•</span>
-                            <span className="progress-label text-500">Create Manager</span>
-                        </div>
+                        <p className="init-enter-hint text-600">Press Enter to continue</p>
                     </form>
+
+                    {/* Trust Stats */}
+                    <div className="init-trust-row">
+                        <div className="trust-item">
+                            <Globe size={14} className="text-primary" />
+                            <span>6 Leagues</span>
+                        </div>
+                        <div className="trust-sep"></div>
+                        <div className="trust-item">
+                            <Users size={14} className="text-primary" />
+                            <span>5,000+ Players</span>
+                        </div>
+                        <div className="trust-sep"></div>
+                        <div className="trust-item">
+                            <Shield size={14} className="text-primary" />
+                            <span>200+ Clubs</span>
+                        </div>
+                    </div>
+
+                    <div className="init-progress">
+                        <div className="progress-dots-row">
+                            <div className="prog-dot active"></div>
+                            <div className="prog-dot"></div>
+                            <div className="prog-dot"></div>
+                            <div className="prog-dot"></div>
+                            <div className="prog-dot"></div>
+                        </div>
+                        <span className="progress-text">Step 1 of 5 • Account Setup</span>
+                    </div>
                 </div>
             </section>
 
@@ -182,9 +218,267 @@ export default function EntryPage() {
                 <p className="text-300">System v1.0 • Authorized Access • FootballVerse 2026</p>
             </div>
 
-            {/* Ambient Glows */}
-            <div className="glow-left"></div>
-            <div className="glow-right"></div>
+            <style jsx>{`
+                .init-card {
+                    position: relative;
+                    z-index: 10;
+                    width: 100%;
+                    max-width: 520px;
+                    background: rgba(5, 7, 12, 0.85);
+                    backdrop-filter: blur(30px);
+                    border: 1px solid rgba(0, 255, 136, 0.12);
+                    border-radius: 2rem;
+                    padding: 3.5rem 3rem;
+                    text-align: center;
+                    box-shadow: 
+                        0 40px 80px rgba(0, 0, 0, 0.6),
+                        0 0 60px rgba(0, 255, 136, 0.06),
+                        inset 0 1px 0 rgba(255,255,255,0.04);
+                }
+
+                .card-top-glow {
+                    position: absolute;
+                    top: -1px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 60%;
+                    height: 2px;
+                    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+                    border-radius: 10px;
+                }
+
+                .init-badge {
+                    width: 72px;
+                    height: 72px;
+                    background: rgba(0, 255, 136, 0.06);
+                    border: 1px solid rgba(0, 255, 136, 0.15);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 2rem;
+                    position: relative;
+                }
+
+                .init-badge-icon {
+                    color: var(--primary);
+                    filter: drop-shadow(0 0 12px rgba(0, 255, 136, 0.5));
+                    z-index: 2;
+                }
+
+                .init-badge-ring {
+                    position: absolute;
+                    inset: -6px;
+                    border: 1px solid rgba(0, 255, 136, 0.1);
+                    border-radius: 50%;
+                    animation: initPulse 2.5s ease-out infinite;
+                }
+
+                @keyframes initPulse {
+                    0% { transform: scale(1); opacity: 0.4; }
+                    100% { transform: scale(1.6); opacity: 0; }
+                }
+
+                .init-header {
+                    margin-bottom: 2.5rem;
+                }
+
+                .init-label {
+                    font-size: 0.6rem;
+                    font-weight: 900;
+                    letter-spacing: 0.3em;
+                    color: var(--primary);
+                    opacity: 0.6;
+                    display: block;
+                    margin-bottom: 1rem;
+                }
+
+                .init-title {
+                    font-size: 2rem;
+                    color: white;
+                    margin-bottom: 0.75rem;
+                    letter-spacing: -0.02em;
+                }
+
+                .init-desc {
+                    font-size: 0.9rem;
+                    color: rgba(255,255,255,0.4);
+                    line-height: 1.6;
+                    max-width: 380px;
+                    margin: 0 auto;
+                }
+
+                .init-form {
+                    display: flex;
+                    flex-direction: column;
+                    margin-bottom: 2.5rem;
+                }
+
+                .init-input-wrapper {
+                    position: relative;
+                    margin-bottom: 0.75rem;
+                }
+
+                .input-glow-ring {
+                    position: absolute;
+                    inset: -2px;
+                    border-radius: 1rem;
+                    opacity: 0;
+                    transition: opacity 0.4s;
+                    pointer-events: none;
+                    background: linear-gradient(135deg, rgba(0,255,136,0.15), transparent, rgba(59,130,246,0.1));
+                }
+
+                .init-input-wrapper:focus-within .input-glow-ring {
+                    opacity: 1;
+                }
+
+                .init-input {
+                    width: 100%;
+                    padding: 1.1rem 1.5rem;
+                    font-size: 1.05rem;
+                    text-align: center;
+                    text-transform: uppercase;
+                    color: white;
+                    background: rgba(0, 0, 0, 0.6);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    border-radius: 1rem;
+                    outline: none;
+                    transition: all 0.4s;
+                    font-family: 'Outfit', sans-serif;
+                    font-weight: 600;
+                    letter-spacing: 0.12em;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .init-input:focus {
+                    border-color: rgba(0, 255, 136, 0.4);
+                    background: rgba(0, 0, 0, 0.8);
+                    box-shadow: 0 0 30px rgba(0, 255, 136, 0.08);
+                }
+
+                .init-input::placeholder {
+                    text-transform: none;
+                    color: rgba(255, 255, 255, 0.35);
+                    opacity: 1;
+                    font-weight: 400;
+                    letter-spacing: 0.03em;
+                }
+
+                .init-hint {
+                    font-size: 0.7rem;
+                    color: rgba(255,255,255,0.25);
+                    font-style: italic;
+                    margin-bottom: 1.75rem;
+                }
+
+                .init-submit {
+                    width: 100%;
+                    height: 58px;
+                    font-size: 1rem;
+                    color: #000;
+                    background: linear-gradient(135deg, #00ff88, #22c55e);
+                    border-radius: 1rem;
+                    border: none;
+                    cursor: pointer;
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    font-weight: 800;
+                    font-family: 'Outfit', sans-serif;
+                    box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.75rem;
+                }
+
+                .init-submit:hover:not(:disabled) {
+                    transform: translateY(-3px) scale(1.02);
+                    box-shadow: 0 15px 50px rgba(0, 255, 136, 0.35);
+                }
+
+                .init-enter-hint {
+                    font-size: 0.6rem;
+                    color: rgba(255,255,255,0.2);
+                    text-transform: uppercase;
+                    letter-spacing: 0.2em;
+                    margin-top: 0.75rem;
+                    animation: blink 2.5s infinite;
+                }
+
+                .init-trust-row {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 1.25rem;
+                    padding: 1.25rem;
+                    background: rgba(255,255,255,0.015);
+                    border-radius: 16px;
+                    border: 1px solid rgba(255,255,255,0.03);
+                    margin-bottom: 2rem;
+                }
+
+                .trust-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-size: 0.75rem;
+                    font-weight: 700;
+                    color: rgba(255,255,255,0.5);
+                }
+
+                .trust-sep {
+                    width: 1px;
+                    height: 16px;
+                    background: rgba(255,255,255,0.08);
+                }
+
+                .init-progress {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.75rem;
+                }
+
+                .progress-dots-row {
+                    display: flex;
+                    gap: 0.5rem;
+                }
+
+                .prog-dot {
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.08);
+                    transition: 0.3s;
+                }
+
+                .prog-dot.active {
+                    background: var(--primary);
+                    box-shadow: 0 0 12px var(--primary);
+                    transform: scale(1.2);
+                }
+
+                .progress-text {
+                    font-size: 0.65rem;
+                    font-weight: 700;
+                    color: rgba(255,255,255,0.3);
+                    letter-spacing: 0.1em;
+                }
+
+                @media (max-width: 768px) {
+                    .init-card {
+                        padding: 2.5rem 1.75rem;
+                        border-radius: 1.5rem;
+                        max-width: 95%;
+                    }
+                    .init-title { font-size: 1.6rem; }
+                    .init-trust-row { gap: 0.75rem; padding: 1rem; flex-wrap: wrap; justify-content: center; }
+                    .trust-item { font-size: 0.65rem; }
+                }
+            `}</style>
         </div>
     );
 }

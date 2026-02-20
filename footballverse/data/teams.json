@@ -1,1002 +1,1696 @@
 [
-    {
-        "id": "mci",
-        "name": "Manchester City",
-        "league": "pl",
-        "rating": 89,
-        "colors": [
-            "#6CABDD",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "ars",
-        "name": "Arsenal",
-        "league": "pl",
-        "rating": 87,
-        "colors": [
-            "#EF0107",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "liv",
-        "name": "Liverpool",
-        "league": "pl",
-        "rating": 87,
-        "colors": [
-            "#C8102E",
-            "#F6EB61"
-        ]
-    },
-    {
-        "id": "avl",
-        "name": "Aston Villa",
-        "league": "pl",
-        "rating": 82,
-        "colors": [
-            "#95BFE5",
-            "#670E36"
-        ]
-    },
-    {
-        "id": "tot",
-        "name": "Tottenham Hotspur",
-        "league": "pl",
-        "rating": 83,
-        "colors": [
-            "#132257",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "che",
-        "name": "Chelsea",
-        "league": "pl",
-        "rating": 82,
-        "colors": [
-            "#034694",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "new",
-        "name": "Newcastle United",
-        "league": "pl",
-        "rating": 82,
-        "colors": [
-            "#241F20",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "mun",
-        "name": "Manchester United",
-        "league": "pl",
-        "rating": 82,
-        "colors": [
-            "#DA291C",
-            "#FBE122"
-        ]
-    },
-    {
-        "id": "whu",
-        "name": "West Ham United",
-        "league": "pl",
-        "rating": 80,
-        "colors": [
-            "#7A263A",
-            "#1BB1E7"
-        ]
-    },
-    {
-        "id": "cry",
-        "name": "Crystal Palace",
-        "league": "pl",
-        "rating": 79,
-        "colors": [
-            "#1B458F",
-            "#C4122E"
-        ]
-    },
-    {
-        "id": "bha",
-        "name": "Brighton & Hove Albion",
-        "league": "pl",
-        "rating": 80,
-        "colors": [
-            "#0057B8",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "bou",
-        "name": "Bournemouth",
-        "league": "pl",
-        "rating": 78,
-        "colors": [
-            "#DA291C",
-            "#000000"
-        ]
-    },
-    {
-        "id": "ful",
-        "name": "Fulham",
-        "league": "pl",
-        "rating": 78,
-        "colors": [
-            "#FFFFFF",
-            "#000000"
-        ]
-    },
-    {
-        "id": "wol",
-        "name": "Wolverhampton Wanderers",
-        "league": "pl",
-        "rating": 78,
-        "colors": [
-            "#FDB913",
-            "#231F20"
-        ]
-    },
-    {
-        "id": "eve",
-        "name": "Everton",
-        "league": "pl",
-        "rating": 77,
-        "colors": [
-            "#003399",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "bre",
-        "name": "Brentford",
-        "league": "pl",
-        "rating": 77,
-        "colors": [
-            "#E30613",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "nfo",
-        "name": "Nottingham Forest",
-        "league": "pl",
-        "rating": 76,
-        "colors": [
-            "#DD0000",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "lei",
-        "name": "Leicester City",
-        "league": "pl",
-        "rating": 76,
-        "colors": [
-            "#003090",
-            "#FDBE11"
-        ]
-    },
-    {
-        "id": "ips",
-        "name": "Ipswich Town",
-        "league": "pl",
-        "rating": 74,
-        "colors": [
-            "#003399",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "sou",
-        "name": "Southampton",
-        "league": "pl",
-        "rating": 75,
-        "colors": [
-            "#D71920",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "rma",
-        "name": "Real Madrid",
-        "league": "laliga",
-        "rating": 89,
-        "colors": [
-            "#FFFFFF",
-            "#FEBE10"
-        ]
-    },
-    {
-        "id": "bar",
-        "name": "FC Barcelona",
-        "league": "laliga",
-        "rating": 87,
-        "colors": [
-            "#004D98",
-            "#A50044"
-        ]
-    },
-    {
-        "id": "atm",
-        "name": "Atletico Madrid",
-        "league": "laliga",
-        "rating": 85,
-        "colors": [
-            "#CB3524",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "gir",
-        "name": "Girona",
-        "league": "laliga",
-        "rating": 81,
-        "colors": [
-            "#E10613",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "ath",
-        "name": "Athletic Club",
-        "league": "laliga",
-        "rating": 81,
-        "colors": [
-            "#EE2523",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "rso",
-        "name": "Real Sociedad",
-        "league": "laliga",
-        "rating": 81,
-        "colors": [
-            "#0067B1",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "bet",
-        "name": "Real Betis",
-        "league": "laliga",
-        "rating": 80,
-        "colors": [
-            "#00954C",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "vil",
-        "name": "Villarreal",
-        "league": "laliga",
-        "rating": 79,
-        "colors": [
-            "#FFE600",
-            "#00518C"
-        ]
-    },
-    {
-        "id": "vcf",
-        "name": "Valencia",
-        "league": "laliga",
-        "rating": 78,
-        "colors": [
-            "#FFFFFF",
-            "#000000"
-        ]
-    },
-    {
-        "id": "ala",
-        "name": "Alaves",
-        "league": "laliga",
-        "rating": 76,
-        "colors": [
-            "#005999",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "osa",
-        "name": "Osasuna",
-        "league": "laliga",
-        "rating": 77,
-        "colors": [
-            "#9D192B",
-            "#133166"
-        ]
-    },
-    {
-        "id": "get",
-        "name": "Getafe",
-        "league": "laliga",
-        "rating": 76,
-        "colors": [
-            "#0000AB",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "cel",
-        "name": "Celta Vigo",
-        "league": "laliga",
-        "rating": 76,
-        "colors": [
-            "#85B6DA",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "sev",
-        "name": "Sevilla",
-        "league": "laliga",
-        "rating": 78,
-        "colors": [
-            "#FFFFFF",
-            "#D42028"
-        ]
-    },
-    {
-        "id": "mal",
-        "name": "Mallorca",
-        "league": "laliga",
-        "rating": 75,
-        "colors": [
-            "#E20612",
-            "#000000"
-        ]
-    },
-    {
-        "id": "lpa",
-        "name": "Las Palmas",
-        "league": "laliga",
-        "rating": 75,
-        "colors": [
-            "#FFD700",
-            "#004B92"
-        ]
-    },
-    {
-        "id": "ray",
-        "name": "Rayo Vallecano",
-        "league": "laliga",
-        "rating": 75,
-        "colors": [
-            "#FFFFFF",
-            "#E30613"
-        ]
-    },
-    {
-        "id": "leg",
-        "name": "Leganes",
-        "league": "laliga",
-        "rating": 74,
-        "colors": [
-            "#005CAB",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "vld",
-        "name": "Valladolid",
-        "league": "laliga",
-        "rating": 74,
-        "colors": [
-            "#4D2E88",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "esp",
-        "name": "Espanyol",
-        "league": "laliga",
-        "rating": 75,
-        "colors": [
-            "#0067B1",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "int",
-        "name": "Inter Milan",
-        "league": "seriea",
-        "rating": 86,
-        "colors": [
-            "#0066B2",
-            "#000000"
-        ]
-    },
-    {
-        "id": "mil",
-        "name": "AC Milan",
-        "league": "seriea",
-        "rating": 84,
-        "colors": [
-            "#FB090B",
-            "#000000"
-        ]
-    },
-    {
-        "id": "juv",
-        "name": "Juventus",
-        "league": "seriea",
-        "rating": 84,
-        "colors": [
-            "#FFFFFF",
-            "#000000"
-        ]
-    },
-    {
-        "id": "ata",
-        "name": "Atalanta",
-        "league": "seriea",
-        "rating": 82,
-        "colors": [
-            "#004994",
-            "#1F1F1F"
-        ]
-    },
-    {
-        "id": "bol",
-        "name": "Bologna",
-        "league": "seriea",
-        "rating": 80,
-        "colors": [
-            "#142544",
-            "#A8112C"
-        ]
-    },
-    {
-        "id": "rom",
-        "name": "AS Roma",
-        "league": "seriea",
-        "rating": 81,
-        "colors": [
-            "#970A2C",
-            "#F9A522"
-        ]
-    },
-    {
-        "id": "laz",
-        "name": "Lazio",
-        "league": "seriea",
-        "rating": 80,
-        "colors": [
-            "#87D8F7",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "fio",
-        "name": "Fiorentina",
-        "league": "seriea",
-        "rating": 79,
-        "colors": [
-            "#4B2E83",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "tor",
-        "name": "Torino",
-        "league": "seriea",
-        "rating": 78,
-        "colors": [
-            "#8A1F11",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "nap",
-        "name": "Napoli",
-        "league": "seriea",
-        "rating": 82,
-        "colors": [
-            "#003E7E",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "gen",
-        "name": "Genoa",
-        "league": "seriea",
-        "rating": 77,
-        "colors": [
-            "#D11311",
-            "#002F6C"
-        ]
-    },
-    {
-        "id": "mon",
-        "name": "Monza",
-        "league": "seriea",
-        "rating": 76,
-        "colors": [
-            "#E20612",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "ver",
-        "name": "Verona",
-        "league": "seriea",
-        "rating": 75,
-        "colors": [
-            "#1A2F50",
-            "#FFD700"
-        ]
-    },
-    {
-        "id": "lec",
-        "name": "Lecce",
-        "league": "seriea",
-        "rating": 75,
-        "colors": [
-            "#FFD700",
-            "#E20612"
-        ]
-    },
-    {
-        "id": "udi",
-        "name": "Udinese",
-        "league": "seriea",
-        "rating": 76,
-        "colors": [
-            "#FFFFFF",
-            "#000000"
-        ]
-    },
-    {
-        "id": "cag",
-        "name": "Cagliari",
-        "league": "seriea",
-        "rating": 75,
-        "colors": [
-            "#D2122E",
-            "#002347"
-        ]
-    },
-    {
-        "id": "emp",
-        "name": "Empoli",
-        "league": "seriea",
-        "rating": 75,
-        "colors": [
-            "#0057B8",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "par",
-        "name": "Parma",
-        "league": "seriea",
-        "rating": 75,
-        "colors": [
-            "#FFFFFF",
-            "#000000"
-        ]
-    },
-    {
-        "id": "com",
-        "name": "Como",
-        "league": "seriea",
-        "rating": 74,
-        "colors": [
-            "#003E7E",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "ven",
-        "name": "Venezia",
-        "league": "seriea",
-        "rating": 74,
-        "colors": [
-            "#EE7F2D",
-            "#000000"
-        ]
-    },
-    {
-        "id": "lev",
-        "name": "Bayer Leverkusen",
-        "league": "bundesliga",
-        "rating": 85,
-        "colors": [
-            "#E32219",
-            "#000000"
-        ]
-    },
-    {
-        "id": "stu",
-        "name": "Stuttgart",
-        "league": "bundesliga",
-        "rating": 81,
-        "colors": [
-            "#FFFFFF",
-            "#E30613"
-        ]
-    },
-    {
-        "id": "bay",
-        "name": "Bayern Munich",
-        "league": "bundesliga",
-        "rating": 87,
-        "colors": [
-            "#DC052D",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "rbl",
-        "name": "RB Leipzig",
-        "league": "bundesliga",
-        "rating": 83,
-        "colors": [
-            "#DD013F",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "bvb",
-        "name": "Borussia Dortmund",
-        "league": "bundesliga",
-        "rating": 83,
-        "colors": [
-            "#FDE100",
-            "#000000"
-        ]
-    },
-    {
-        "id": "fra",
-        "name": "Eintracht Frankfurt",
-        "league": "bundesliga",
-        "rating": 80,
-        "colors": [
-            "#E1000F",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "hof",
-        "name": "Hoffenheim",
-        "league": "bundesliga",
-        "rating": 78,
-        "colors": [
-            "#004994",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "hei",
-        "name": "Heidenheim",
-        "league": "bundesliga",
-        "rating": 76,
-        "colors": [
-            "#E20612",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "brem",
-        "name": "Werder Bremen",
-        "league": "bundesliga",
-        "rating": 77,
-        "colors": [
-            "#009754",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "fre",
-        "name": "Freiburg",
-        "league": "bundesliga",
-        "rating": 78,
-        "colors": [
-            "#E20612",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "aug",
-        "name": "Augsburg",
-        "league": "bundesliga",
-        "rating": 76,
-        "colors": [
-            "#006C35",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "wolb",
-        "name": "Wolfsburg",
-        "league": "bundesliga",
-        "rating": 78,
-        "colors": [
-            "#65B32E",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "mai",
-        "name": "Mainz 05",
-        "league": "bundesliga",
-        "rating": 76,
-        "colors": [
-            "#E30613",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "gla",
-        "name": "Borussia Gladbach",
-        "league": "bundesliga",
-        "rating": 77,
-        "colors": [
-            "#FFFFFF",
-            "#000000"
-        ]
-    },
-    {
-        "id": "union",
-        "name": "Union Berlin",
-        "league": "bundesliga",
-        "rating": 77,
-        "colors": [
-            "#EE2523",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "boc",
-        "name": "Bochum",
-        "league": "bundesliga",
-        "rating": 74,
-        "colors": [
-            "#005CAB",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "stpa",
-        "name": "St. Pauli",
-        "league": "bundesliga",
-        "rating": 74,
-        "colors": [
-            "#6D4C41",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "kiel",
-        "name": "Holstein Kiel",
-        "league": "bundesliga",
-        "rating": 73,
-        "colors": [
-            "#004994",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "sch",
-        "name": "Schalke 04",
-        "league": "bundesliga",
-        "rating": 75,
-        "colors": [
-            "#004B93",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "ham",
-        "name": "Hamburger SV",
-        "league": "bundesliga",
-        "rating": 75,
-        "colors": [
-            "#004B93",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "psg",
-        "name": "Paris Saint-Germain",
-        "league": "ligue1",
-        "rating": 86,
-        "colors": [
-            "#004170",
-            "#DA171A"
-        ]
-    },
-    {
-        "id": "asm",
-        "name": "Monaco",
-        "league": "ligue1",
-        "rating": 81,
-        "colors": [
-            "#E20612",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "brest",
-        "name": "Brest",
-        "league": "ligue1",
-        "rating": 78,
-        "colors": [
-            "#E20612",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "lil",
-        "name": "Lille",
-        "league": "ligue1",
-        "rating": 80,
-        "colors": [
-            "#E20612",
-            "#243E5A"
-        ]
-    },
-    {
-        "id": "nic",
-        "name": "Nice",
-        "league": "ligue1",
-        "rating": 79,
-        "colors": [
-            "#E20612",
-            "#000000"
-        ]
-    },
-    {
-        "id": "lyo",
-        "name": "Lyon",
-        "league": "ligue1",
-        "rating": 80,
-        "colors": [
-            "#FFFFFF",
-            "#004B93"
-        ]
-    },
-    {
-        "id": "len",
-        "name": "Lens",
-        "league": "ligue1",
-        "rating": 79,
-        "colors": [
-            "#FDB913",
-            "#DA171A"
-        ]
-    },
-    {
-        "id": "om",
-        "name": "Marseille",
-        "league": "ligue1",
-        "rating": 81,
-        "colors": [
-            "#00A3E0",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "rei",
-        "name": "Reims",
-        "league": "ligue1",
-        "rating": 77,
-        "colors": [
-            "#E20612",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "ren",
-        "name": "Rennes",
-        "league": "ligue1",
-        "rating": 78,
-        "colors": [
-            "#E20612",
-            "#000000"
-        ]
-    },
-    {
-        "id": "tou",
-        "name": "Toulouse",
-        "league": "ligue1",
-        "rating": 76,
-        "colors": [
-            "#4F2D7F",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "monp",
-        "name": "Montpellier",
-        "league": "ligue1",
-        "rating": 76,
-        "colors": [
-            "#002F6C",
-            "#FF6600"
-        ]
-    },
-    {
-        "id": "str",
-        "name": "Strasbourg",
-        "league": "ligue1",
-        "rating": 76,
-        "colors": [
-            "#0072CE",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "nan",
-        "name": "Nantes",
-        "league": "ligue1",
-        "rating": 75,
-        "colors": [
-            "#FFD700",
-            "#009B3A"
-        ]
-    },
-    {
-        "id": "hav",
-        "name": "Le Havre",
-        "league": "ligue1",
-        "rating": 74,
-        "colors": [
-            "#85B6DA",
-            "#003090"
-        ]
-    },
-    {
-        "id": "aux",
-        "name": "Auxerre",
-        "league": "ligue1",
-        "rating": 74,
-        "colors": [
-            "#FFFFFF",
-            "#005CAB"
-        ]
-    },
-    {
-        "id": "ang",
-        "name": "Angers",
-        "league": "ligue1",
-        "rating": 73,
-        "colors": [
-            "#000000",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "ste",
-        "name": "Saint-Etienne",
-        "league": "ligue1",
-        "rating": 74,
-        "colors": [
-            "#006C35",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "lor",
-        "name": "Lorient",
-        "league": "ligue1",
-        "rating": 74,
-        "colors": [
-            "#FF6600",
-            "#FFFFFF"
-        ]
-    },
-    {
-        "id": "met",
-        "name": "Metz",
-        "league": "ligue1",
-        "rating": 74,
-        "colors": [
-            "#800020",
-            "#FFFFFF"
-        ]
-    }
+  {
+    "id": "mci",
+    "name": "Manchester City",
+    "league": "pl",
+    "rating": 89,
+    "colors": [
+      "#6CABDD",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/80_manchester-city.jpg"
+  },
+  {
+    "id": "ars",
+    "name": "Arsenal",
+    "league": "pl",
+    "rating": 87,
+    "colors": [
+      "#EF0107",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/18233_arsenal.jpg"
+  },
+  {
+    "id": "liv",
+    "name": "Liverpool",
+    "league": "pl",
+    "rating": 87,
+    "colors": [
+      "#C8102E",
+      "#F6EB61"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/84_liverpool.jpg"
+  },
+  {
+    "id": "avl",
+    "name": "Aston Villa",
+    "league": "pl",
+    "rating": 82,
+    "colors": [
+      "#95BFE5",
+      "#670E36"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3088_aston-villa.jpg"
+  },
+  {
+    "id": "tot",
+    "name": "Tottenham",
+    "league": "pl",
+    "rating": 83,
+    "colors": [
+      "#132257",
+      "#FFFFFF"
+    ],
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/b/b4/Tottenham_Hotspur.svg/200px-Tottenham_Hotspur.svg.png"
+  },
+  {
+    "id": "che",
+    "name": "Chelsea",
+    "league": "pl",
+    "rating": 82,
+    "colors": [
+      "#034694",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/88_chelsea.jpg"
+  },
+  {
+    "id": "mun",
+    "name": "Man United",
+    "league": "pl",
+    "rating": 82,
+    "colors": [
+      "#DA291C",
+      "#FBE122"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/102_manchester-united.jpg"
+  },
+  {
+    "id": "cry",
+    "name": "Crystal Palace",
+    "league": "pl",
+    "rating": 79,
+    "colors": [
+      "#1B458F",
+      "#C4122E"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3429_crystal-palace.jpg"
+  },
+  {
+    "id": "ful",
+    "name": "Fulham",
+    "league": "pl",
+    "rating": 78,
+    "colors": [
+      "#FFFFFF",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3085_fulham.jpg"
+  },
+  {
+    "id": "eve",
+    "name": "Everton",
+    "league": "pl",
+    "rating": 77,
+    "colors": [
+      "#003399",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/2211_everton.jpg"
+  },
+  {
+    "id": "bre",
+    "name": "Brentford",
+    "league": "pl",
+    "rating": 77,
+    "colors": [
+      "#E30613",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3086_brentford.jpg"
+  },
+  {
+    "id": "sou",
+    "name": "Southampton",
+    "league": "pl",
+    "rating": 75,
+    "colors": [
+      "#D71920",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3072_southampton.jpg"
+  },
+  {
+    "id": "rma",
+    "name": "Real Madrid",
+    "league": "laliga",
+    "rating": 89,
+    "colors": [
+      "#FFFFFF",
+      "#FEBE10"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/76_real-madrid.jpg"
+  },
+  {
+    "id": "bar",
+    "name": "Barcelona",
+    "league": "laliga",
+    "rating": 87,
+    "colors": [
+      "#004D98",
+      "#A50044"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/97_barcelona.jpg"
+  },
+  {
+    "id": "atm",
+    "name": "Atlético Madrid",
+    "league": "laliga",
+    "rating": 85,
+    "colors": [
+      "#CB3524",
+      "#FFFFFF"
+    ],
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f4/Atletico_madrid_2017_logo.svg/200px-Atletico_madrid_2017_logo.svg.png"
+  },
+  {
+    "id": "gir",
+    "name": "Girona",
+    "league": "laliga",
+    "rating": 81,
+    "colors": [
+      "#E10613",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7263_girona.jpg"
+  },
+  {
+    "id": "ath",
+    "name": "Athletic Club",
+    "league": "laliga",
+    "rating": 81,
+    "colors": [
+      "#EE2523",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7258_athletic-club.jpg"
+  },
+  {
+    "id": "rso",
+    "name": "Real Sociedad",
+    "league": "laliga",
+    "rating": 81,
+    "colors": [
+      "#0067B1",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/153_real-sociedad.jpg"
+  },
+  {
+    "id": "bet",
+    "name": "Real Betis",
+    "league": "laliga",
+    "rating": 80,
+    "colors": [
+      "#00954C",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7261_real-betis.jpg"
+  },
+  {
+    "id": "vil",
+    "name": "Villarreal",
+    "league": "laliga",
+    "rating": 79,
+    "colors": [
+      "#FFE600",
+      "#00518C"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/162_villarreal.jpg"
+  },
+  {
+    "id": "vcf",
+    "name": "Valencia",
+    "league": "laliga",
+    "rating": 78,
+    "colors": [
+      "#FFFFFF",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7272_valencia.jpg"
+  },
+  {
+    "id": "ala",
+    "name": "Alavés",
+    "league": "laliga",
+    "rating": 76,
+    "colors": [
+      "#005999",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7275_alaves.jpg"
+  },
+  {
+    "id": "osa",
+    "name": "Osasuna",
+    "league": "laliga",
+    "rating": 77,
+    "colors": [
+      "#9D192B",
+      "#133166"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7269_osasuna.jpg"
+  },
+  {
+    "id": "get",
+    "name": "Getafe",
+    "league": "laliga",
+    "rating": 76,
+    "colors": [
+      "#0000AB",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7288_getafe.jpg"
+  },
+  {
+    "id": "sev",
+    "name": "Sevilla",
+    "league": "laliga",
+    "rating": 78,
+    "colors": [
+      "#FFFFFF",
+      "#D42028"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/89_sevilla.jpg"
+  },
+  {
+    "id": "mal",
+    "name": "Mallorca",
+    "league": "laliga",
+    "rating": 75,
+    "colors": [
+      "#E20612",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7285_mallorca.jpg"
+  },
+  {
+    "id": "lpa",
+    "name": "Las Palmas",
+    "league": "laliga",
+    "rating": 75,
+    "colors": [
+      "#FFD700",
+      "#004B92"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7289_las-palmas.jpg"
+  },
+  {
+    "id": "ray",
+    "name": "Rayo Vallecano",
+    "league": "laliga",
+    "rating": 75,
+    "colors": [
+      "#FFFFFF",
+      "#E30613"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7264_rayo-vallecano.jpg"
+  },
+  {
+    "id": "leg",
+    "name": "Leganés",
+    "league": "laliga",
+    "rating": 74,
+    "colors": [
+      "#005CAB",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7266_leganes.jpg"
+  },
+  {
+    "id": "esp",
+    "name": "Espanyol",
+    "league": "laliga",
+    "rating": 75,
+    "colors": [
+      "#0067B1",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7268_espanyol.jpg"
+  },
+  {
+    "id": "int",
+    "name": "Inter",
+    "league": "seriea",
+    "rating": 86,
+    "colors": [
+      "#0066B2",
+      "#000000"
+    ],
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/FC_Internazionale_Milano_2021.svg/200px-FC_Internazionale_Milano_2021.svg.png"
+  },
+  {
+    "id": "mil",
+    "name": "Milan",
+    "league": "seriea",
+    "rating": 84,
+    "colors": [
+      "#FB090B",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/159_milan.jpg"
+  },
+  {
+    "id": "juv",
+    "name": "Juventus",
+    "league": "seriea",
+    "rating": 84,
+    "colors": [
+      "#FFFFFF",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4527_juventus.jpg"
+  },
+  {
+    "id": "ata",
+    "name": "Atalanta",
+    "league": "seriea",
+    "rating": 82,
+    "colors": [
+      "#004994",
+      "#1F1F1F"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/85_atalanta.jpg"
+  },
+  {
+    "id": "bol",
+    "name": "Bologna",
+    "league": "seriea",
+    "rating": 80,
+    "colors": [
+      "#142544",
+      "#A8112C"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4983_bologna.jpg"
+  },
+  {
+    "id": "rom",
+    "name": "Roma",
+    "league": "seriea",
+    "rating": 81,
+    "colors": [
+      "#970A2C",
+      "#F9A522"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/139_roma.jpg"
+  },
+  {
+    "id": "laz",
+    "name": "Lazio",
+    "league": "seriea",
+    "rating": 80,
+    "colors": [
+      "#87D8F7",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/93_lazio.jpg"
+  },
+  {
+    "id": "fio",
+    "name": "Fiorentina",
+    "league": "seriea",
+    "rating": 79,
+    "colors": [
+      "#4B2E83",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4974_fiorentina.jpg"
+  },
+  {
+    "id": "tor",
+    "name": "Torino",
+    "league": "seriea",
+    "rating": 78,
+    "colors": [
+      "#8A1F11",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4973_torino.jpg"
+  },
+  {
+    "id": "nap",
+    "name": "Napoli",
+    "league": "seriea",
+    "rating": 82,
+    "colors": [
+      "#003E7E",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/152_napoli.jpg"
+  },
+  {
+    "id": "gen",
+    "name": "Genoa",
+    "league": "seriea",
+    "rating": 77,
+    "colors": [
+      "#D11311",
+      "#002F6C"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4986_genoa.jpg"
+  },
+  {
+    "id": "mon",
+    "name": "Monza",
+    "league": "seriea",
+    "rating": 76,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4990_monza.jpg"
+  },
+  {
+    "id": "lec",
+    "name": "Lecce",
+    "league": "seriea",
+    "rating": 75,
+    "colors": [
+      "#FFD700",
+      "#E20612"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5010_lecce.jpg"
+  },
+  {
+    "id": "udi",
+    "name": "Udinese",
+    "league": "seriea",
+    "rating": 76,
+    "colors": [
+      "#FFFFFF",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4984_udinese.jpg"
+  },
+  {
+    "id": "cag",
+    "name": "Cagliari",
+    "league": "seriea",
+    "rating": 75,
+    "colors": [
+      "#D2122E",
+      "#002347"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4981_cagliari.jpg"
+  },
+  {
+    "id": "emp",
+    "name": "Empoli",
+    "league": "seriea",
+    "rating": 75,
+    "colors": [
+      "#0057B8",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4979_empoli.jpg"
+  },
+  {
+    "id": "par",
+    "name": "Parma",
+    "league": "seriea",
+    "rating": 75,
+    "colors": [
+      "#FFFFFF",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4978_parma.jpg"
+  },
+  {
+    "id": "com",
+    "name": "Como",
+    "league": "seriea",
+    "rating": 74,
+    "colors": [
+      "#003E7E",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/8239_como.jpg"
+  },
+  {
+    "id": "ven",
+    "name": "Venezia",
+    "league": "seriea",
+    "rating": 74,
+    "colors": [
+      "#EE7F2D",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5007_venezia.jpg"
+  },
+  {
+    "id": "stu",
+    "name": "Stuttgart",
+    "league": "bundesliga",
+    "rating": 81,
+    "colors": [
+      "#FFFFFF",
+      "#E30613"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3933_stuttgart.jpg"
+  },
+  {
+    "id": "bay",
+    "name": "Bayern",
+    "league": "bundesliga",
+    "rating": 87,
+    "colors": [
+      "#DC052D",
+      "#FFFFFF"
+    ],
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/200px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png"
+  },
+  {
+    "id": "rbl",
+    "name": "RB Leipzig",
+    "league": "bundesliga",
+    "rating": 83,
+    "colors": [
+      "#DD013F",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/101_rb-leipzig.jpg"
+  },
+  {
+    "id": "bvb",
+    "name": "Dortmund",
+    "league": "bundesliga",
+    "rating": 83,
+    "colors": [
+      "#FDE100",
+      "#000000"
+    ],
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Borussia_Dortmund_logo.svg/200px-Borussia_Dortmund_logo.svg.png"
+  },
+  {
+    "id": "hof",
+    "name": "Hoffenheim",
+    "league": "bundesliga",
+    "rating": 78,
+    "colors": [
+      "#004994",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/170_hoffenheim.jpg"
+  },
+  {
+    "id": "hei",
+    "name": "Heidenheim",
+    "league": "bundesliga",
+    "rating": 76,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3917_heidenheim.jpg"
+  },
+  {
+    "id": "fre",
+    "name": "Freiburg",
+    "league": "bundesliga",
+    "rating": 78,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3962_freiburg.jpg"
+  },
+  {
+    "id": "aug",
+    "name": "Augsburg",
+    "league": "bundesliga",
+    "rating": 76,
+    "colors": [
+      "#006C35",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3934_augsburg.jpg"
+  },
+  {
+    "id": "wlb",
+    "name": "Wolfsburg",
+    "league": "bundesliga",
+    "rating": 78,
+    "colors": [
+      "#65B32E",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/196_wolfsburg.jpg"
+  },
+  {
+    "id": "uni",
+    "name": "Union Berlin",
+    "league": "bundesliga",
+    "rating": 77,
+    "colors": [
+      "#EE2523",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3936_union-berlin.jpg"
+  },
+  {
+    "id": "boc",
+    "name": "Bochum",
+    "league": "bundesliga",
+    "rating": 74,
+    "colors": [
+      "#005CAB",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3911_bochum.jpg"
+  },
+  {
+    "id": "stp",
+    "name": "St. Pauli",
+    "league": "bundesliga",
+    "rating": 74,
+    "colors": [
+      "#6D4C41",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3921_st.-pauli.jpg"
+  },
+  {
+    "id": "psg",
+    "name": "PSG",
+    "league": "ligue1",
+    "rating": 86,
+    "colors": [
+      "#004170",
+      "#DA171A"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/100_psg.jpg"
+  },
+  {
+    "id": "asm",
+    "name": "Monaco",
+    "league": "ligue1",
+    "rating": 81,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3817_monaco.jpg"
+  },
+  {
+    "id": "bre",
+    "name": "Brest",
+    "league": "ligue1",
+    "rating": 78,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3823_brest.jpg"
+  },
+  {
+    "id": "lil",
+    "name": "Lille",
+    "league": "ligue1",
+    "rating": 80,
+    "colors": [
+      "#E20612",
+      "#243E5A"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/160_lille.jpg"
+  },
+  {
+    "id": "nic",
+    "name": "Nice",
+    "league": "ligue1",
+    "rating": 79,
+    "colors": [
+      "#E20612",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/145_nice.jpg"
+  },
+  {
+    "id": "len",
+    "name": "Lens",
+    "league": "ligue1",
+    "rating": 79,
+    "colors": [
+      "#FDB913",
+      "#DA171A"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3821_lens.jpg"
+  },
+  {
+    "id": "rei",
+    "name": "Reims",
+    "league": "ligue1",
+    "rating": 77,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/182_reims.jpg"
+  },
+  {
+    "id": "ren",
+    "name": "Rennes",
+    "league": "ligue1",
+    "rating": 78,
+    "colors": [
+      "#E20612",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/91_rennes.jpg"
+  },
+  {
+    "id": "tou",
+    "name": "Toulouse",
+    "league": "ligue1",
+    "rating": 76,
+    "colors": [
+      "#4F2D7F",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3794_toulouse.jpg"
+  },
+  {
+    "id": "mon",
+    "name": "Montpellier",
+    "league": "ligue1",
+    "rating": 76,
+    "colors": [
+      "#002F6C",
+      "#FF6600"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3819_montpellier.jpg"
+  },
+  {
+    "id": "str",
+    "name": "Strasbourg",
+    "league": "ligue1",
+    "rating": 76,
+    "colors": [
+      "#0072CE",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3818_strasbourg.jpg"
+  },
+  {
+    "id": "nan",
+    "name": "Nantes",
+    "league": "ligue1",
+    "rating": 75,
+    "colors": [
+      "#FFD700",
+      "#009B3A"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3820_nantes.jpg"
+  },
+  {
+    "id": "hav",
+    "name": "Le Havre",
+    "league": "ligue1",
+    "rating": 74,
+    "colors": [
+      "#85B6DA",
+      "#003090"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3804_le-havre.jpg"
+  },
+  {
+    "id": "aux",
+    "name": "Auxerre",
+    "league": "ligue1",
+    "rating": 74,
+    "colors": [
+      "#FFFFFF",
+      "#005CAB"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3797_auxerre.jpg"
+  },
+  {
+    "id": "ste",
+    "name": "Saint-Étienne",
+    "league": "ligue1",
+    "rating": 74,
+    "colors": [
+      "#006C35",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3826_saint-etienne.jpg"
+  },
+  {
+    "id": "lor",
+    "name": "Lorient",
+    "league": "ligue1",
+    "rating": 74,
+    "colors": [
+      "#FF6600",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3814_lorient.jpg"
+  },
+  {
+    "id": "met",
+    "name": "Metz",
+    "league": "ligue1",
+    "rating": 74,
+    "colors": [
+      "#800020",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/3822_metz.jpg"
+  },
+  {
+    "id": "aja",
+    "name": "Ajax",
+    "league": "eredivisie",
+    "rating": 81,
+    "colors": [
+      "#AF122A",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/86_ajax.jpg"
+  },
+  {
+    "id": "psv",
+    "name": "PSV",
+    "league": "eredivisie",
+    "rating": 82,
+    "colors": [
+      "#EE2523",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/150_psv.jpg"
+  },
+  {
+    "id": "fey",
+    "name": "Feyenoord",
+    "league": "eredivisie",
+    "rating": 81,
+    "colors": [
+      "#E31D23",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/168_feyenoord.jpg"
+  },
+  {
+    "id": "az",
+    "name": "AZ",
+    "league": "eredivisie",
+    "rating": 78,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/113_az.jpg"
+  },
+  {
+    "id": "twe",
+    "name": "Twente",
+    "league": "eredivisie",
+    "rating": 77,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5473_twente.jpg"
+  },
+  {
+    "id": "utr",
+    "name": "Utrecht",
+    "league": "eredivisie",
+    "rating": 76,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5475_utrecht.jpg"
+  },
+  {
+    "id": "hee",
+    "name": "Heerenveen",
+    "league": "eredivisie",
+    "rating": 74,
+    "colors": [
+      "#003E7E",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5464_heerenveen.jpg"
+  },
+  {
+    "id": "nec",
+    "name": "NEC",
+    "league": "eredivisie",
+    "rating": 74,
+    "colors": [
+      "#E20612",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5466_nec.jpg"
+  },
+  {
+    "id": "gae",
+    "name": "Go Ahead",
+    "league": "eredivisie",
+    "rating": 73,
+    "colors": [
+      "#FFD700",
+      "#E20612"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/15390_go-ahead.jpg"
+  },
+  {
+    "id": "her",
+    "name": "Heracles",
+    "league": "eredivisie",
+    "rating": 72,
+    "colors": [
+      "#000000",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5465_heracles.jpg"
+  },
+  {
+    "id": "for",
+    "name": "Fortuna",
+    "league": "eredivisie",
+    "rating": 73,
+    "colors": [
+      "#FFFF00",
+      "#00954C"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/34523_fortuna.jpg"
+  },
+  {
+    "id": "rkc",
+    "name": "RKC Waalwijk",
+    "league": "eredivisie",
+    "rating": 71,
+    "colors": [
+      "#FFFF00",
+      "#003E7E"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5476_rkc-waalwijk.jpg"
+  },
+  {
+    "id": "wil",
+    "name": "Willem II",
+    "league": "eredivisie",
+    "rating": 72,
+    "colors": [
+      "#E20612",
+      "#15295E"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/199_willem-ii.jpg"
+  },
+  {
+    "id": "gro",
+    "name": "Groningen",
+    "league": "eredivisie",
+    "rating": 73,
+    "colors": [
+      "#009754",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5488_groningen.jpg"
+  },
+  {
+    "id": "nac",
+    "name": "NAC Breda",
+    "league": "eredivisie",
+    "rating": 71,
+    "colors": [
+      "#FFFF00",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5513_nac-breda.jpg"
+  },
+  {
+    "id": "vitesse",
+    "name": "Vitesse",
+    "league": "eredivisie",
+    "rating": 70,
+    "colors": [
+      "#FFFF00",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5460_vitesse.jpg"
+  },
+  {
+    "id": "excl",
+    "name": "Excelsior",
+    "league": "eredivisie",
+    "rating": 70,
+    "colors": [
+      "#000000",
+      "#E20612"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5459_excelsior.jpg"
+  },
+  {
+    "id": "hal",
+    "name": "Al Hilal",
+    "league": "spl",
+    "rating": 84,
+    "colors": [
+      "#0057B8",
+      "#FFFFFF"
+    ],
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c7/Al_Hilal_SFC_logo.svg/200px-Al_Hilal_SFC_logo.svg.png"
+  },
+  {
+    "id": "nas",
+    "name": "Al Nassr",
+    "league": "spl",
+    "rating": 82,
+    "colors": [
+      "#FFD700",
+      "#0057B8"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/371_al-nassr.jpg"
+  },
+  {
+    "id": "itt",
+    "name": "Al Ittihad",
+    "league": "spl",
+    "rating": 81,
+    "colors": [
+      "#FFFF00",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/2762_al-ittihad.jpg"
+  },
+  {
+    "id": "ahl",
+    "name": "Al Ahli",
+    "league": "spl",
+    "rating": 80,
+    "colors": [
+      "#008751",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/359_al-ahli.jpg"
+  },
+  {
+    "id": "ett",
+    "name": "Al Ettifaq",
+    "league": "spl",
+    "rating": 77,
+    "colors": [
+      "#008751",
+      "#800000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/6329_al-ettifaq.jpg"
+  },
+  {
+    "id": "sha",
+    "name": "Al Shabab",
+    "league": "spl",
+    "rating": 77,
+    "colors": [
+      "#FFFFFF",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/5179_al-shabab.jpg"
+  },
+  {
+    "id": "taa",
+    "name": "Al Taawoun",
+    "league": "spl",
+    "rating": 76,
+    "colors": [
+      "#FFFF00",
+      "#003E7E"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/368_al-taawoun.jpg"
+  },
+  {
+    "id": "fat",
+    "name": "Al Fateh",
+    "league": "spl",
+    "rating": 75,
+    "colors": [
+      "#0057B8",
+      "#008751"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/6331_al-fateh.jpg"
+  },
+  {
+    "id": "kha",
+    "name": "Al Khaleej",
+    "league": "spl",
+    "rating": 74,
+    "colors": [
+      "#FFFF00",
+      "#008751"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/6312_al-khaleej.jpg"
+  },
+  {
+    "id": "weh",
+    "name": "Al Wehda",
+    "league": "spl",
+    "rating": 74,
+    "colors": [
+      "#800000",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/362_al-wehda.jpg"
+  },
+  {
+    "id": "fay",
+    "name": "Al Fayha",
+    "league": "spl",
+    "rating": 73,
+    "colors": [
+      "#FF6600",
+      "#003E7E"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/6308_al-fayha.jpg"
+  },
+  {
+    "id": "rae",
+    "name": "Al Raed",
+    "league": "spl",
+    "rating": 73,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/6334_al-raed.jpg"
+  },
+  {
+    "id": "okh",
+    "name": "Al Okhdood",
+    "league": "spl",
+    "rating": 72,
+    "colors": [
+      "#003E7E",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/18903_al-okhdood.jpg"
+  },
+  {
+    "id": "riy",
+    "name": "Al Riyadh",
+    "league": "spl",
+    "rating": 71,
+    "colors": [
+      "#003E7E",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/16129_al-riyadh.jpg"
+  },
+  {
+    "id": "kho",
+    "name": "Al Kholood",
+    "league": "spl",
+    "rating": 70,
+    "colors": [
+      "#FFFFFF",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/18893_al-kholood.jpg"
+  },
+  {
+    "id": "tai",
+    "name": "Al Tai",
+    "league": "spl",
+    "rating": 71,
+    "colors": [
+      "#FFFFFF",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/6310_al-tai.jpg"
+  },
+  {
+    "id": "haz",
+    "name": "Al Hazem",
+    "league": "spl",
+    "rating": 70,
+    "colors": [
+      "#E20612",
+      "#FFFF00"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/6307_al-hazem.jpg"
+  },
+  {
+    "id": "gal",
+    "name": "Galatasaray",
+    "league": "superlig",
+    "rating": 82,
+    "colors": [
+      "#A32638",
+      "#FDB913"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/192_galatasaray.jpg"
+  },
+  {
+    "id": "fen",
+    "name": "Fenerbahçe",
+    "league": "superlig",
+    "rating": 81,
+    "colors": [
+      "#003366",
+      "#FFFF00"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7694_fenerbahce.jpg"
+  },
+  {
+    "id": "bes",
+    "name": "Beşiktaş",
+    "league": "superlig",
+    "rating": 79,
+    "colors": [
+      "#000000",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/187_beikta.jpg"
+  },
+  {
+    "id": "tra",
+    "name": "Trabzonspor",
+    "league": "superlig",
+    "rating": 77,
+    "colors": [
+      "#800020",
+      "#87CEEB"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7689_trabzonspor.jpg"
+  },
+  {
+    "id": "kas",
+    "name": "Kasımpaşa",
+    "league": "superlig",
+    "rating": 74,
+    "colors": [
+      "#003E7E",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7699_kasimpaa.jpg"
+  },
+  {
+    "id": "siv",
+    "name": "Sivasspor",
+    "league": "superlig",
+    "rating": 74,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/163_sivasspor.jpg"
+  },
+  {
+    "id": "ala",
+    "name": "Alanyaspor",
+    "league": "superlig",
+    "rating": 74,
+    "colors": [
+      "#FF6600",
+      "#009754"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7697_alanyaspor.jpg"
+  },
+  {
+    "id": "ant",
+    "name": "Antalyaspor",
+    "league": "superlig",
+    "rating": 74,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7695_antalyaspor.jpg"
+  },
+  {
+    "id": "sam",
+    "name": "Samsunspor",
+    "league": "superlig",
+    "rating": 73,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7665_samsunspor.jpg"
+  },
+  {
+    "id": "kay",
+    "name": "Kayserispor",
+    "league": "superlig",
+    "rating": 73,
+    "colors": [
+      "#FFD700",
+      "#E20612"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7693_kayserispor.jpg"
+  },
+  {
+    "id": "kon",
+    "name": "Konyaspor",
+    "league": "superlig",
+    "rating": 74,
+    "colors": [
+      "#009754",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7692_konyaspor.jpg"
+  },
+  {
+    "id": "riz",
+    "name": "Rizespor",
+    "league": "superlig",
+    "rating": 73,
+    "colors": [
+      "#003090",
+      "#0097D9"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7685_rizespor.jpg"
+  },
+  {
+    "id": "hat",
+    "name": "Hatayspor",
+    "league": "superlig",
+    "rating": 72,
+    "colors": [
+      "#800020",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7707_hatayspor.jpg"
+  },
+  {
+    "id": "goz",
+    "name": "Göztepe",
+    "league": "superlig",
+    "rating": 73,
+    "colors": [
+      "#FFFF00",
+      "#E20612"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7701_goztepe.jpg"
+  },
+  {
+    "id": "eyu",
+    "name": "Eyüpspor",
+    "league": "superlig",
+    "rating": 73,
+    "colors": [
+      "#8B0000",
+      "#FFD700"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7644_eyupspor.jpg"
+  },
+  {
+    "id": "bod",
+    "name": "Bodrum FK",
+    "league": "superlig",
+    "rating": 70,
+    "colors": [
+      "#009754",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7650_bodrum-fk.jpg"
+  },
+  {
+    "id": "ank",
+    "name": "Ankaragücü",
+    "league": "superlig",
+    "rating": 71,
+    "colors": [
+      "#003E7E",
+      "#FFFF00"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/7708_ankaragucu.jpg"
+  },
+  {
+    "id": "and",
+    "name": "Anderlecht",
+    "league": "jupiler",
+    "rating": 78,
+    "colors": [
+      "#4B2E83",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1361_anderlecht.jpg"
+  },
+  {
+    "id": "bru",
+    "name": "Club Brugge",
+    "league": "jupiler",
+    "rating": 80,
+    "colors": [
+      "#003E7E",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/94_club-brugge.jpg"
+  },
+  {
+    "id": "genk",
+    "name": "Genk",
+    "league": "jupiler",
+    "rating": 77,
+    "colors": [
+      "#003E7E",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1359_genk.jpg"
+  },
+  {
+    "id": "gent",
+    "name": "Gent",
+    "league": "jupiler",
+    "rating": 76,
+    "colors": [
+      "#003E7E",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/109_gent.jpg"
+  },
+  {
+    "id": "antw",
+    "name": "Antwerp",
+    "league": "jupiler",
+    "rating": 77,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/165_antwerp.jpg"
+  },
+  {
+    "id": "sta",
+    "name": "Standard",
+    "league": "jupiler",
+    "rating": 74,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/12841_standard.jpg"
+  },
+  {
+    "id": "mec",
+    "name": "Mechelen",
+    "league": "jupiler",
+    "rating": 73,
+    "colors": [
+      "#FFFF00",
+      "#E20612"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1365_mechelen.jpg"
+  },
+  {
+    "id": "wes",
+    "name": "Westerlo",
+    "league": "jupiler",
+    "rating": 72,
+    "colors": [
+      "#FFFF00",
+      "#003E7E"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1379_westerlo.jpg"
+  },
+  {
+    "id": "cer",
+    "name": "Cercle Brugge",
+    "league": "jupiler",
+    "rating": 75,
+    "colors": [
+      "#009754",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1370_cercle-brugge.jpg"
+  },
+  {
+    "id": "stv",
+    "name": "Sint-Truiden",
+    "league": "jupiler",
+    "rating": 73,
+    "colors": [
+      "#FFFF00",
+      "#003090"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1368_sint-truiden.jpg"
+  },
+  {
+    "id": "leu",
+    "name": "OH Leuven",
+    "league": "jupiler",
+    "rating": 73,
+    "colors": [
+      "#FFFFFF",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1362_oh-leuven.jpg"
+  },
+  {
+    "id": "kor",
+    "name": "Kortrijk",
+    "league": "jupiler",
+    "rating": 71,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1367_kortrijk.jpg"
+  },
+  {
+    "id": "bev",
+    "name": "Beerschot",
+    "league": "jupiler",
+    "rating": 70,
+    "colors": [
+      "#4B2E83",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1363_beerschot.jpg"
+  },
+  {
+    "id": "den",
+    "name": "Dender",
+    "league": "jupiler",
+    "rating": 69,
+    "colors": [
+      "#003399",
+      "#000000"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1395_dender.jpg"
+  },
+  {
+    "id": "mol",
+    "name": "Molenbeek",
+    "league": "jupiler",
+    "rating": 69,
+    "colors": [
+      "#000000",
+      "#E20612"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/11682_molenbeek.jpg"
+  },
+  {
+    "id": "eup",
+    "name": "Eupen",
+    "league": "jupiler",
+    "rating": 70,
+    "colors": [
+      "#000000",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/1366_eupen.jpg"
+  },
+  {
+    "id": "mum",
+    "name": "Mumbai City",
+    "league": "isl",
+    "rating": 72,
+    "colors": [
+      "#0097D9",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/10348_mumbai-city.jpg"
+  },
+  {
+    "id": "mbh",
+    "name": "Mohun Bagan",
+    "league": "isl",
+    "rating": 73,
+    "colors": [
+      "#008751",
+      "#800020"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/475_mohun-bagan.jpg"
+  },
+  {
+    "id": "eb",
+    "name": "East Bengal",
+    "league": "isl",
+    "rating": 70,
+    "colors": [
+      "#E20612",
+      "#FFFF00"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/10354_east-bengal.jpg"
+  },
+  {
+    "id": "ker",
+    "name": "Kerala Blasters",
+    "league": "isl",
+    "rating": 70,
+    "colors": [
+      "#FFFF00",
+      "#003E7E"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/10355_kerala-blasters.jpg"
+  },
+  {
+    "id": "srfc",
+    "name": "Sreenidi Deccan",
+    "league": "isl",
+    "rating": 65,
+    "colors": [
+      "#003E7E",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/23864_sreenidi-deccan.jpg"
+  },
+  {
+    "id": "gok",
+    "name": "Gokulam Kerala",
+    "league": "isl",
+    "rating": 64,
+    "colors": [
+      "#800020",
+      "#FFFF00"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/4709_gokulam-kerala.jpg"
+  },
+  {
+    "id": "airp",
+    "name": "Air India",
+    "league": "isl",
+    "rating": 60,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/14992_air-india.jpg"
+  },
+  {
+    "id": "sal",
+    "name": "Salgaocar",
+    "league": "isl",
+    "rating": 62,
+    "colors": [
+      "#008751",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/12608_salgaocar.jpg"
+  },
+  {
+    "id": "shil",
+    "name": "Shillong Lajong",
+    "league": "isl",
+    "rating": 61,
+    "colors": [
+      "#E20612",
+      "#FFFFFF"
+    ],
+    "logo": "https://apiv2.allsportsapi.com/logo/14989_shillong-lajong.jpg"
+  }
 ]

@@ -1,20 +1,328 @@
 [
-    {
-        "id": 1,
-        "name": "Pep Guardiola",
-        "style": "Tiki-Taka",
-        "rating": 90
-    },
-    {
-        "id": 2,
-        "name": "Jurgen Klopp",
-        "style": "Gegenpressing",
-        "rating": 89
-    },
-    {
-        "id": 3,
-        "name": "Carlo Ancelotti",
-        "style": "Balanced",
-        "rating": 89
-    }
+  {
+    "id": "ferguson",
+    "name": "Alex Ferguson",
+    "country": "Scotland",
+    "style": "The Disciplinarian",
+    "reputation": 99,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/tm4oig1700666780.jpg&w=400&h=400&fit=cover&a=top"
+  },
+  {
+    "id": "guardiola",
+    "name": "Pep Guardiola",
+    "country": "Spain",
+    "style": "Tiki-Taka Mastermind",
+    "reputation": 98,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/m4vfto1767952704.jpg&w=400&h=400&fit=cover&a=top"
+  },
+  {
+    "id": "mourinho",
+    "name": "José Mourinho",
+    "country": "Portugal",
+    "style": "Defensive Specialist",
+    "reputation": 96,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/x8gh8w1699634811.jpg&w=400&h=400&fit=cover&a=top"
+  },
+  {
+    "id": "ancelotti",
+    "name": "Carlo Ancelotti",
+    "country": "Italy",
+    "style": "The Man-Manager",
+    "reputation": 97,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/jbdjl01576946407.jpg&w=400&h=400&fit=cover&a=top"
+  },
+  {
+    "id": "klopp",
+    "name": "Jurgen Klopp",
+    "country": "Germany",
+    "style": "Heavy Metal Football",
+    "reputation": 96,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/2gbddy1597184262.jpg&w=400&h=400&fit=cover&a=top"
+  },
+  {
+    "id": "zidane",
+    "name": "Zinedine Zidane",
+    "country": "France",
+    "style": "The Elegant Strategist",
+    "reputation": 95,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/trvvrs1474915622.jpg&w=400&h=400&fit=cover&a=top"
+  },
+  {
+    "id": "cruyff",
+    "name": "Johan Cruyff",
+    "country": "Netherlands",
+    "style": "Total Football Visionary",
+    "reputation": 99,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/3ur2pq1546353399.jpg&w=400&h=400&fit=cover&a=top"
+  },
+  {
+    "id": "api_arne_slot",
+    "name": "Arne Slot",
+    "country": "Liverpool",
+    "style": "The Innovator",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/slth571679175046.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Liverpool"
+  },
+  {
+    "id": "api_liam_rosenior",
+    "name": "Liam Rosenior",
+    "country": "Chelsea",
+    "style": "Modern Pragmatist",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/tfnngz1686399966.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Chelsea"
+  },
+  {
+    "id": "api_michael_carrick",
+    "name": "Michael Carrick",
+    "country": "Manchester United",
+    "style": "Midfield strategist",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/bamv7p1731788942.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Manchester United"
+  },
+  {
+    "id": "api_mikel_arteta",
+    "name": "Mikel Arteta",
+    "country": "Arsenal FC",
+    "style": "The Disciple",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/kgojrb1711448509.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Arsenal FC"
+  },
+  {
+    "id": "api_thomas_frank",
+    "name": "Thomas Frank",
+    "country": "Tottenham Hotspur",
+    "style": "Data Mastermind",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/tl49qf1549540885.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Tottenham Hotspur"
+  },
+  {
+    "id": "api_andoni_iraola",
+    "name": "Andoni Iraola",
+    "country": "AFC Bournemouth",
+    "style": "High-Intensity Master",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/wsuwrs1438015445.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "AFC Bournemouth"
+  },
+  {
+    "id": "api_leighton_baines",
+    "name": "Leighton Baines",
+    "country": "Everton",
+    "style": "Youth Mentor",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/yrpxwp1471026543.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Everton"
+  },
+  {
+    "id": "api_scott_parker",
+    "name": "Scott Parker",
+    "country": "Burnley",
+    "style": "Possession Architect",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/qmnve71562601307.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Burnley"
+  },
+  {
+    "id": "api_rob_edwards",
+    "name": "Rob Edwards",
+    "country": "Wolverhampton Wanderers",
+    "style": "Underdog Specialist",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/ew9lr81712127590.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Wolverhampton Wanderers"
+  },
+  {
+    "id": "api_fabian_hurzeler",
+    "name": "Fabian Hurzeler",
+    "country": "Brighton & Hove Albion",
+    "style": "The Prodigy",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/ptaqn51725367293.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Brighton & Hove Albion"
+  },
+  {
+    "id": "api_nuno_espirito_santo",
+    "name": "Nuno Espirito Santo",
+    "country": "West Ham United",
+    "style": "Counter-Pressing Expert",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/usqbaw1549370993.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "West Ham United"
+  },
+  {
+    "id": "api_marco_silva",
+    "name": "Marco Silva",
+    "country": "Fulham",
+    "style": "Technical Director",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/ylcto21549368361.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Fulham"
+  },
+  {
+    "id": "api_keith_andrews",
+    "name": "Keith Andrews",
+    "country": "Brentford",
+    "style": "Set-Piece Guru",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/5t2w2a1751054762.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Brentford"
+  },
+  {
+    "id": "api_unai_emery",
+    "name": "Unai Emery",
+    "country": "Aston Villa",
+    "style": "The Knockout King",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/gthgk01549363867.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Aston Villa"
+  },
+  {
+    "id": "api_sean_dyche",
+    "name": "Sean Dyche",
+    "country": "Nottingham Forest",
+    "style": "The Wall Builder",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/y6budt1549365671.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Nottingham Forest"
+  },
+  {
+    "id": "api_eddie_howe",
+    "name": "Eddie Howe",
+    "country": "Newcastle United",
+    "style": "The Revivalist",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/74lg5i1549365100.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Newcastle United"
+  },
+  {
+    "id": "api_daniel_farke",
+    "name": "Daniel Farke",
+    "country": "Leeds United",
+    "style": "Transition Specialist",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/18v3ru1549544271.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Leeds United"
+  },
+  {
+    "id": "api_regis_le_bris",
+    "name": "Regis Le Bris",
+    "country": "Sunderland",
+    "style": "The Scout's Choice",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/0pefxo1681225433.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Sunderland"
+  },
+  {
+    "id": "api_oliver_glasner",
+    "name": "Oliver Glasner",
+    "country": "Crystal Palace",
+    "style": "Heavy Metal Disciple",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/zgok0o1659466256.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Crystal Palace"
+  },
+  {
+    "id": "api_diego_simeone",
+    "name": "Diego Simeone",
+    "country": "Atlético de Madrid",
+    "style": "El Cholo Grit",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/2f8abw1534444128.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Atlético de Madrid"
+  },
+  {
+    "id": "api_alvaro_arbeloa",
+    "name": "Alvaro Arbeloa",
+    "country": "Real Madrid",
+    "style": "The Student",
+    "reputation": 92,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/x335bx1684603765.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Real Madrid"
+  },
+  {
+    "id": "api_matias_almeyda",
+    "name": "Matias Almeyda",
+    "country": "Sevilla",
+    "style": "The Stabilizer",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/62ojxc1750095947.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Sevilla"
+  },
+  {
+    "id": "api_hansi_flick",
+    "name": "Hansi Flick",
+    "country": "Barcelona",
+    "style": "The Pressure Point",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/g45eet1594332122.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Barcelona"
+  },
+  {
+    "id": "api_pellegrino_matarazzo",
+    "name": "Pellegrino Matarazzo",
+    "country": "Real Sociedad",
+    "style": "Creative Orchestrator",
+    "reputation": 92,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/27r0oa1610657760.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Real Sociedad"
+  },
+  {
+    "id": "api_marcelino",
+    "name": "Marcelino",
+    "country": "Villarreal",
+    "style": "The Surgeon",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/coukv91549919367.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Villarreal"
+  },
+  {
+    "id": "api_ernesto_valverde",
+    "name": "Ernesto Valverde",
+    "country": "Athletic Club",
+    "style": "Basque Traditionalist",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/t7ozai1541330237.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Athletic Club"
+  },
+  {
+    "id": "api_luis_castro",
+    "name": "Luis Castro",
+    "country": "Levante",
+    "style": "The Journeyman",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/2b8zms1603548333.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Levante"
+  },
+  {
+    "id": "api_manuel_pellegrini",
+    "name": "Manuel Pellegrini",
+    "country": "Real Betis",
+    "style": "The Engineer",
+    "reputation": 92,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/0l2l4x1549370848.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Real Betis"
+  },
+  {
+    "id": "api_michel",
+    "name": "Michel",
+    "country": "Girona",
+    "style": "The Catalyst",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/zpdks61509459654.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Girona"
+  },
+  {
+    "id": "api_inigo_perez",
+    "name": "Inigo Perez",
+    "country": "Rayo Vallecano",
+    "style": "The Rising Star",
+    "reputation": 82,
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/r4bke81742218694.jpg&w=400&h=400&fit=cover&a=top",
+    "team": "Rayo Vallecano"
+  }
 ]

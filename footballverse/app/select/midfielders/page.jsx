@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Layers, ChevronRight, ChevronLeft, Star, Check, X } from 'lucide-react';
+import { Search, Zap, Layers, ChevronRight, ChevronLeft, Star, Check, X } from 'lucide-react';
 import { MIDFIELDERS } from './data';
 import '../../entry.css';
 
@@ -98,7 +98,7 @@ export default function MidfielderSelectPage() {
                     <div className="mf-title-section">
                         <div className="mf-ornament">
                             <div className="mf-orn-line"></div>
-                            <span className="mf-orn-emoji">⚡</span>
+                            <Zap className="mf-orn-icon" size={28} />
                             <div className="mf-orn-line"></div>
                         </div>
                         <h1 className="mf-mega-title">
@@ -235,7 +235,7 @@ export default function MidfielderSelectPage() {
                 .mf-title-section { text-align:center; margin-bottom:2rem; }
                 .mf-ornament { display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:1.25rem; }
                 .mf-orn-line { width:50px; height:1px; background:rgba(168,85,247,.3); }
-                .mf-orn-emoji { font-size:1.8rem; filter:drop-shadow(0 0 10px rgba(168,85,247,.3)); }
+                .mf-orn-icon { color:#a855f7; filter:drop-shadow(0 0 10px rgba(168,85,247,.5)); }
                 .mf-mega-title { font-size:clamp(2.5rem,7vw,4.5rem); font-weight:900; color:white; letter-spacing:-.03em; margin-bottom:1rem; }
                 .text-gradient-purple { background:linear-gradient(135deg,#a855f7,#c084fc,#a855f7); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
                 .mf-subtitle { font-size:1.1rem; color:rgba(255,255,255,.35); line-height:1.7; max-width:520px; margin:0 auto; }

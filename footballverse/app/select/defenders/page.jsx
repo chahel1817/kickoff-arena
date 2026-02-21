@@ -97,7 +97,7 @@ export default function DefenderSelectPage() {
                     <div className="df-title-section">
                         <div className="df-ornament">
                             <div className="df-orn-line"></div>
-                            <span className="df-orn-emoji">🛡️</span>
+                            <Shield className="df-orn-icon" size={28} />
                             <div className="df-orn-line"></div>
                         </div>
                         <h1 className="df-mega-title">
@@ -238,7 +238,7 @@ export default function DefenderSelectPage() {
                 .df-title-section { text-align:center; margin-bottom:2rem; }
                 .df-ornament { display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:1.25rem; }
                 .df-orn-line { width:50px; height:1px; background:rgba(59,130,246,.3); }
-                .df-orn-emoji { font-size:1.8rem; filter:drop-shadow(0 0 10px rgba(59,130,246,.3)); }
+                .df-orn-icon { color:#3b82f6; filter:drop-shadow(0 0 10px rgba(59,130,246,.5)); }
                 .df-mega-title { font-size:clamp(2.5rem,7vw,4.5rem); font-weight:900; color:white; letter-spacing:-.03em; margin-bottom:1rem; }
                 .text-gradient-blue { background:linear-gradient(135deg,#3b82f6,#60a5fa,#3b82f6); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
                 .df-subtitle { font-size:1.1rem; color:rgba(255,255,255,.35); line-height:1.7; max-width:520px; margin:0 auto; }

@@ -93,7 +93,7 @@ export default function GoalkeeperSelectPage() {
                     <div className="gk-title-section">
                         <div className="gk-ornament">
                             <div className="gk-orn-line"></div>
-                            <span className="gk-orn-emoji">🧤</span>
+                            <Crosshair className="gk-orn-icon" size={28} />
                             <div className="gk-orn-line"></div>
                         </div>
                         <h1 className="gk-mega-title">
@@ -306,7 +306,7 @@ export default function GoalkeeperSelectPage() {
                     gap: 1rem; margin-bottom: 1.25rem;
                 }
                 .gk-orn-line { width: 50px; height: 1px; background: rgba(245, 158, 11, 0.3); }
-                .gk-orn-emoji { font-size: 1.8rem; filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.3)); }
+                .gk-orn-icon { color: #f59e0b; filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.5)); }
                 .gk-mega-title {
                     font-size: clamp(2.5rem, 7vw, 4.5rem);
                     font-weight: 900; color: white;

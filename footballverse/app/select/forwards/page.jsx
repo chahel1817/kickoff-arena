@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Zap, ChevronRight, ChevronLeft, Star, Check, X } from 'lucide-react';
+import { Search, Zap, Target, ChevronRight, ChevronLeft, Star, Check, X } from 'lucide-react';
 import { FORWARDS } from './data';
 import '../../entry.css';
 
@@ -99,7 +99,7 @@ export default function ForwardSelectPage() {
                     <div className="fw-title-section">
                         <div className="fw-ornament">
                             <div className="fw-orn-line"></div>
-                            <span className="fw-orn-emoji">🔥</span>
+                            <Target className="fw-orn-icon" size={28} />
                             <div className="fw-orn-line"></div>
                         </div>
                         <h1 className="fw-mega-title">
@@ -261,8 +261,8 @@ export default function ForwardSelectPage() {
                 .fw-title-section { text-align:center; margin-bottom:2rem; }
                 .fw-ornament { display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:1.25rem; }
                 .fw-orn-line { width:50px; height:1px; background:rgba(249,115,22,.3); }
-                .fw-orn-emoji { font-size:1.8rem; filter:drop-shadow(0 0 10px rgba(249,115,22,.5)); animation:flamePulse 2s ease-in-out infinite; }
-                @keyframes flamePulse { 0%,100%{filter:drop-shadow(0 0 10px rgba(249,115,22,.5))} 50%{filter:drop-shadow(0 0 20px rgba(249,115,22,.9))} }
+                .fw-orn-icon { color:#f97316; filter:drop-shadow(0 0 10px rgba(249,115,22,.5)); animation:iconPulse 2s ease-in-out infinite; }
+                @keyframes iconPulse { 0%,100%{filter:drop-shadow(0 0 10px rgba(249,115,22,.5))} 50%{filter:drop-shadow(0 0 20px rgba(249,115,22,.9))} }
                 .fw-mega-title { font-size:clamp(2.5rem,7vw,4.5rem); font-weight:900; color:white; letter-spacing:-.03em; margin-bottom:1rem; }
                 .text-gradient-orange { background:linear-gradient(135deg,#f97316,#fb923c,#fdba74,#f97316); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:gradientShift 4s ease-in-out infinite; background-size:200% 200%; }
                 @keyframes gradientShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }

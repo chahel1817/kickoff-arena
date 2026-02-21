@@ -1,10 +1,11 @@
 'use client';
 
+import { Suspense } from 'react';
 import { Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-export default function TeamSelection() {
+function TeamList() {
     const searchParams = useSearchParams();
     const league = searchParams.get('league') || 'Premier League';
 
@@ -34,5 +35,13 @@ export default function TeamSelection() {
                 ))}
             </div>
         </div>
+    );
+}
+
+export default function TeamSelection() {
+    return (
+        <Suspense fallback={<div className="page-container text-center pt-24"><h1 className="text-2xl">Loading Teams...</h1></div>}>
+            <TeamList />
+        </Suspense>
     );
 }

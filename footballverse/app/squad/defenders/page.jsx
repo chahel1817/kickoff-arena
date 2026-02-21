@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Shield, ArrowRight, ArrowLeft, Search, Star, Zap, Cpu, Scan, UserCheck } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Shield, ArrowRight, ArrowLeft, Search, Star, Zap, Cpu, Scan, UserCheck, ChevronRight, Check, X } from 'lucide-react';
 import Link from 'next/link';
 import '../../entry.css';
 
@@ -143,8 +144,45 @@ const DEFENDERS_DB = [
 ];
 
 export default function DefendersPage() {
+    const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [filterPos, setFilterPos] = useState('ALL');
+    const [formation, setFormation] = useState(null);
+    const [selectedPlayers, setSelectedPlayers] = useState([]);
+    const [selectedTeam, setSelectedTeam] = useState(null);
+
+    useEffect(() => {
+        const storedFormation = localStorage.getItem('formation');
+        if (storedFormation) setFormation(JSON.parse(storedFormation));
+
+        const storedTeam = localStorage.getItem('selectedTeam');
+        if (storedTeam) setSelectedTeam(JSON.parse(storedTeam));
+
+        const storedDefenders = localStorage.getItem('selectedDefenders');
+        if (storedDefenders) setSelectedPlayers(JSON.parse(storedDefenders));
+    }, []);
+
+    const maxDefenders = formation?.defenders || 4;
+
+    const handleRecruit = (player) => {
+        setSelectedPlayers(prev => {
+            const isAlreadySelected = prev.some(p => p.id === player.id);
+            let updated;
+            if (isAlreadySelected) {
+                updated = prev.filter(p => p.id !== player.id);
+            } else if (prev.length < maxDefenders) {
+                updated = [...prev, player];
+            } else {
+                return prev;
+            }
+            localStorage.setItem('selectedDefenders', JSON.stringify(updated));
+            return updated;
+        });
+    };
+
+    const handleProceed = () => {
+        router.push('/squad/midfielders');
+    };
 
     const filteredDefenders = useMemo(() => {
         return DEFENDERS_DB.filter(p => {
@@ -166,35 +204,33 @@ export default function DefendersPage() {
                     {/* Header Navigation Stack */}
                     <div className="premium-nav-bar glass">
                         <div className="nav-left-group">
-                            <Link href="/team-select" className="nav-back-btn-extreme">
+                            <Link href="/formation-select" className="nav-back-btn-extreme">
                                 <ArrowLeft size={20} />
-                                <span>RE-EVALUATE CLUB</span>
+                                <span>BACK TO FORMATION</span>
                             </Link>
                         </div>
 
                         <div className="center-identity">
-                            <div className="club-mini-badge" style={{ borderColor: 'var(--primary)' }}>
-                                <Shield size={14} className="text-primary" />
+                            <div className="club-mini-badge" style={{ borderColor: selectedTeam?.colors?.[0] || 'var(--primary)' }}>
+                                {selectedTeam?.logo ? (
+                                    <img src={selectedTeam.logo} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                ) : (
+                                    <Shield size={14} className="text-primary" />
+                                )}
                             </div>
                             <div className="identity-text-stack">
-                                <span className="scouting-label">AUTHORIZED SCOUTING</span>
+                                <span className="scouting-label">FORMATION: {formation?.name || '4-4-2'}</span>
                                 <span className="scouting-target">SQUAD DEPLOYMENT: DEFENDERS</span>
                             </div>
                         </div>
 
                         <div className="phase-indicator">
                             <div className="step-count">
-                                <span className="text-primary">05</span>
+                                <span className="text-primary">{selectedPlayers.length}</span>
                                 <span className="text-muted">/</span>
-                                <span className="text-muted">05</span>
+                                <span className="text-muted">{maxDefenders}</span>
                             </div>
-                            <div className="phase-dots">
-                                <div className="dot filled"></div>
-                                <div className="dot filled"></div>
-                                <div className="dot filled"></div>
-                                <div className="dot filled"></div>
-                                <div className="dot active"></div>
-                            </div>
+                            <span style={{ fontSize: '0.5rem', color: 'rgba(255,255,255,0.3)', fontWeight: 900, letterSpacing: '0.15em' }}>SLOTS FILLED</span>
                         </div>
                     </div>
 
@@ -204,7 +240,7 @@ export default function DefendersPage() {
                         </h2>
                         <div className="scouting-feed-detail">
                             <div className="status-dot-blink"></div>
-                            <span>POSITIONAL PROTOCOL: {filterPos} // {filteredDefenders.length} SIGNATURES DETECTED</span>
+                            <span>SELECT {maxDefenders} DEFENDERS // {filterPos} // {filteredDefenders.length} AVAILABLE</span>
                         </div>
                     </div>
 
@@ -238,65 +274,96 @@ export default function DefendersPage() {
                     {/* Players Grid */}
                     <div className="players-grid-wrapper">
                         <div className="players-grid-dynamic">
-                            {filteredDefenders.map((player) => (
-                                <div key={player.id} className="player-card-premium glass">
-                                    <div className="card-top-identity">
-                                        <div className="pos-badge">{player.position}</div>
-                                        <div className="ovr-block">
-                                            <span className="ovr-label">OVR</span>
-                                            <span className="ovr-value">{player.rating}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="player-visual-frame">
-                                        <img src={player.image} alt={player.name} className="player-img-hero" loading="lazy" />
-                                        <div className="face-scan-line"></div>
-                                        <div className="vignette-bottom"></div>
-                                    </div>
-
-                                    <div className="player-data-panel">
-                                        <div className="meta-stack">
-                                            <span className="player-club-tag">{player.club.toUpperCase()}</span>
-                                            <h3 className="player-full-name">{player.name}</h3>
-                                        </div>
-
-                                        <div className="tactical-specs-grid">
-                                            <div className="spec-tile">
-                                                <Zap size={12} className="text-primary" />
-                                                <div className="spec-info">
-                                                    <span className="spec-val">
-                                                        {/* Deterministic PAC stat based on ID and Rating */}
-                                                        {Math.min(95, Math.floor(player.rating * 0.95) + (player.id.length % 5))}
-                                                    </span>
-                                                    <span className="spec-lbl">PAC</span>
-                                                </div>
-                                            </div>
-                                            <div className="spec-tile active">
-                                                <Shield size={12} className="text-primary" />
-                                                <div className="spec-info">
-                                                    <span className="spec-val">{player.rating + 1}</span>
-                                                    <span className="spec-lbl">DEF</span>
-                                                </div>
-                                            </div>
-                                            <div className="spec-tile">
-                                                <Star size={12} className="text-primary" />
-                                                <div className="spec-info">
-                                                    <span className="spec-val">
-                                                        {/* Deterministic PHY stat based on ID */}
-                                                        {Math.min(92, 75 + (player.id.charCodeAt(0) % 15))}
-                                                    </span>
-                                                    <span className="spec-lbl">PHY</span>
-                                                </div>
+                            {filteredDefenders.map((player) => {
+                                const isSelected = selectedPlayers.some(p => p.id === player.id);
+                                const isFull = selectedPlayers.length >= maxDefenders;
+                                return (
+                                    <div key={player.id} className={`player-card-premium glass ${isSelected ? 'selected' : ''} ${isFull && !isSelected ? 'dimmed' : ''}`}>
+                                        <div className="card-top-identity">
+                                            <div className="pos-badge">{player.position}</div>
+                                            <div className="ovr-block">
+                                                <span className="ovr-label">OVR</span>
+                                                <span className="ovr-value">{player.rating}</span>
                                             </div>
                                         </div>
 
-                                        <button className="confirm-recruit-btn">
-                                            <UserCheck size={18} />
-                                            <span>INITIALIZE CONTRACT</span>
-                                        </button>
+                                        {isSelected && (
+                                            <div className="selected-check-badge">
+                                                <Check size={18} />
+                                            </div>
+                                        )}
+
+                                        <div className="player-visual-frame">
+                                            <img src={player.image} alt={player.name} className="player-img-hero" loading="lazy" />
+                                            <div className="face-scan-line"></div>
+                                            <div className="vignette-bottom"></div>
+                                        </div>
+
+                                        <div className="player-data-panel">
+                                            <div className="meta-stack">
+                                                <span className="player-club-tag">{player.club.toUpperCase()}</span>
+                                                <h3 className="player-full-name">{player.name}</h3>
+                                            </div>
+
+                                            <div className="tactical-specs-grid">
+                                                <div className="spec-tile">
+                                                    <Zap size={12} className="text-primary" />
+                                                    <div className="spec-info">
+                                                        <span className="spec-val">
+                                                            {Math.min(95, Math.floor(player.rating * 0.95) + (player.id.length % 5))}
+                                                        </span>
+                                                        <span className="spec-lbl">PAC</span>
+                                                    </div>
+                                                </div>
+                                                <div className="spec-tile active">
+                                                    <Shield size={12} className="text-primary" />
+                                                    <div className="spec-info">
+                                                        <span className="spec-val">{player.rating + 1}</span>
+                                                        <span className="spec-lbl">DEF</span>
+                                                    </div>
+                                                </div>
+                                                <div className="spec-tile">
+                                                    <Star size={12} className="text-primary" />
+                                                    <div className="spec-info">
+                                                        <span className="spec-val">
+                                                            {Math.min(92, 75 + (player.id.charCodeAt(0) % 15))}
+                                                        </span>
+                                                        <span className="spec-lbl">PHY</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <button
+                                                onClick={() => handleRecruit(player)}
+                                                className={`confirm-recruit-btn ${isSelected ? 'recruited' : ''}`}
+                                                disabled={isFull && !isSelected}
+                                            >
+                                                {isSelected ? (
+                                                    <><X size={18} /><span>RELEASE PLAYER</span></>
+                                                ) : (
+                                                    <><UserCheck size={18} /><span>RECRUIT PLAYER</span></>
+                                                )}
+                                            </button>
+                                        </div>
                                     </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Confirmation Bar */}
+                    <div className={`squad-confirm-bar glass ${selectedPlayers.length === maxDefenders ? 'visible' : ''}`}>
+                        <div className="sq-bar-content">
+                            <div className="sq-bar-info">
+                                <span className="sq-bar-tag">DEFENSE LOCKED — {selectedPlayers.length}/{maxDefenders}</span>
+                                <div className="sq-bar-names">
+                                    {selectedPlayers.map(p => p.name.split(' ').pop()).join(' • ')}
                                 </div>
-                            ))}
+                            </div>
+                            <button onClick={handleProceed} className="sq-proceed-btn">
+                                <span>PROCEED TO MIDFIELDERS</span>
+                                <ChevronRight size={22} />
+                            </button>
                         </div>
                     </div>
                 </main>
@@ -628,6 +695,104 @@ export default function DefendersPage() {
                 @media (max-width: 1200px) {
                     .tactical-control-row { flex-direction: column; gap: 2rem; }
                     .search-container-premium-wide { width: 100%; max-width: none; }
+                }
+
+                /* Selection States */
+                .player-card-premium.selected {
+                    border-color: var(--primary);
+                    border-width: 2px;
+                    box-shadow: 0 0 50px rgba(0, 255, 136, 0.15);
+                }
+
+                .player-card-premium.dimmed {
+                    opacity: 0.35;
+                    pointer-events: none;
+                    filter: grayscale(0.5);
+                }
+
+                .selected-check-badge {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    z-index: 20;
+                    width: 56px; height: 56px;
+                    border-radius: 50%;
+                    background: var(--primary);
+                    color: black;
+                    display: flex; align-items: center; justify-content: center;
+                    box-shadow: 0 0 40px rgba(0, 255, 136, 0.5);
+                    animation: checkPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+
+                @keyframes checkPop {
+                    from { transform: translate(-50%, -50%) scale(0); }
+                    to { transform: translate(-50%, -50%) scale(1); }
+                }
+
+                .confirm-recruit-btn.recruited {
+                    background: rgba(239, 68, 68, 0.1);
+                    border-color: rgba(239, 68, 68, 0.3);
+                    color: #ef4444;
+                }
+
+                .confirm-recruit-btn.recruited:hover {
+                    background: #ef4444;
+                    color: white;
+                    border-color: #ef4444;
+                    box-shadow: 0 15px 35px rgba(239, 68, 68, 0.3);
+                }
+
+                .confirm-recruit-btn:disabled {
+                    opacity: 0.3;
+                    cursor: not-allowed;
+                }
+
+                /* Confirmation Bar */
+                .squad-confirm-bar {
+                    position: fixed; bottom: 2rem; left: 50%;
+                    transform: translateX(-50%) translateY(150%);
+                    width: calc(100% - 4rem); max-width: 900px;
+                    padding: 1.25rem 2.5rem; border-radius: 24px;
+                    border: 1px solid rgba(0, 255, 136, 0.3);
+                    z-index: 3000;
+                    box-shadow: 0 25px 60px -12px rgba(0,0,0,0.8);
+                    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    background: rgba(10, 10, 15, 0.85);
+                    backdrop-filter: blur(30px);
+                }
+                .squad-confirm-bar.visible { transform: translateX(-50%) translateY(0); }
+
+                .sq-bar-content { display: flex; justify-content: space-between; align-items: center; }
+                .sq-bar-info { display: flex; flex-direction: column; gap: 0.25rem; }
+                .sq-bar-tag {
+                    font-size: 0.6rem; font-weight: 900;
+                    color: var(--primary); letter-spacing: 0.15em;
+                }
+                .sq-bar-names {
+                    font-size: 0.85rem; font-weight: 800;
+                    color: rgba(255,255,255,0.6); letter-spacing: 0.02em;
+                }
+
+                .sq-proceed-btn {
+                    display: flex; align-items: center; gap: 1rem;
+                    background: var(--primary); color: black;
+                    padding: 1rem 2.5rem; border-radius: 14px;
+                    font-weight: 900; font-size: 0.9rem; letter-spacing: 0.05em;
+                    border: none; cursor: pointer; transition: 0.3s;
+                    box-shadow: 0 0 25px rgba(0, 255, 136, 0.3);
+                    white-space: nowrap;
+                }
+                .sq-proceed-btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 0 45px rgba(0, 255, 136, 0.5);
+                }
+
+                @media (max-width: 768px) {
+                    .squad-confirm-bar { width: 95%; padding: 1rem; }
+                    .sq-bar-content { flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+                    .sq-bar-names { display: none; }
+                    .sq-proceed-btn { width: 100%; justify-content: center; padding: 0.85rem; font-size: 0.8rem; }
                 }
             `}</style>
         </div>

@@ -90,23 +90,22 @@ export default function LeagueSelectionPage() {
                                 onClick={() => handleLeagueSelect(league)}
                                 className="league-card-aligned glass"
                             >
-                                <div className="flag-box">
+                                <div className="flag-circle">
                                     <img
                                         src={`https://flagcdn.com/w160/${league.code}.png`}
                                         alt={league.country}
                                         className="league-flag-img"
                                     />
-                                    <div className="flag-overlay-glass"></div>
                                 </div>
                                 <div className="league-info-box">
-                                    <h3 className="text-700 league-country-label">{league.country}</h3>
+                                    <h3 className="league-country-label">{league.country}</h3>
                                     <div className="league-sub-row">
-                                        <Trophy size={14} className="text-primary" />
+                                        <Trophy size={12} className="league-trophy-icon" />
                                         <span className="league-name-tag">{league.name}</span>
                                     </div>
                                 </div>
                                 <div className="league-arrow-area">
-                                    <ChevronRight size={24} />
+                                    <ChevronRight size={22} />
                                 </div>
                             </button>
                         ))}
@@ -287,112 +286,137 @@ export default function LeagueSelectionPage() {
                 .ornament-line { width: 40px; height: 1px; background: var(--primary); opacity: 0.3; }
                 .ornament-icon { color: var(--primary); }
 
+                /* ─── GRID ─── */
                 .leagues-grid-refined {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-                    gap: 1.5rem;
+                    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                    gap: 1rem;
                     width: 100%;
                 }
 
+                /* ─── CARD ─── */
                 .league-card-aligned {
                     display: flex;
                     align-items: center;
-                    background: rgba(255, 255, 255, 0.03);
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    border-radius: 24px;
-                    overflow: hidden;
-                    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+                    gap: 1.25rem;
+                    background: rgba(255, 255, 255, 0.025);
+                    border: 1px solid rgba(255, 255, 255, 0.07);
+                    border-radius: 20px;
+                    padding: 1.1rem 1.4rem;
                     cursor: pointer;
                     width: 100%;
                     text-align: left;
-                    padding: 0.5rem;
                     color: white;
                     position: relative;
+                    transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
                 }
 
                 .league-card-aligned:hover {
-                    background: rgba(255, 255, 255, 0.07);
-                    border-color: var(--primary);
-                    transform: translateY(-8px) scale(1.02);
-                    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
-                                0 0 20px rgba(0, 255, 136, 0.1);
+                    background: rgba(255, 255, 255, 0.06);
+                    border-color: rgba(0, 255, 136, 0.35);
+                    transform: translateY(-6px) scale(1.015);
+                    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6),
+                                0 0 25px rgba(0, 255, 136, 0.08);
                 }
 
-                .flag-box {
-                    position: relative;
-                    width: 120px;
-                    height: 80px;
-                    flex-shrink: 0;
+                /* ─── FLAG CIRCLE ─── */
+                .flag-circle {
+                    width: 64px;
+                    height: 64px;
+                    border-radius: 50%;
                     overflow: hidden;
-                    border-radius: 16px;
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                    flex-shrink: 0;
+                    border: 2px solid rgba(255, 255, 255, 0.1);
+                    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+                    position: relative;
+                    transition: all 0.4s ease;
+                }
+
+                .league-card-aligned:hover .flag-circle {
+                    border-color: rgba(0, 255, 136, 0.4);
+                    box-shadow: 0 0 20px rgba(0, 255, 136, 0.1),
+                                0 4px 16px rgba(0,0,0,0.35);
                 }
 
                 .league-flag-img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
-                    transition: 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+                    transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
                 }
 
                 .league-card-aligned:hover .league-flag-img {
-                    transform: scale(1.2) rotate(2deg);
+                    transform: scale(1.15);
                 }
 
-                .flag-overlay-glass {
-                    position: absolute;
-                    inset: 0;
-                    background: linear-gradient(to right, transparent 0%, rgba(2, 4, 10, 0.4) 100%);
-                }
-
+                /* ─── INFO ─── */
                 .league-info-box {
                     flex: 1;
-                    padding: 0 1.5rem;
                     display: flex;
                     flex-direction: column;
-                    gap: 0.35rem;
-                    z-index: 1;
+                    gap: 0.4rem;
+                    min-width: 0;
                 }
 
                 .league-country-label {
-                    font-size: 1.5rem;
+                    font-size: 1.2rem;
                     margin: 0;
                     color: white;
-                    letter-spacing: -0.01em;
                     font-weight: 800;
-                    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                    letter-spacing: -0.01em;
+                    line-height: 1.2;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
 
                 .league-sub-row {
-                    display: flex;
+                    display: inline-flex;
                     align-items: center;
-                    gap: 0.6rem;
-                    background: rgba(255, 255, 255, 0.04);
-                    padding: 0.3rem 0.8rem;
-                    border-radius: 20px;
+                    gap: 0.45rem;
+                    background: rgba(0, 255, 136, 0.06);
+                    padding: 0.25rem 0.7rem;
+                    border-radius: 8px;
                     width: fit-content;
-                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(0, 255, 136, 0.1);
+                }
+
+                .league-trophy-icon {
+                    color: var(--primary);
+                    flex-shrink: 0;
                 }
 
                 .league-name-tag {
-                    color: rgba(255, 255, 255, 0.85);
-                    font-size: 0.7rem;
-                    font-weight: 700;
-                    letter-spacing: 0.12em;
+                    color: rgba(255, 255, 255, 0.7);
+                    font-size: 0.6rem;
+                    font-weight: 800;
+                    letter-spacing: 0.14em;
                     text-transform: uppercase;
+                    white-space: nowrap;
                 }
 
+                /* ─── ARROW ─── */
                 .league-arrow-area {
-                    padding-right: 1.25rem;
-                    opacity: 0.3;
-                    transition: 0.4s;
+                    flex-shrink: 0;
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(255, 255, 255, 0.04);
+                    border: 1px solid rgba(255, 255, 255, 0.06);
+                    opacity: 0.4;
                     color: white;
+                    transition: all 0.4s ease;
                 }
 
                 .league-card-aligned:hover .league-arrow-area {
                     opacity: 1;
                     color: var(--primary);
-                    transform: translateX(3px);
+                    background: rgba(0, 255, 136, 0.08);
+                    border-color: rgba(0, 255, 136, 0.25);
+                    transform: translateX(2px);
                 }
 
                 .scouting-text { 
@@ -407,9 +431,10 @@ export default function LeagueSelectionPage() {
                     .center-identity { display: none; }
                     .main-selection-title { font-size: 2.5rem; }
                     .leagues-grid-refined { grid-template-columns: 1fr; }
-                    .flag-box { width: 100px; height: 70px; }
-                    .league-country-label { font-size: 1.3rem; }
+                    .flag-circle { width: 52px; height: 52px; }
+                    .league-country-label { font-size: 1.1rem; }
                     .subtitle-premium { font-size: 1rem; }
+                    .league-card-aligned { padding: 0.9rem 1rem; gap: 1rem; }
                 }
             `}</style>
         </div>

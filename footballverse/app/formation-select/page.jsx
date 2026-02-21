@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, ChevronRight, ChevronLeft, Swords, Layers, Zap, Crosshair, Crown, Star, AlertTriangle, Target, Wind, ArrowLeftRight, FlaskConical, Gauge } from 'lucide-react';
+import { Shield, ChevronRight, ChevronLeft, Swords, Layers, Zap, Crosshair, Crown, Star, AlertTriangle, Target, Wind, ArrowLeftRight, FlaskConical, Gauge, Check, Users, Sparkles } from 'lucide-react';
 import formationsData from '../../data/formations.json';
 import '../entry.css';
 
@@ -25,8 +25,12 @@ export default function FormationSelectPage() {
     const [activeCategory, setActiveCategory] = useState('Balanced');
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [selectedManager, setSelectedManager] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const gridRef = useRef(null);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+
         const storedTeam = localStorage.getItem('selectedTeam');
         if (storedTeam) setSelectedTeam(JSON.parse(storedTeam));
 
@@ -46,8 +50,12 @@ export default function FormationSelectPage() {
 
     const handleProceed = () => {
         if (selectedFormation) {
-            router.push('/squad/defenders');
+            setShowSuccess(true);
         }
+    };
+
+    const handleFinalProceed = () => {
+        router.push('/select/goalkeeper');
     };
 
     const filteredFormations = formationsData.filter(f => f.category === activeCategory);
@@ -175,7 +183,7 @@ export default function FormationSelectPage() {
                                 return (
                                     <button
                                         key={cat}
-                                        onClick={() => { setActiveCategory(cat); setSelectedFormation(null); }}
+                                        onClick={() => { setActiveCategory(cat); setSelectedFormation(null); setTimeout(() => gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); }}
                                         className={`fm-tab ${isActive ? 'active' : ''}`}
                                         style={{ '--tab-color': meta.color }}
                                     >
@@ -267,7 +275,7 @@ export default function FormationSelectPage() {
                     )}
 
                     {/* Formations Grid */}
-                    <div className="fm-grid">
+                    <div className="fm-grid" ref={gridRef}>
                         {filteredFormations.map((formation, idx) => {
                             const meta = CATEGORY_META[formation.category];
                             const isSelected = selectedFormation?.name === formation.name && selectedFormation?.category === formation.category;
@@ -333,6 +341,157 @@ export default function FormationSelectPage() {
 
                 </main>
             </section>
+
+            {/* Success Overlay */}
+            {showSuccess && selectedFormation && (
+                <div className="fm-success-overlay">
+                    <div className="fm-success-scroll">
+
+                        {/* Hero Section */}
+                        <div className="fm-success-hero">
+                            {/* Particles */}
+                            <div className="fm-particle" style={{ top: '15%', left: '10%', animationDelay: '0s' }}></div>
+                            <div className="fm-particle" style={{ top: '25%', right: '15%', animationDelay: '0.5s' }}></div>
+                            <div className="fm-particle" style={{ top: '60%', left: '20%', animationDelay: '1s' }}></div>
+                            <div className="fm-particle" style={{ top: '70%', right: '10%', animationDelay: '1.5s' }}></div>
+                            <div className="fm-particle" style={{ top: '40%', left: '5%', animationDelay: '2s' }}></div>
+                            <div className="fm-particle" style={{ top: '50%', right: '25%', animationDelay: '0.8s' }}></div>
+
+                            {/* Orbit rings */}
+                            <div className="fm-orbit-ring ring-1"></div>
+                            <div className="fm-orbit-ring ring-2"></div>
+
+                            <div className="fm-success-badge">
+                                <Check size={32} />
+                            </div>
+
+                            <span className="fm-success-tag">TACTICAL BLUEPRINT LOCKED</span>
+                            <h1 className="fm-success-title">
+                                FORMATION <span className="text-gradient">{selectedFormation.name}</span>
+                            </h1>
+                            <p className="fm-success-sub">Your tactical DNA has been encoded. The battlefield structure is set.</p>
+                        </div>
+
+                        {/* Formation Recap */}
+                        <div className="fm-success-recap">
+                            <div className="fm-recap-pitch-wrapper">
+                                <div className="fm-recap-pitch">
+                                    <div className="pitch-field">
+                                        <div className="pitch-center-circle"></div>
+                                        <div className="pitch-center-line"></div>
+                                        <div className="pitch-box top"></div>
+                                        <div className="pitch-box bottom"></div>
+                                        {getPitchPositions(selectedFormation).map((pos, i) => (
+                                            <div
+                                                key={`success-${i}`}
+                                                className={`pitch-dot ${pos.type}`}
+                                                style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
+                                            >
+                                                <span className="dot-label">{pos.label}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="fm-recap-stats">
+                                <div className="fm-recap-stat-card glass">
+                                    <Shield size={22} className="frs-icon" style={{ color: '#3b82f6' }} />
+                                    <span className="frs-val">{selectedFormation.defenders}</span>
+                                    <span className="frs-label">DEFENDERS</span>
+                                </div>
+                                <div className="fm-recap-stat-card glass">
+                                    <Layers size={22} className="frs-icon" style={{ color: '#00ff88' }} />
+                                    <span className="frs-val">{selectedFormation.midfielders}</span>
+                                    <span className="frs-label">MIDFIELDERS</span>
+                                </div>
+                                <div className="fm-recap-stat-card glass">
+                                    <Swords size={22} className="frs-icon" style={{ color: '#ef4444' }} />
+                                    <span className="frs-val">{selectedFormation.forwards}</span>
+                                    <span className="frs-label">FORWARDS</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Context Cards */}
+                        <div className="fm-success-context">
+                            <div className="section-tag-row">
+                                <div className="tag-line"></div>
+                                <span className="section-tag">YOUR SETUP</span>
+                                <div className="tag-line"></div>
+                            </div>
+
+                            <div className="fm-context-grid">
+                                {selectedTeam && (
+                                    <div className="fm-ctx-card glass">
+                                        <div className="fm-ctx-icon" style={{ background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
+                                            {selectedTeam.logo ? (
+                                                <img src={selectedTeam.logo} alt="" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
+                                            ) : (
+                                                <Shield size={20} style={{ color: '#3b82f6' }} />
+                                            )}
+                                        </div>
+                                        <div className="fm-ctx-text">
+                                            <span className="fm-ctx-label">CLUB</span>
+                                            <span className="fm-ctx-value">{selectedTeam.name}</span>
+                                        </div>
+                                    </div>
+                                )}
+                                {selectedManager && (
+                                    <div className="fm-ctx-card glass">
+                                        <div className="fm-ctx-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', borderColor: 'rgba(168, 85, 247, 0.2)' }}>
+                                            <Users size={20} style={{ color: '#a855f7' }} />
+                                        </div>
+                                        <div className="fm-ctx-text">
+                                            <span className="fm-ctx-label">MANAGER</span>
+                                            <span className="fm-ctx-value">{selectedManager.name}</span>
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="fm-ctx-card glass">
+                                    <div className="fm-ctx-icon" style={{ background: 'rgba(0, 255, 136, 0.1)', borderColor: 'rgba(0, 255, 136, 0.2)' }}>
+                                        <Crosshair size={20} style={{ color: '#00ff88' }} />
+                                    </div>
+                                    <div className="fm-ctx-text">
+                                        <span className="fm-ctx-label">FORMATION</span>
+                                        <span className="fm-ctx-value">{selectedFormation.name}</span>
+                                    </div>
+                                </div>
+                                <div className="fm-ctx-card glass">
+                                    <div className="fm-ctx-icon" style={{ background: 'rgba(245, 158, 11, 0.1)', borderColor: 'rgba(245, 158, 11, 0.2)' }}>
+                                        <Sparkles size={20} style={{ color: '#f59e0b' }} />
+                                    </div>
+                                    <div className="fm-ctx-text">
+                                        <span className="fm-ctx-label">STYLE</span>
+                                        <span className="fm-ctx-value">{selectedFormation.category}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Next Mission CTA */}
+                        <div className="fm-success-cta">
+                            <div className="fm-cta-card glass">
+                                <div className="fm-cta-top">
+                                    <span className="fm-cta-label">NEXT MISSION</span>
+                                    <h2 className="fm-cta-title">TIME TO BUILD YOUR <span className="text-gradient">STARTING XI</span></h2>
+                                    <p className="fm-cta-desc">
+                                        Your formation demands {selectedFormation.defenders} defenders, {selectedFormation.midfielders} midfielders,
+                                        and {selectedFormation.forwards} forwards. Scout the best talent and assemble your dream squad.
+                                    </p>
+                                </div>
+
+                                <button onClick={handleFinalProceed} className="fm-cta-btn">
+                                    <span>BEGIN SQUAD SELECTION</span>
+                                    <ChevronRight size={24} />
+                                </button>
+                            </div>
+                            <p className="fm-footer-text">FootballVerse • Kickoff Arena • Season 2026/27</p>
+                        </div>
+
+                    </div>
+                </div>
+            )}
 
             <style jsx>{`
                 .formation-select-container {
@@ -748,6 +907,240 @@ export default function FormationSelectPage() {
                     box-shadow: 0 0 45px rgba(0, 255, 136, 0.5);
                 }
 
+                /* ============ SUCCESS OVERLAY ============ */
+                .fm-success-overlay {
+                    position: fixed; inset: 0; z-index: 5000;
+                    background: rgba(2, 4, 10, 0.97);
+                    overflow-y: auto; overflow-x: hidden;
+                    animation: overlayFadeIn 0.6s ease-out;
+                }
+                @keyframes overlayFadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+
+                .fm-success-scroll {
+                    min-height: 100vh;
+                }
+
+                /* Hero */
+                .fm-success-hero {
+                    min-height: 100vh;
+                    display: flex; flex-direction: column;
+                    align-items: center; justify-content: center;
+                    position: relative; padding: 3rem 2rem;
+                    overflow: hidden;
+                }
+
+                .fm-particle {
+                    position: absolute; width: 4px; height: 4px;
+                    background: var(--primary); border-radius: 50%;
+                    animation: particleFloat 4s ease-in-out infinite;
+                    box-shadow: 0 0 10px var(--primary);
+                }
+                @keyframes particleFloat {
+                    0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+                    50% { transform: translateY(-30px) scale(1.5); opacity: 1; }
+                }
+
+                .fm-orbit-ring {
+                    position: absolute; border-radius: 50%;
+                    border: 1px solid rgba(0, 255, 136, 0.06);
+                }
+                .ring-1 {
+                    width: 500px; height: 500px;
+                    top: 50%; left: 50%; transform: translate(-50%, -50%);
+                    animation: orbitSpin 25s linear infinite;
+                    border-top-color: rgba(0, 255, 136, 0.15);
+                }
+                .ring-2 {
+                    width: 700px; height: 700px;
+                    top: 50%; left: 50%; transform: translate(-50%, -50%);
+                    animation: orbitSpin 40s linear infinite reverse;
+                    border-right-color: rgba(59, 130, 246, 0.1);
+                }
+                @keyframes orbitSpin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+                .fm-success-badge {
+                    width: 80px; height: 80px; border-radius: 50%;
+                    background: linear-gradient(135deg, #00ff88, #00cc6a);
+                    display: flex; align-items: center; justify-content: center;
+                    color: black; margin-bottom: 2rem;
+                    box-shadow: 0 0 60px rgba(0, 255, 136, 0.4);
+                    animation: badgePop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both;
+                }
+                @keyframes badgePop {
+                    from { transform: scale(0); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                }
+
+                .fm-success-tag {
+                    font-size: 0.7rem; font-weight: 900; color: var(--primary);
+                    letter-spacing: 0.3em; margin-bottom: 1.5rem;
+                    animation: fadeSlideUp 0.6s ease-out 0.5s both;
+                }
+
+                .fm-success-title {
+                    font-size: clamp(2.5rem, 8vw, 5rem);
+                    font-weight: 900; color: white;
+                    letter-spacing: -0.03em; text-align: center;
+                    margin-bottom: 1.25rem;
+                    animation: fadeSlideUp 0.6s ease-out 0.7s both;
+                }
+
+                .fm-success-sub {
+                    font-size: 1.15rem; color: rgba(255,255,255,0.4);
+                    text-align: center; max-width: 500px; line-height: 1.7;
+                    animation: fadeSlideUp 0.6s ease-out 0.9s both;
+                }
+
+                @keyframes fadeSlideUp {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
+                /* Formation Recap */
+                .fm-success-recap {
+                    padding: 5rem 2rem;
+                    display: flex; flex-direction: column; align-items: center;
+                    max-width: 700px; margin: 0 auto; width: 100%;
+                }
+
+                .fm-recap-pitch-wrapper {
+                    width: 100%; max-width: 380px; margin-bottom: 3rem;
+                }
+
+                .fm-recap-pitch {
+                    border-radius: 20px; overflow: hidden;
+                    border: 1px solid rgba(255,255,255,0.08);
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                }
+
+                .fm-recap-stats {
+                    display: flex; gap: 1.5rem; width: 100%; justify-content: center;
+                }
+
+                .fm-recap-stat-card {
+                    flex: 1; max-width: 180px;
+                    padding: 2rem 1.5rem; border-radius: 20px;
+                    display: flex; flex-direction: column;
+                    align-items: center; gap: 0.75rem;
+                    border: 1px solid rgba(255,255,255,0.06);
+                    text-align: center;
+                    transition: all 0.3s;
+                }
+                .fm-recap-stat-card:hover {
+                    border-color: rgba(255,255,255,0.12);
+                    transform: translateY(-4px);
+                }
+
+                .frs-icon { opacity: 0.8; }
+                .frs-val {
+                    font-size: 2.5rem; font-weight: 900; color: white;
+                    line-height: 1;
+                }
+                .frs-label {
+                    font-size: 0.55rem; font-weight: 900;
+                    color: rgba(255,255,255,0.3); letter-spacing: 0.15em;
+                }
+
+                /* Context Cards */
+                .fm-success-context {
+                    padding: 4rem 2rem;
+                    max-width: 800px; margin: 0 auto; width: 100%;
+                }
+
+                .section-tag-row {
+                    display: flex; align-items: center;
+                    justify-content: center; gap: 1rem;
+                    margin-bottom: 2.5rem;
+                }
+                .tag-line { width: 40px; height: 1px; background: rgba(255,255,255,0.1); }
+                .section-tag {
+                    font-size: 0.65rem; font-weight: 900;
+                    color: var(--primary); letter-spacing: 0.25em;
+                }
+
+                .fm-context-grid {
+                    display: grid; grid-template-columns: 1fr 1fr;
+                    gap: 1rem;
+                }
+
+                .fm-ctx-card {
+                    display: flex; align-items: center; gap: 1rem;
+                    padding: 1.25rem 1.5rem; border-radius: 18px;
+                    border: 1px solid rgba(255,255,255,0.06);
+                    transition: all 0.3s;
+                }
+                .fm-ctx-card:hover {
+                    border-color: rgba(255,255,255,0.12);
+                    transform: translateY(-3px);
+                }
+
+                .fm-ctx-icon {
+                    width: 44px; height: 44px; border-radius: 12px;
+                    display: flex; align-items: center; justify-content: center;
+                    flex-shrink: 0; border: 1px solid;
+                }
+                .fm-ctx-text { display: flex; flex-direction: column; gap: 0.15rem; }
+                .fm-ctx-label {
+                    font-size: 0.5rem; font-weight: 900;
+                    color: rgba(255,255,255,0.3); letter-spacing: 0.15em;
+                }
+                .fm-ctx-value {
+                    font-size: 1rem; font-weight: 900; color: white;
+                }
+
+                /* Next Mission CTA */
+                .fm-success-cta {
+                    padding: 5rem 2rem 4rem;
+                    display: flex; flex-direction: column; align-items: center;
+                    max-width: 700px; margin: 0 auto; width: 100%;
+                }
+
+                .fm-cta-card {
+                    width: 100%; padding: 3.5rem 3rem;
+                    border-radius: 28px; text-align: center;
+                    border: 1px solid rgba(0, 255, 136, 0.12);
+                    background: rgba(0, 255, 136, 0.02);
+                    margin-bottom: 2rem;
+                }
+
+                .fm-cta-label {
+                    font-size: 0.6rem; font-weight: 900;
+                    color: var(--primary); letter-spacing: 0.3em;
+                    display: block; margin-bottom: 1rem;
+                }
+
+                .fm-cta-title {
+                    font-size: clamp(1.8rem, 4vw, 2.8rem);
+                    font-weight: 900; color: white;
+                    letter-spacing: -0.02em; margin-bottom: 1.25rem;
+                }
+
+                .fm-cta-desc {
+                    font-size: 1rem; color: rgba(255,255,255,0.4);
+                    line-height: 1.7; max-width: 450px; margin: 0 auto 2.5rem;
+                }
+
+                .fm-cta-btn {
+                    display: inline-flex; align-items: center; gap: 1rem;
+                    background: var(--primary); color: black;
+                    padding: 1.1rem 3rem; border-radius: 16px;
+                    font-weight: 900; font-size: 1rem; letter-spacing: 0.05em;
+                    border: none; cursor: pointer; transition: all 0.3s;
+                    box-shadow: 0 0 35px rgba(0, 255, 136, 0.3);
+                }
+                .fm-cta-btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 0 55px rgba(0, 255, 136, 0.5);
+                }
+
+                .fm-footer-text {
+                    font-size: 0.7rem; color: rgba(255,255,255,0.15);
+                    letter-spacing: 0.1em; text-align: center;
+                }
+
                 /* Responsive */
                 @media (max-width: 768px) {
                     .fm-nav-bar { padding: 1rem; flex-wrap: wrap; gap: 0.75rem; }
@@ -767,6 +1160,16 @@ export default function FormationSelectPage() {
                         width: 100%; justify-content: center;
                         padding: 0.85rem 1.5rem; font-size: 0.8rem;
                     }
+
+                    /* Success overlay mobile */
+                    .fm-success-title { font-size: 2.5rem; }
+                    .fm-success-sub { font-size: 0.95rem; }
+                    .fm-recap-stats { flex-direction: column; align-items: center; }
+                    .fm-recap-stat-card { max-width: 100%; width: 100%; }
+                    .fm-context-grid { grid-template-columns: 1fr; }
+                    .fm-cta-card { padding: 2.5rem 1.75rem; }
+                    .fm-cta-title { font-size: 1.6rem; }
+                    .fm-cta-btn { width: 100%; justify-content: center; padding: 1rem 2rem; font-size: 0.85rem; }
                 }
             `}</style>
         </div>

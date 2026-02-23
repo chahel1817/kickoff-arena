@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Zap, Layers, ChevronRight, ChevronLeft, Star, Check, X } from 'lucide-react';
+import { Search, Zap, Layers, ChevronRight, ChevronLeft, Star, Check, X, Shield, Activity } from 'lucide-react';
 import { MIDFIELDERS } from './data';
 import '../../entry.css';
 
@@ -111,12 +111,28 @@ export default function MidfielderSelectPage() {
                     <div className="mf-filter-section">
                         <div className="mf-tabs-row">
                             <div className="mf-tabs">
-                                {positions.map(pos => (
-                                    <button key={pos} onClick={() => setFilterPos(pos)}
-                                        className={`mf-tab ${filterPos === pos ? 'active' : ''}`}>
-                                        {pos}
-                                    </button>
-                                ))}
+                                {positions.map(pos => {
+                                    const isActive = filterPos === pos;
+                                    return (
+                                        <button key={pos} onClick={() => setFilterPos(pos)}
+                                            className={`mf-tab ${isActive ? 'active' : ''} tab-${pos.toLowerCase()}`}>
+                                            {pos === 'CDM' && <Shield size={12} className="tab-icon" />}
+                                            {pos === 'CM' && <Activity size={12} className="tab-icon" />}
+                                            {pos === 'CAM' && <Zap size={12} className="tab-icon" />}
+                                            <span>{pos}</span>
+                                            {isActive && <div className="mf-tab-indicator"></div>}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="mf-helper-row">
+                            <div className="mf-helper-glass">
+                                <span className="mf-helper-icon">💡</span>
+                                <p className="mf-helper-text">
+                                    Balanced midfields usually include a <strong>CDM</strong> (Defense), <strong>CM</strong> (Engine), and <strong>CAM</strong> (Attack).
+                                </p>
                             </div>
                         </div>
 
@@ -155,7 +171,27 @@ export default function MidfielderSelectPage() {
                             const isFull = selectedMids.length >= maxMid && !isSelected;
                             return (
                                 <button key={player.id} onClick={() => handleSelect(player)}
-                                    className={`mf-card glass ${isSelected ? 'selected' : ''} ${isFull ? 'dimmed' : ''} ${player.tier === 'legend' ? 'legend-card' : ''}`}>
+                                    className={`mf-card glass ${isSelected ? 'selected' : ''} ${isFull ? 'dimmed' : ''} ${player.tier === 'legend' ? 'legend-card' : ''} badge-${player.position.toLowerCase()}-wrap`}>
+                                    {/* Role Badge */}
+                                    <div className={`mf-role-badge badge-${player.position.toLowerCase()}`}>
+                                        {player.position === 'CDM' && <Shield size={10} />}
+                                        {player.position === 'CM' && <Activity size={10} />}
+                                        {player.position === 'CAM' && <Zap size={10} />}
+                                        <span>{player.position}</span>
+                                    </div>
+
+                                    {/* Skill Qualities */}
+                                    <div className="mf-skill-badges">
+                                        {player.skills?.slice(0, 2).map(skill => (
+                                            <div key={skill} className="mf-skill-badge">
+                                                {player.position === 'CDM' && <Shield size={8} />}
+                                                {player.position === 'CM' && <Activity size={8} />}
+                                                {player.position === 'CAM' && <Zap size={8} />}
+                                                <span>{skill.toUpperCase()}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
                                     {player.tier === 'legend' && (
                                         <div className="mf-legend-badge"><Star size={12} /><span>LEGEND</span></div>
                                     )}
@@ -188,13 +224,18 @@ export default function MidfielderSelectPage() {
                     <div className={`mf-confirm-bar glass ${selectedMids.length === maxMid ? 'visible' : ''}`}>
                         <div className="mf-bar-content">
                             <div className="mf-bar-info">
-                                <span className="mf-bar-tag">MIDFIELD SET — {selectedMids.length}/{maxMid}</span>
-                                <div className="mf-bar-names">{selectedMids.map(p => p.name).join(' • ')}</div>
+                                <span className="mf-bar-tag">MIDFIELD ENGINE READY</span>
+                                <div className="mf-bar-status">
+                                    {selectedMids.length}/{maxMid} PLAYERS SELECTED
+                                </div>
+                                <div className="mf-bar-names">
+                                    {selectedMids.map(p => p.name.split(' ').pop()).join(' • ')}
+                                </div>
                             </div>
                             <button onClick={handleConfirm} className="mf-proceed-btn"
                                 disabled={selectedMids.length !== maxMid}>
-                                <span>CONFIRM MIDFIELDERS</span>
-                                <ChevronRight size={22} />
+                                <span>LOCK IN MIDFIELD</span>
+                                <Activity size={22} className="mf-btn-icon" />
                             </button>
                         </div>
                     </div>
@@ -241,12 +282,46 @@ export default function MidfielderSelectPage() {
                 .mf-subtitle { font-size:1.1rem; color:rgba(255,255,255,.35); line-height:1.7; max-width:520px; margin:0 auto; }
 
                 /* Filter Section */
-                .mf-filter-section { display:flex; flex-direction:column; gap:2rem; margin-bottom:3rem; }
+                .mf-filter-section { display:flex; flex-direction:column; gap:1.5rem; margin-bottom:3rem; }
                 .mf-tabs-row { display:flex; justify-content:center; }
-                .mf-tabs { display:flex; gap:.5rem; background:rgba(255,255,255,.03); padding:.4rem; border-radius:16px; border:1px solid rgba(255,255,255,.05); }
-                .mf-tab { padding:.7rem 1.8rem; border-radius:12px; border:1px solid transparent; background:transparent; color:rgba(255,255,255,.4); font-weight:900; font-size:.7rem; letter-spacing:.1em; cursor:pointer; transition:.3s; }
-                .mf-tab.active { background:rgba(168,85,247,.1); border-color:rgba(168,85,247,.3); color:#a855f7; box-shadow:0 0 20px rgba(168,85,247,.1); }
+                .mf-tabs { display:flex; gap:.4rem; background:rgba(255,255,255,.03); padding:.4rem; border-radius:16px; border:1px solid rgba(255,255,255,.05); position: relative; }
+                
+                .mf-tab { 
+                    position: relative; display: flex; align-items: center; gap: 0.6rem;
+                    padding:.7rem 1.8rem; border-radius:12px; border:1px solid transparent; 
+                    background:transparent; color:rgba(255,255,255,.4); font-weight:900; 
+                    font-size:.7rem; letter-spacing:.1em; cursor:pointer; transition:all .3s cubic-bezier(0.4, 0, 0.2, 1); 
+                }
                 .mf-tab:hover:not(.active) { color:white; background:rgba(255,255,255,.05); }
+                
+                .tab-icon { opacity: 0.5; transition: 0.3s; }
+                .mf-tab.active .tab-icon { opacity: 1; transform: scale(1.1); }
+                
+                /* Role Specific Active States */
+                .mf-tab.active.tab-cdm { color: #7c3aed; background: rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.3); box-shadow: 0 0 20px rgba(124, 58, 237, 0.15); }
+                .mf-tab.active.tab-cm { color: #a855f7; background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.3); box-shadow: 0 0 20px rgba(168, 85, 247, 0.15); }
+                .mf-tab.active.tab-cam { color: #d8b4fe; background: rgba(216, 180, 254, 0.1); border-color: rgba(216, 180, 254, 0.3); box-shadow: 0 0 20px rgba(216, 180, 254, 0.15); }
+                .mf-tab.active.tab-all { color: white; background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
+
+                .mf-tab-indicator {
+                    position: absolute; bottom: 0.4rem; left: 1.8rem; right: 1.8rem; height: 2px;
+                    border-radius: 10px; background: currentColor;
+                    animation: mfTabGrow .3s ease-out;
+                }
+                @keyframes mfTabGrow { from { opacity: 0; transform: scaleX(0); } to { opacity: 1; transform: scaleX(1); } }
+
+                /* Helper Message */
+                .mf-helper-row { display: flex; justify-content: center; margin: -0.5rem 0 1rem; }
+                .mf-helper-glass { 
+                    display: flex; align-items: center; gap: 0.75rem; 
+                    padding: 0.6rem 1.25rem; border-radius: 100px; 
+                    background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.1);
+                    backdrop-filter: blur(10px); animation: mfHelperSlide .5s ease-out;
+                }
+                @keyframes mfHelperSlide { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+                .mf-helper-icon { font-size: 0.9rem; }
+                .mf-helper-text { font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.5); margin: 0; }
+                .mf-helper-text strong { color: #d8b4fe; font-weight: 900; }
 
                 .mf-search-row { display:flex; justify-content:center; width: 100%; }
                 .mf-search-wrapper { position:relative; width:100%; max-width:750px; display: flex; align-items: center; }
@@ -289,12 +364,40 @@ export default function MidfielderSelectPage() {
 
                 .mf-card { position:relative; text-align:left; border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .45s cubic-bezier(.23,1,.32,1); }
                 .mf-card:hover { transform:translateY(-8px); border-color:rgba(168,85,247,.3); box-shadow:0 20px 50px -15px rgba(0,0,0,.7),0 0 20px rgba(168,85,247,.08); }
-                .mf-card.selected { border-color:#10b981; border-width:2px; box-shadow:0 0 40px rgba(16,185,129,.15); transform:translateY(-8px) scale(1.02); }
+                .mf-card.selected { border-color:#10b981 !important; border-width:2px; box-shadow:0 0 40px rgba(16,185,129,.15); transform:translateY(-8px) scale(1.02); }
+                
+                /* Role Accents */
+                .mf-card.badge-cdm-wrap { border-left: 4px solid #7c3aed !important; } /* Need to apply class in JSX */
+                .mf-card.badge-cm-wrap { border-left: 4px solid #a855f7 !important; }
+                .mf-card.badge-cam-wrap { border-left: 4px solid #d8b4fe !important; }
+                
                 .mf-card.dimmed { opacity:.25; filter:grayscale(.6); pointer-events:none; }
                 .mf-card.legend-card { border-color:rgba(245,158,11,.25); background:linear-gradient(165deg,rgba(30,25,10,.9),rgba(10,10,15,.85)); }
                 .mf-card.legend-card:hover { border-color:rgba(245,158,11,.5); }
 
-                .mf-legend-badge { position:absolute; top:.8rem; left:.8rem; z-index:10; display:flex; align-items:center; gap:.3rem; background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(245,158,11,.08)); border:1px solid rgba(245,158,11,.35); padding:.2rem .5rem; border-radius:8px; color:#f59e0b; font-size:.45rem; font-weight:900; letter-spacing:.15em; backdrop-filter:blur(10px); }
+                /* Role Badge */
+                .mf-role-badge {
+                    position: absolute; top: 1rem; left: 1rem; z-index: 20;
+                    display: flex; align-items: center; gap: 0.3rem;
+                    background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+                    padding: 0.3rem 0.6rem; border-radius: 8px;
+                    font-size: 0.5rem; font-weight: 950; letter-spacing: 0.1em;
+                    border: 1px solid rgba(255,255,255,0.1);
+                }
+                .badge-cdm { color: #7c3aed; border-color: rgba(124, 58, 237, 0.3); }
+                .badge-cm { color: #a855f7; border-color: rgba(168, 85, 247, 0.3); }
+                .badge-cam { color: #d8b4fe; border-color: rgba(216, 180, 254, 0.3); }
+
+                .mf-skill-badges { position: absolute; top: 3.2rem; left: 1rem; z-index: 10; display: flex; flex-direction: column; gap: 0.3rem; }
+                .mf-skill-badge { display: flex; align-items: center; gap: 0.3rem; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.08); padding: 0.2rem 0.5rem; border-radius: 4px; color: rgba(255,255,255,0.8); font-size: 0.45rem; font-weight: 900; letter-spacing: 0.05em; animation: mfSkillSlide .4s ease-out; }
+                @keyframes mfSkillSlide { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+                
+                /* Icon colors inside skill badges */
+                .badge-cdm-wrap .mf-skill-badge :global(svg) { color: #7c3aed; }
+                .badge-cm-wrap .mf-skill-badge :global(svg) { color: #a855f7; }
+                .badge-cam-wrap .mf-skill-badge :global(svg) { color: #d8b4fe; }
+
+                .mf-legend-badge { position:absolute; top:.8rem; right:4.5rem; z-index:15; display:flex; align-items:center; gap:.3rem; background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(245,158,11,.08)); border:1px solid rgba(245,158,11,.35); padding:.2rem .5rem; border-radius:8px; color:#f59e0b; font-size:.45rem; font-weight:900; letter-spacing:.15em; backdrop-filter:blur(10px); }
                 .mf-selected-badge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:30; width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#10b981,#34d399); color:black; display:flex; align-items:center; justify-content:center; box-shadow:0 0 40px rgba(16,185,129,.5); animation:badgePop .4s cubic-bezier(.175,.885,.32,1.275); }
                 @keyframes badgePop { from{transform:translate(-50%,-50%) scale(0)} to{transform:translate(-50%,-50%) scale(1)} }
 
@@ -316,15 +419,22 @@ export default function MidfielderSelectPage() {
                 .mf-card-pos { background:rgba(168,85,247,.1); color:#a855f7; padding:.15rem .5rem; border-radius:4px; font-size:.55rem; font-weight:900; letter-spacing:.1em; }
                 .legend-card .mf-card-pos { background:rgba(245,158,11,.1); color:#f59e0b; }
 
-                .mf-confirm-bar { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(150%); width:calc(100% - 4rem); max-width:900px; padding:1.25rem 2.5rem; border-radius:24px; border:1px solid rgba(16,185,129,.3); z-index:3000; box-shadow:0 25px 60px -12px rgba(0,0,0,.8); transition:all .5s cubic-bezier(.175,.885,.32,1.275); background:rgba(10,10,15,.9); backdrop-filter:blur(30px); }
+                .mf-confirm-bar { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(150%); width:calc(100% - 4rem); max-width:950px; padding:1.4rem 2.5rem; border-radius:24px; border:1px solid rgba(168,85,247,.3); border-top: 1px solid rgba(168,85,247,.6); z-index:3000; box-shadow:0 30px 70px -15px rgba(0,0,0,.9), 0 0 30px rgba(168,85,247,.1); transition:all .6s cubic-bezier(.16,1,.3,1); background:rgba(10,10,18,.85); backdrop-filter:blur(40px); }
                 .mf-confirm-bar.visible { transform:translateX(-50%) translateY(0); }
-                .mf-bar-content { display:flex; justify-content:space-between; align-items:center; }
-                .mf-bar-info { display:flex; flex-direction:column; gap:.15rem; }
-                .mf-bar-tag { font-size:.55rem; font-weight:900; color:#10b981; letter-spacing:.15em; }
-                .mf-bar-names { font-size:.75rem; color:rgba(255,255,255,.4); font-weight:700; max-width:450px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-                .mf-proceed-btn { display:flex; align-items:center; gap:.8rem; background:linear-gradient(135deg,#10b981,#34d399); color:black; padding:1rem 2.5rem; border-radius:14px; font-weight:900; font-size:.9rem; letter-spacing:.05em; border:none; cursor:pointer; transition:.3s; box-shadow:0 0 30px rgba(16,185,129,.25); white-space:nowrap; }
-                .mf-proceed-btn:hover { transform:scale(1.05); box-shadow:0 0 50px rgba(16,185,129,.4); }
-                .mf-proceed-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+                .mf-bar-content { display:flex; justify-content:space-between; align-items:center; gap: 2rem; }
+                .mf-bar-info { display:flex; flex-direction:column; gap:.2rem; flex: 1; }
+                .mf-bar-tag { font-size:.6rem; font-weight:950; color:#a855f7; letter-spacing:.2em; text-transform: uppercase; }
+                .mf-bar-status { font-size: 1.25rem; font-weight: 950; color: white; letter-spacing: -0.01em; margin: 0.1rem 0; }
+                .mf-bar-names { font-size:.75rem; color:rgba(255,255,255,.4); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 400px; }
+                
+                .mf-proceed-btn { position: relative; display:flex; align-items:center; gap:.8rem; background:linear-gradient(135deg,#a855f7,#7c3aed); color:white; padding:1.1rem 2.8rem; border-radius:16px; font-weight:950; font-size:1rem; letter-spacing:.05em; border:none; cursor:pointer; transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow:0 10px 30px rgba(124, 58, 237, 0.3); white-space:nowrap; overflow: hidden; }
+                .mf-proceed-btn:not(:disabled) { animation: mfBtnPulse 2s infinite; }
+                @keyframes mfBtnPulse { 0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(168, 85, 247, 0); } 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); } }
+                
+                .mf-proceed-btn:hover { transform:scale(1.04) translateY(-3px); box-shadow:0 15px 40px rgba(168, 85, 247, 0.4); }
+                .mf-btn-icon { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+                .mf-proceed-btn:hover .mf-btn-icon { transform: rotate(15deg) scale(1.2); }
+                .mf-proceed-btn:disabled { opacity:.4; cursor:not-allowed; transform:none; filter: grayscale(1); }
 
                 .mf-progress-footer { position:fixed; bottom:0; left:0; right:0; display:flex; justify-content:center; padding:1rem 2rem; background:linear-gradient(to top,rgba(2,4,10,.95),transparent); pointer-events:none; z-index:50; }
                 .mf-progress-steps { display:flex; align-items:center; }

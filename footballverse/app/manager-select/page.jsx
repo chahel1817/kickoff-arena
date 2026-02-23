@@ -29,12 +29,118 @@ export default function ManagerSelectPage() {
     const handleManagerSelect = (manager) => {
         setSelectedManager(manager);
         localStorage.setItem('selectedManager', JSON.stringify(manager));
+
+        // Brief delay before showing phase complete overlay
+        setTimeout(() => {
+            setShowSuccess(true);
+        }, 600);
     };
 
     const handleContinue = () => {
         if (selectedManager) {
             setShowSuccess(true);
         }
+    };
+
+    const getManagerFit = (manager) => {
+        if (!selectedTeam) return null;
+
+        const teamId = selectedTeam.id;
+        const managerId = manager.id;
+
+        // Primary Connection Map (Legends/Current)
+        const connections = {
+            'ferguson': ['mun'],
+            'guardiola': ['mci', 'bar'],
+            'klopp': ['liv', 'bvb'],
+            'cruyff': ['bar', 'aja'],
+            'zidane': ['rma'],
+            'ancelotti': ['rma', 'milan'],
+            'arteta': ['ars'],
+            'simeone': ['atm'],
+            'flick': ['bar', 'bay'],
+            'slot': ['liv', 'fey'],
+            'emery': ['avl', 'vlr', 'sevilla'],
+            'mourinho': ['che', 'inter', 'rma', 'mun', 'tot']
+        };
+
+        if (connections[managerId]?.includes(teamId)) {
+            return {
+                type: 'strong',
+                label: 'Perfect Fit',
+                icon: '✔',
+                consequences: [
+                    { label: 'Team Chemistry', value: '+5', icon: '⚡' },
+                    { label: 'Win Morale', value: '+2', icon: '🔥' }
+                ]
+            };
+        }
+
+        // Culture/Rivalry Clash
+        const clashes = {
+            'mun': ['guardiola', 'cruyff', 'klopp'],
+            'mci': ['ferguson', 'mourinho'],
+            'liv': ['ferguson', 'mourinho', 'ancelotti'],
+            'ars': ['mourinho', 'ferguson'],
+            'rma': ['cruyff', 'guardiola', 'flick'],
+            'bar': ['zidane', 'mourinho']
+        };
+
+        if (clashes[teamId]?.includes(managerId)) {
+            return {
+                type: 'challenging',
+                label: 'Culture Overhaul',
+                icon: '⚠',
+                consequences: [
+                    { label: 'Initial Chemistry', value: '-3', icon: '❄' },
+                    { label: 'Growth Ceiling', value: 'ULTRA', icon: '📈' }
+                ]
+            };
+        }
+
+        // Default Neutral
+        return {
+            type: 'neutral',
+            label: 'Tactical Shift',
+            icon: '◐',
+            consequences: [
+                { label: 'Adaptation Period', value: '5 Matches', icon: '⏳' },
+                { label: 'System Stability', value: 'Balanced', icon: '⚖' }
+            ]
+        };
+    };
+
+    const getManagerRecommendation = (manager) => {
+        const style = manager.style?.toLowerCase() || '';
+        const traits = (manager.traits || []).join(' ').toLowerCase();
+
+        if (traits.includes('possession') || traits.includes('tiki-taka') || style.includes('tiki-taka') || style.includes('innovator'))
+            return 'Best with possession-heavy squads';
+        if (traits.includes('youth') || traits.includes('development') || traits.includes('scout') || style.includes('mentor'))
+            return 'Excels with young teams';
+        if (traits.includes('rebuilding') || traits.includes('stability') || style.includes('stabilizer') || style.includes('revivalist'))
+            return 'Ideal for rebuilding clubs';
+        if (traits.includes('defensive') || traits.includes('wall') || traits.includes('organization') || style.includes('specialist'))
+            return 'Perfect for defensive systems';
+        if (traits.includes('gegenpressing') || traits.includes('intensity') || traits.includes('high press'))
+            return 'Ideal for high-energy pressing';
+        if (traits.includes('big game') || traits.includes('match specialist') || style.includes('strategist'))
+            return 'Proven in elite-level competition';
+
+        return 'Versatile tactical coordinator';
+    };
+
+    const getTraitIcon = (trait) => {
+        const lower = trait.toLowerCase();
+        if (lower.includes('tactical') || lower.includes('positi') || lower.includes('freedom') || lower.includes('mastermind') || lower.includes('innovation')) return '🧠';
+        if (lower.includes('press') || lower.includes('intens') || lower.includes('energy') || lower.includes('transit') || lower.includes('attack') || lower.includes('fast') || lower.includes('vertical')) return '⚡';
+        if (lower.includes('youth') || lower.includes('develop') || lower.includes('talent') || lower.includes('promotion') || lower.includes('scout') || lower.includes('growth') || lower.includes('mentor')) return '🌱';
+        if (lower.includes('discipline') || lower.includes('leadership') || lower.includes('aura') || lower.includes('mentality') || lower.includes('unity') || lower.includes('management') || lower.includes('morale')) return '🛡️';
+        if (lower.includes('defensive') || lower.includes('shape') || lower.includes('compact') || lower.includes('solid') || lower.includes('wall') || lower.includes('low risk') || lower.includes('grit')) return '🧱';
+        if (lower.includes('possession') || lower.includes('build-up') || lower.includes('build up') || lower.includes('passing') || lower.includes('technical') || lower.includes('tempo')) return '⚽';
+        if (lower.includes('set-piece') || lower.includes('mastery') || lower.includes('knocking') || lower.includes('knockout') || lower.includes('specialist')) return '🎯';
+        if (lower.includes('global') || lower.includes('icon') || lower.includes('big game') || lower.includes('champion') || lower.includes('tournament') || lower.includes('star') || lower.includes('authority')) return '🏆';
+        return '🔹';
     };
 
     const handleFinalProceed = () => {
@@ -262,9 +368,9 @@ export default function ManagerSelectPage() {
                             <Users size={16} className="ornament-icon" />
                             <div className="ornament-line"></div>
                         </div>
-                        <h2 className="headline text-700 main-selection-title">
-                            SELECT <span className="text-gradient">GAFFER</span>
-                        </h2>
+                        <h1 className="headline text-700 main-selection-title">
+                            SELECT YOUR <span className="text-gradient">GAFFER</span>
+                        </h1>
                         <p className="subtitle-premium">
                             Choose the tactical genius who will lead your club to glory.
                             Your manager's style influences player development and match-day tactics.
@@ -292,7 +398,7 @@ export default function ManagerSelectPage() {
                             </div>
                         </div>
 
-                        <div className="managers-grid-refined">
+                        <div className={`managers-grid-refined ${selectedManager ? 'has-selection' : ''}`}>
                             {filteredManagers.map((manager) => (
                                 <button
                                     key={manager.id}
@@ -321,53 +427,66 @@ export default function ManagerSelectPage() {
                                     </div>
 
                                     <div className="manager-core-info">
-                                        <h3 className="manager-name-label">{manager.name}</h3>
+                                        <div className="manager-info-header">
+                                            <h3 className="manager-name-label">{manager.name}</h3>
+                                            {selectedTeam && (
+                                                <div className="fit-wrapper">
+                                                    <div className={`fit-indicator ${getManagerFit(manager).type}`}>
+                                                        <span className="fit-icon">{getManagerFit(manager).icon}</span>
+                                                        <span className="fit-label">{getManagerFit(manager).label}</span>
+
+                                                        <div className="fit-tooltip">
+                                                            <div className="tooltip-header">Tactical Implications</div>
+                                                            <div className="tooltip-consequences">
+                                                                {getManagerFit(manager).consequences.map((cons, ci) => (
+                                                                    <div key={ci} className="cons-item">
+                                                                        <span className="cons-icon">{cons.icon}</span>
+                                                                        <span className="cons-label">{cons.label}</span>
+                                                                        <span className="cons-value">{cons.value}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                            <div className="tooltip-footer">Choice influences development speed</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="fit-recommendation-hint">
+                                                        {getManagerRecommendation(manager)}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
                                         <div className="manager-meta-row">
                                             <div className="meta-item">
-                                                <Globe size={12} className="text-primary" />
-                                                <span>{manager.country}</span>
-                                            </div>
-                                            <div className="meta-item">
-                                                <Trophy size={12} className="text-primary" />
+                                                <Trophy size={11} className="text-primary" />
                                                 <span>{manager.style}</span>
                                             </div>
+                                        </div>
+
+                                        <div className="style-panel-mini chips">
+                                            {(manager.traits || ['Tactical Balance', 'General Motivation', 'Standard Development']).map((trait, idx) => (
+                                                <div key={idx} className="style-trait-chip">
+                                                    <span className="trait-icon-mini">{getTraitIcon(trait)}</span>
+                                                    <span>{trait}</span>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
 
                                     <div className="selection-check">
-                                        <div className="check-circle">
-                                            <Check size={16} />
-                                        </div>
+                                        {selectedManager?.id === manager.id ? (
+                                            <div className="check-circle check-animate">
+                                                <Check size={18} />
+                                            </div>
+                                        ) : (
+                                            <div className="arrow-circle">
+                                                <ChevronRight size={18} />
+                                            </div>
+                                        )}
                                     </div>
                                 </button>
                             ))}
                         </div>
 
-                        {/* Sticky Confirmation Bar */}
-                        <div className={`confirmation-bar glass ${selectedManager ? 'visible' : ''}`}>
-                            <div className="bar-content">
-                                <div className="selected-preview">
-                                    <div className="preview-logo-box manager-box">
-                                        <div
-                                            className="preview-avatar-mini"
-                                            style={selectedManager?.image ? { backgroundImage: 'url(' + selectedManager.image + ')' } : {}}
-                                        ></div>
-                                    </div>
-                                    <div className="preview-text">
-                                        <span className="preview-status">TACTICAL IDENTITY CONFIRMED</span>
-                                        <h4 className="preview-name">{selectedManager?.name}</h4>
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={handleContinue}
-                                    className="action-btn-neon"
-                                >
-                                    <span>AUTHORIZE IDENTITY</span>
-                                    <ChevronRight size={20} />
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </main>
             </section>
@@ -882,35 +1001,46 @@ export default function ManagerSelectPage() {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    padding: 2.5rem 1.5rem;
+                    padding: 1.75rem 1.25rem;
                     background: rgba(255, 255, 255, 0.02);
                     border: 1px solid rgba(255, 255, 255, 0.05);
-                    border-radius: 32px;
+                    border-radius: 24px;
                     transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
                     cursor: pointer;
                     overflow: hidden;
                     text-align: center;
+                    backdrop-filter: blur(5px);
+                    min-height: 420px;
                 }
 
                 .manager-card-premium:hover {
-                    background: rgba(255, 255, 255, 0.05);
-                    border-color: rgba(255, 255, 255, 0.2);
+                    background: rgba(255, 255, 255, 0.04);
+                    border-color: rgba(0, 255, 136, 0.3);
                     transform: translateY(-8px);
+                    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 136, 0.05);
+                }
+
+                .managers-grid-refined.has-selection .manager-card-premium:not(.selected) {
+                    opacity: 0.15;
+                    filter: blur(4px) grayscale(1);
+                    transform: scale(0.95);
                 }
 
                 .manager-card-premium.selected {
                     background: rgba(0, 255, 136, 0.05);
                     border-color: var(--primary);
-                    border-width: 2px;
-                    box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
+                    border-width: 1px;
+                    box-shadow: 0 0 40px rgba(0, 255, 136, 0.15);
+                    transform: scale(1.02);
+                    z-index: 10;
                 }
 
                 /* Portrait Display */
                 .portrait-display {
                     position: relative;
-                    width: 140px;
-                    height: 140px;
-                    margin-bottom: 2rem;
+                    width: 110px;
+                    height: 110px;
+                    margin-bottom: 1.5rem;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -982,43 +1112,264 @@ export default function ManagerSelectPage() {
                     box-shadow: 0 8px 16px rgba(0, 255, 136, 0.3);
                 }
 
-                /* Manager Info */
+                .manager-core-info {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .manager-info-header {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1rem;
+                    margin-bottom: 1.25rem;
+                    width: 100%;
+                }
+
                 .manager-name-label {
                     color: white;
-                    font-size: 1.5rem;
+                    font-size: 1.2rem;
                     font-weight: 800;
+                    margin-bottom: 0;
+                    letter-spacing: -0.02em;
+                    line-height: 1.1;
+                }
+
+                .fit-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.5rem;
+                    width: 100%;
+                }
+
+                .fit-indicator {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    padding: 0.25rem 0.6rem;
+                    border-radius: 6px;
+                    font-size: 0.55rem;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    white-space: nowrap;
+                    transition: 0.3s;
+                    cursor: help;
+                }
+
+                .fit-recommendation-hint {
+                    font-size: 0.55rem;
+                    color: rgba(255, 255, 255, 0.25);
+                    font-weight: 600;
+                    letter-spacing: 0.02em;
+                    text-align: center;
+                    transition: 0.3s;
+                    max-width: 90%;
+                    line-height: 1.3;
+                }
+
+                .manager-card-premium:hover .fit-recommendation-hint {
+                    color: rgba(255, 255, 255, 0.5);
+                }
+
+                .fit-tooltip {
+                    position: absolute;
+                    bottom: 100%;
+                    right: 0;
                     margin-bottom: 0.75rem;
-                    letter-spacing: -0.01em;
+                    width: 220px;
+                    background: rgba(10, 15, 25, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 12px;
+                    padding: 1rem;
+                    z-index: 100;
+                    opacity: 0;
+                    visibility: hidden;
+                    transform: translateY(10px);
+                    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+                    backdrop-filter: blur(15px);
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+                    pointer-events: none;
+                }
+
+                .fit-indicator:hover .fit-tooltip {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(0);
+                }
+
+                .tooltip-header {
+                    font-size: 0.65rem;
+                    color: rgba(255, 255, 255, 0.4);
+                    margin-bottom: 0.75rem;
+                    letter-spacing: 0.1em;
+                }
+
+                .tooltip-consequences {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.6rem;
+                    margin-bottom: 0.75rem;
+                }
+
+                .cons-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.6rem;
+                    font-size: 0.7rem;
+                    color: white;
+                }
+
+                .cons-label { flex: 1; color: rgba(255, 255, 255, 0.6); }
+                .cons-value { 
+                    font-weight: 900; 
+                    color: var(--primary);
+                    background: rgba(0, 255, 136, 0.05);
+                    padding: 0.1rem 0.4rem;
+                    border-radius: 4px;
+                }
+
+                .fit-indicator.challenging .cons-value {
+                    color: #FFAA00;
+                    background: rgba(255, 170, 0, 0.05);
+                }
+
+                .tooltip-footer {
+                    font-size: 0.55rem;
+                    color: rgba(255, 255, 255, 0.2);
+                    font-style: italic;
+                    border-top: 1px solid rgba(255, 255, 255, 0.05);
+                    padding-top: 0.5rem;
+                }
+
+                .fit-indicator.strong {
+                    background: rgba(0, 255, 136, 0.1);
+                    color: var(--primary);
+                    border: 1px solid rgba(0, 255, 136, 0.2);
+                    box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
+                }
+
+                .fit-indicator.neutral {
+                    background: rgba(255, 255, 255, 0.03);
+                    color: rgba(255, 255, 255, 0.4);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                }
+
+                .fit-indicator.challenging {
+                    background: rgba(255, 170, 0, 0.1);
+                    color: #FFAA00;
+                    border: 1px solid rgba(255, 170, 0, 0.2);
+                    box-shadow: 0 0 10px rgba(255, 170, 0, 0.1);
                 }
 
                 .manager-meta-row {
                     display: flex;
-                    flex-direction: column;
-                    gap: 0.6rem;
-                    align-items: center;
+                    gap: 1rem;
+                    margin-bottom: 1.25rem;
+                    justify-content: center;
+                    padding-top: 0.6rem;
+                    border-top: 1px solid rgba(255, 255, 255, 0.05);
+                    width: 100%;
                 }
 
                 .meta-item {
                     display: flex;
                     align-items: center;
-                    gap: 0.6rem;
-                    font-size: 0.8rem;
-                    color: rgba(255,255,255,0.4);
+                    gap: 0.3rem;
+                    font-size: 0.65rem;
                     font-weight: 600;
+                    color: rgba(255, 255, 255, 0.4);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+
+                .style-panel-mini.chips {
+                    background: transparent;
+                    border: none;
+                    padding: 0;
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.5rem;
+                    justify-content: center;
+                    width: 100%;
+                }
+
+                .style-trait-chip {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    padding: 0.35rem 0.6rem;
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid rgba(255, 255, 255, 0.06);
+                    border-radius: 8px;
+                    font-size: 0.58rem;
+                    font-weight: 700;
+                    color: rgba(255, 255, 255, 0.3);
+                    transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+                    text-transform: uppercase;
+                    letter-spacing: 0.03em;
+                }
+
+                .manager-card-premium:hover .style-trait-chip {
+                    background: rgba(255, 255, 255, 0.06);
+                    border-color: rgba(255, 255, 255, 0.12);
+                    color: rgba(255, 255, 255, 0.7);
+                    transform: translateY(-2px);
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                }
+
+                .trait-icon-mini {
+                    font-size: 0.75rem;
+                    filter: grayscale(0.5);
+                    transition: 0.3s;
+                }
+
+                .manager-card-premium:hover .trait-icon-mini {
+                    filter: grayscale(0); transform: scale(1.1);
                 }
 
                 .selection-check {
                     position: absolute;
                     top: 1.5rem;
                     right: 1.5rem;
-                    opacity: 0;
-                    transform: scale(0.5);
-                    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    opacity: 0.2;
+                    transform: scale(0.8);
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+
+                .manager-card-premium:hover .selection-check {
+                    opacity: 1;
+                    transform: scale(1);
                 }
 
                 .manager-card-premium.selected .selection-check {
                     opacity: 1;
-                    transform: scale(1);
+                    transform: scale(1.1);
+                }
+
+                .arrow-circle {
+                    width: 36px;
+                    height: 36px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    color: white;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: 0.3s;
+                }
+
+                .manager-card-premium:hover .arrow-circle {
+                    background: var(--primary);
+                    color: black;
+                    border-color: var(--primary);
+                    transform: translateX(3px);
+                    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
                 }
 
                 .check-circle {
@@ -1031,6 +1382,15 @@ export default function ManagerSelectPage() {
                     align-items: center;
                     justify-content: center;
                     box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+                }
+
+                .check-animate {
+                    animation: checkPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+                }
+
+                @keyframes checkPop {
+                    0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+                    100% { transform: scale(1) rotate(0deg); opacity: 1; }
                 }
 
                 /* Confirmation Bar */

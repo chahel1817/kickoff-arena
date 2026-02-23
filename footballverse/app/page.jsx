@@ -57,12 +57,12 @@ export default function EntryPage() {
                         <div className="feature-item">
                             <Trophy className="feature-icon" />
                             <h3 className="text-600">Elite Leagues</h3>
-                            <p className="text-400">Dominate the Premier League, La Liga, and more with authentic team structures.</p>
+                            <p className="text-400">Dominate the Premier League, La Liga, and 8 other elite leagues.</p>
                         </div>
                         <div className="feature-item">
                             <Users className="feature-icon" />
                             <h3 className="text-600">Squad Builder</h3>
-                            <p className="text-400">Deep selection system. Scout over 5,000 players to build your dream starting XI.</p>
+                            <p className="text-400">Deep selection system. Scout over 350+ elite players to build your dream starting XI.</p>
                         </div>
                         <div className="feature-item">
                             <Target className="feature-icon" />
@@ -98,38 +98,38 @@ export default function EntryPage() {
                 <div className="info-panel-grid">
                     <div className="info-panel-premium glow-blue">
                         <div className="panel-header">
-                            <Globe className="card-icon" />
-                            <h2 className="text-600">Global Integration</h2>
+                            <Star className="card-icon" />
+                            <h2 className="text-600">Legendary Icons</h2>
                         </div>
                         <div className="panel-content">
                             <p className="text-400">
-                                Join a massive multiplayer ecosystem where your decisions echo across the globe.
-                                Compete in synchronized seasonal tournaments, manage multi-club ownerships,
-                                and climb the real-time global leaderboard against thousands of managers.
+                                Forge your legacy with a mix of modern superstars and legendary icons of the game.
+                                From Pelé and Maradona to Messi and Ronaldo, the entire history of football is
+                                integrated into your team selection process.
                             </p>
                             <ul className="feature-bullets">
-                                <li className="text-500">• Cross-Continental Leagues</li>
-                                <li className="text-500">• Real-time Market Economy</li>
-                                <li className="text-500">• Global Manager Rankings</li>
+                                <li className="text-500">• All-Time Greats</li>
+                                <li className="text-500">• Historic Peak Ratings</li>
+                                <li className="text-500">• Iconic Specialist Skills</li>
                             </ul>
                         </div>
                     </div>
 
                     <div className="info-panel-premium glow-green">
                         <div className="panel-header">
-                            <Star className="card-icon" />
-                            <h2 className="text-600">Pro Scouting Network</h2>
+                            <Zap className="card-icon" />
+                            <h2 className="text-600">Match Day Arena</h2>
                         </div>
                         <div className="panel-content">
                             <p className="text-400">
-                                Our proprietary scouting engine updates weekly with real-world performance metrics.
-                                Deploy a network of scouts to every corner of the world to discover the next generation
-                                of wonderkids before they hit the mainstream headlines.
+                                Take your dream squad into the arena and test your skill in high-pressure
+                                environments. From clinical penalty shootouts to tactical simulations,
+                                your squad's chemistry and individual talent are put to the ultimate test.
                             </p>
                             <ul className="feature-bullets">
-                                <li className="text-500">• Real 2026/27 Player Data</li>
-                                <li className="text-500">• AI Performance Predictions</li>
-                                <li className="text-500">• Dynamic Talent Potential</li>
+                                <li className="text-500">• Interactive Mini-Games</li>
+                                <li className="text-500">• Skill-Based Performance</li>
+                                <li className="text-500">• Clinical Finish Training</li>
                             </ul>
                         </div>
                     </div>
@@ -186,17 +186,17 @@ export default function EntryPage() {
                     <div className="init-trust-row">
                         <div className="trust-item">
                             <Globe size={14} className="text-primary" />
-                            <span>6 Leagues</span>
+                            <span>10 Leagues</span>
                         </div>
                         <div className="trust-sep"></div>
                         <div className="trust-item">
                             <Users size={14} className="text-primary" />
-                            <span>5,000+ Players</span>
+                            <span>350+ Players</span>
                         </div>
                         <div className="trust-sep"></div>
                         <div className="trust-item">
                             <Shield size={14} className="text-primary" />
-                            <span>200+ Clubs</span>
+                            <span>150+ Clubs</span>
                         </div>
                     </div>
 

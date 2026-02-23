@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Trophy, ChevronRight, ChevronLeft, Globe, Cpu } from 'lucide-react';
+import { Trophy, ChevronRight, ChevronLeft, Globe, Cpu, Check } from 'lucide-react';
 import leaguesData from '../../data/leagues.json';
 import '../entry.css';
 
 export default function LeagueSelectionPage() {
     const router = useRouter();
     const [name, setName] = useState('');
+    const [selectedId, setSelectedId] = useState(null);
 
     useEffect(() => {
         const storedName = localStorage.getItem('userName');
@@ -20,8 +21,13 @@ export default function LeagueSelectionPage() {
     }, []);
 
     const handleLeagueSelect = (league) => {
+        setSelectedId(league.id);
         localStorage.setItem('selectedLeague', league.id);
-        router.push('/team-select');
+
+        // Brief delay to show selection feedback
+        setTimeout(() => {
+            router.push('/team-select');
+        }, 600);
     };
 
     return (
@@ -74,7 +80,7 @@ export default function LeagueSelectionPage() {
                             <div className="ornament-line"></div>
                         </div>
                         <h2 className="headline text-700 main-selection-title">
-                            SELECT <span className="text-gradient">FEDERATION</span>
+                            SELECT YOUR <span className="text-gradient">FEDERATION</span>
                         </h2>
                         <p className="subtitle-premium">
                             Choose the operational theater for your tactical deployment.
@@ -83,12 +89,13 @@ export default function LeagueSelectionPage() {
                     </div>
 
                     {/* Leagues Grid */}
-                    <div className="leagues-grid-refined">
+                    <div className={`leagues-grid-refined ${selectedId ? 'has-selection' : ''}`}>
                         {leaguesData.map((league) => (
                             <button
                                 key={league.id}
                                 onClick={() => handleLeagueSelect(league)}
-                                className="league-card-aligned glass"
+                                className={`league-card-aligned glass ${selectedId === league.id ? 'selected' : ''}`}
+                                style={{ '--league-accent': league.id === 'pl' ? '#3b82f6' : league.id === 'laliga' ? '#f59e0b' : league.id === 'bundesliga' ? '#ef4444' : '#00ff88' }}
                             >
                                 <div className="flag-circle">
                                     <img
@@ -103,12 +110,33 @@ export default function LeagueSelectionPage() {
                                         <Trophy size={12} className="league-trophy-icon" />
                                         <span className="league-name-tag">{league.name}</span>
                                     </div>
+                                    {league.traits && (
+                                        <span className="league-traits-label">{league.traits}</span>
+                                    )}
                                 </div>
                                 <div className="league-arrow-area">
-                                    <ChevronRight size={22} />
+                                    {selectedId === league.id ? (
+                                        <Check size={22} className="text-primary check-animate" />
+                                    ) : (
+                                        <ChevronRight size={22} className="arrow-icon" />
+                                    )}
                                 </div>
                             </button>
                         ))}
+
+                        {/* Coming Soon Placeholder */}
+                        <div className="league-card-aligned glass coming-soon-card">
+                            <div className="flag-circle placeholder">
+                                <Globe size={28} className="text-muted" />
+                            </div>
+                            <div className="league-info-box">
+                                <h3 className="league-country-label text-muted">Expansion Pending</h3>
+                                <div className="league-sub-row muted-row">
+                                    <span className="league-name-tag">Coming Soon</span>
+                                </div>
+                                <span className="league-traits-label">Authorized territories only</span>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Progress Footer */}
@@ -308,15 +336,60 @@ export default function LeagueSelectionPage() {
                     text-align: left;
                     color: white;
                     position: relative;
-                    transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+                    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
                 }
 
                 .league-card-aligned:hover {
                     background: rgba(255, 255, 255, 0.06);
-                    border-color: rgba(0, 255, 136, 0.35);
-                    transform: translateY(-6px) scale(1.015);
-                    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6),
-                                0 0 25px rgba(0, 255, 136, 0.08);
+                    border-color: var(--league-accent, var(--primary));
+                    transform: translateY(-4px);
+                    box-shadow: 0 12px 30px -10px color-mix(in srgb, var(--league-accent, var(--primary)) 25%, transparent),
+                                0 0 20px color-mix(in srgb, var(--league-accent, var(--primary)) 10%, transparent);
+                }
+
+                .coming-soon-card {
+                    opacity: 0.5;
+                    cursor: default;
+                    pointer-events: none;
+                }
+
+                .flag-circle.placeholder {
+                    background: rgba(255,255,255,0.03);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .leagues-grid-refined.has-selection .league-card-aligned:not(.selected) {
+                    opacity: 0.25;
+                    filter: blur(2px) grayscale(0.8);
+                    transform: scale(0.97);
+                }
+
+                .league-card-aligned.selected {
+                    border-color: var(--primary);
+                    background: rgba(0, 255, 136, 0.12);
+                    border-width: 2px;
+                    box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+                    transform: scale(1.03);
+                    z-index: 10;
+                }
+
+                .arrow-icon {
+                    transition: transform 0.3s ease;
+                }
+
+                .league-card-aligned:hover .arrow-icon {
+                    transform: translateX(4px);
+                }
+
+                .check-animate {
+                    animation: checkPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+                }
+
+                @keyframes checkPop {
+                    0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+                    100% { transform: scale(1) rotate(0deg); opacity: 1; }
                 }
 
                 /* ─── FLAG CIRCLE ─── */
@@ -393,6 +466,14 @@ export default function LeagueSelectionPage() {
                     letter-spacing: 0.14em;
                     text-transform: uppercase;
                     white-space: nowrap;
+                }
+
+                .league-traits-label {
+                    font-size: 0.65rem;
+                    font-weight: 500;
+                    color: rgba(255, 255, 255, 0.35);
+                    letter-spacing: 0.02em;
+                    margin-top: 0.15rem;
                 }
 
                 /* ─── ARROW ─── */

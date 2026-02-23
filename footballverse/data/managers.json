@@ -5,7 +5,13 @@
     "country": "Scotland",
     "style": "The Disciplinarian",
     "reputation": 99,
-    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/tm4oig1700666780.jpg&w=400&h=400&fit=cover&a=top"
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/tm4oig1700666780.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Leadership Aura",
+      "Discipline Control",
+      "Late-Game Mentality",
+      "Youth Trust"
+    ]
   },
   {
     "id": "guardiola",
@@ -13,7 +19,13 @@
     "country": "Spain",
     "style": "Tiki-Taka Mastermind",
     "reputation": 98,
-    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/m4vfto1767952704.jpg&w=400&h=400&fit=cover&a=top"
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/m4vfto1767952704.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Positional Play",
+      "Possession Dominance",
+      "Tactical Flexibility",
+      "High Press"
+    ]
   },
   {
     "id": "mourinho",
@@ -21,7 +33,13 @@
     "country": "Portugal",
     "style": "Defensive Specialist",
     "reputation": 96,
-    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/x8gh8w1699634811.jpg&w=400&h=400&fit=cover&a=top"
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/x8gh8w1699634811.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Defensive Organization",
+      "Big Match Specialist",
+      "Counter Attacks",
+      "Psychological Edge"
+    ]
   },
   {
     "id": "ancelotti",
@@ -29,7 +47,13 @@
     "country": "Italy",
     "style": "The Man-Manager",
     "reputation": 97,
-    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/jbdjl01576946407.jpg&w=400&h=400&fit=cover&a=top"
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/jbdjl01576946407.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Man Management",
+      "Tactical Adaptability",
+      "Veteran Optimization",
+      "Calm Leadership"
+    ]
   },
   {
     "id": "klopp",
@@ -37,7 +61,13 @@
     "country": "Germany",
     "style": "Heavy Metal Football",
     "reputation": 96,
-    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/2gbddy1597184262.jpg&w=400&h=400&fit=cover&a=top"
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/2gbddy1597184262.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Gegenpressing",
+      "High Energy",
+      "Fast Transitions",
+      "Squad Unity"
+    ]
   },
   {
     "id": "zidane",
@@ -45,7 +75,13 @@
     "country": "France",
     "style": "The Elegant Strategist",
     "reputation": 95,
-    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/trvvrs1474915622.jpg&w=400&h=400&fit=cover&a=top"
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/trvvrs1474915622.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Big Game Calm",
+      "Star Management",
+      "Tactical Simplicity",
+      "Confidence Boost"
+    ]
   },
   {
     "id": "cruyff",
@@ -53,276 +89,462 @@
     "country": "Netherlands",
     "style": "Total Football Visionary",
     "reputation": 99,
-    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/3ur2pq1546353399.jpg&w=400&h=400&fit=cover&a=top"
+    "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/3ur2pq1546353399.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Total Football",
+      "Positional Freedom",
+      "Youth Development",
+      "Tactical Innovation"
+    ]
   },
   {
     "id": "api_arne_slot",
     "name": "Arne Slot",
-    "country": "Liverpool",
+    "country": "Netherlands",
     "style": "The Innovator",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/slth571679175046.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "High Tempo Play",
+      "Tactical Innovation",
+      "Progressive Build-Up",
+      "Smart Rotation"
+    ],
     "team": "Liverpool"
   },
   {
     "id": "api_liam_rosenior",
     "name": "Liam Rosenior",
-    "country": "Chelsea",
+    "country": "England",
     "style": "Modern Pragmatist",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/tfnngz1686399966.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Modern Structure",
+      "Calm Build-Up",
+      "Defensive Balance",
+      "Squad Discipline"
+    ],
     "team": "Chelsea"
   },
   {
     "id": "api_michael_carrick",
     "name": "Michael Carrick",
-    "country": "Manchester United",
+    "country": "England",
     "style": "Midfield strategist",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/bamv7p1731788942.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Midfield Control",
+      "Possession Balance",
+      "Calm Tempo",
+      "Player Development"
+    ],
     "team": "Manchester United"
   },
   {
     "id": "api_mikel_arteta",
     "name": "Mikel Arteta",
-    "country": "Arsenal FC",
+    "country": "Spain",
     "style": "The Disciple",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/kgojrb1711448509.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Structured Press",
+      "Tactical Discipline",
+      "Youth Trust",
+      "Defensive Compactness"
+    ],
     "team": "Arsenal FC"
   },
   {
     "id": "api_thomas_frank",
     "name": "Thomas Frank",
-    "country": "Tottenham Hotspur",
-    "style": "Data Mastermind",
+    "country": "Denmark",
+    "style": "The Innovator",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/tl49qf1549540885.jpg&w=400&h=400&fit=cover&a=top",
-    "team": "Tottenham Hotspur"
+    "traits": [
+      "Data-Driven Decisions",
+      "Set-Piece Mastery",
+      "Adaptive Tactics",
+      "Overperformance"
+    ],
+    "team": "Brentford"
   },
   {
     "id": "api_andoni_iraola",
     "name": "Andoni Iraola",
-    "country": "AFC Bournemouth",
+    "country": "Spain",
     "style": "High-Intensity Master",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/wsuwrs1438015445.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "High Intensity",
+      "Aggressive Press",
+      "Vertical Attacks",
+      "Physical Demand"
+    ],
     "team": "AFC Bournemouth"
   },
   {
     "id": "api_leighton_baines",
     "name": "Leighton Baines",
-    "country": "Everton",
+    "country": "England",
     "style": "Youth Mentor",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/yrpxwp1471026543.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Youth Mentorship",
+      "Technical Focus",
+      "Player Growth",
+      "Long-Term Vision"
+    ],
     "team": "Everton"
   },
   {
     "id": "api_scott_parker",
     "name": "Scott Parker",
-    "country": "Burnley",
+    "country": "England",
     "style": "Possession Architect",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/qmnve71562601307.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Possession Control",
+      "Defensive Shape",
+      "Controlled Tempo",
+      "Risk Management"
+    ],
     "team": "Burnley"
   },
   {
     "id": "api_rob_edwards",
     "name": "Rob Edwards",
-    "country": "Wolverhampton Wanderers",
+    "country": "Wales",
     "style": "Underdog Specialist",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/ew9lr81712127590.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Underdog Mentality",
+      "High Work Rate",
+      "Defensive Grit",
+      "Team Unity"
+    ],
     "team": "Wolverhampton Wanderers"
   },
   {
     "id": "api_fabian_hurzeler",
     "name": "Fabian Hurzeler",
-    "country": "Brighton & Hove Albion",
+    "country": "Germany",
     "style": "The Prodigy",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/ptaqn51725367293.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Youth Development",
+      "Modern Pressing",
+      "High Energy",
+      "Tactical Curiosity"
+    ],
     "team": "Brighton & Hove Albion"
   },
   {
     "id": "api_nuno_espirito_santo",
     "name": "Nuno Espirito Santo",
-    "country": "West Ham United",
+    "country": "Portugal",
     "style": "Counter-Pressing Expert",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/usqbaw1549370993.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Counter Attacking",
+      "Defensive Transitions",
+      "Compact Shape",
+      "Physical Play"
+    ],
     "team": "West Ham United"
   },
   {
     "id": "api_marco_silva",
     "name": "Marco Silva",
-    "country": "Fulham",
+    "country": "Portugal",
     "style": "Technical Director",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/ylcto21549368361.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Technical Build-Up",
+      "Attacking Balance",
+      "Structured Press",
+      "Tactical Discipline"
+    ],
     "team": "Fulham"
   },
   {
     "id": "api_keith_andrews",
     "name": "Keith Andrews",
-    "country": "Brentford",
+    "country": "Ireland",
     "style": "Set-Piece Guru",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/5t2w2a1751054762.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Set-Piece Mastery",
+      "Tactical Preparation",
+      "Discipline Focus",
+      "Marginal Gains"
+    ],
     "team": "Brentford"
   },
   {
     "id": "api_unai_emery",
     "name": "Unai Emery",
-    "country": "Aston Villa",
+    "country": "Spain",
     "style": "The Knockout King",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/gthgk01549363867.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Tournament Specialist",
+      "Defensive Shape",
+      "Tactical Preparation",
+      "Opponent Analysis"
+    ],
     "team": "Aston Villa"
   },
   {
     "id": "api_sean_dyche",
     "name": "Sean Dyche",
-    "country": "Nottingham Forest",
+    "country": "England",
     "style": "The Wall Builder",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/y6budt1549365671.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Defensive Solidity",
+      "Aerial Dominance",
+      "Physical Football",
+      "Low-Risk Play"
+    ],
     "team": "Nottingham Forest"
   },
   {
     "id": "api_eddie_howe",
     "name": "Eddie Howe",
-    "country": "Newcastle United",
+    "country": "England",
     "style": "The Revivalist",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/74lg5i1549365100.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Player Improvement",
+      "High Press",
+      "Attacking Balance",
+      "Positive Culture"
+    ],
     "team": "Newcastle United"
   },
   {
     "id": "api_daniel_farke",
     "name": "Daniel Farke",
-    "country": "Leeds United",
+    "country": "Germany",
     "style": "Transition Specialist",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/18v3ru1549544271.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Transition Play",
+      "Vertical Passing",
+      "Press Resistance",
+      "Squad Rotation"
+    ],
     "team": "Leeds United"
   },
   {
     "id": "api_regis_le_bris",
     "name": "Regis Le Bris",
-    "country": "Sunderland",
+    "country": "France",
     "style": "The Scout's Choice",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/0pefxo1681225433.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Talent Scouting",
+      "Youth Promotion",
+      "Long-Term Planning",
+      "Development Focus"
+    ],
     "team": "Sunderland"
   },
   {
     "id": "api_oliver_glasner",
     "name": "Oliver Glasner",
-    "country": "Crystal Palace",
+    "country": "Austria",
     "style": "Heavy Metal Disciple",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/zgok0o1659466256.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "High Pressing",
+      "Fast Transitions",
+      "Wing Utilization",
+      "Intensity Control"
+    ],
     "team": "Crystal Palace"
   },
   {
     "id": "api_diego_simeone",
     "name": "Diego Simeone",
-    "country": "Atlético de Madrid",
+    "country": "Argentina",
     "style": "El Cholo Grit",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/2f8abw1534444128.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Defensive Intensity",
+      "Mental Toughness",
+      "Compact Shape",
+      "Counter Precision"
+    ],
     "team": "Atlético de Madrid"
   },
   {
     "id": "api_alvaro_arbeloa",
     "name": "Alvaro Arbeloa",
-    "country": "Real Madrid",
+    "country": "Spain",
     "style": "The Student",
     "reputation": 92,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/x335bx1684603765.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Discipline First",
+      "Defensive Structure",
+      "Learning Curve",
+      "Club Loyalty"
+    ],
     "team": "Real Madrid"
   },
   {
     "id": "api_matias_almeyda",
     "name": "Matias Almeyda",
-    "country": "Sevilla",
+    "country": "Argentina",
     "style": "The Stabilizer",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/62ojxc1750095947.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Stability Focus",
+      "Defensive Recovery",
+      "Mental Resilience",
+      "Team Balance"
+    ],
     "team": "Sevilla"
   },
   {
     "id": "api_hansi_flick",
     "name": "Hansi Flick",
-    "country": "Barcelona",
+    "country": "Germany",
     "style": "The Pressure Point",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/g45eet1594332122.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "High Line Press",
+      "Vertical Attacking",
+      "Fast Recovery",
+      "Direct Play"
+    ],
     "team": "Barcelona"
   },
   {
     "id": "api_pellegrino_matarazzo",
     "name": "Pellegrino Matarazzo",
-    "country": "Real Sociedad",
+    "country": "USA",
     "style": "Creative Orchestrator",
     "reputation": 92,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/27r0oa1610657760.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Creative Structure",
+      "Midfield Orchestration",
+      "Flexible Systems",
+      "Adaptive Play"
+    ],
     "team": "Real Sociedad"
   },
   {
     "id": "api_marcelino",
     "name": "Marcelino",
-    "country": "Villarreal",
+    "country": "Spain",
     "style": "The Surgeon",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/coukv91549919367.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Tactical Precision",
+      "Compact Defense",
+      "Efficient Attacks",
+      "Game Management"
+    ],
     "team": "Villarreal"
   },
   {
     "id": "api_ernesto_valverde",
     "name": "Ernesto Valverde",
-    "country": "Athletic Club",
+    "country": "Spain",
     "style": "Basque Traditionalist",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/t7ozai1541330237.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Traditional Shape",
+      "Defensive Order",
+      "Controlled Possession",
+      "Match Stability"
+    ],
     "team": "Athletic Club"
   },
   {
     "id": "api_luis_castro",
     "name": "Luis Castro",
-    "country": "Levante",
+    "country": "Portugal",
     "style": "The Journeyman",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/2b8zms1603548333.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Journeyman Adaptation",
+      "Survival Tactics",
+      "Low Risk Play",
+      "Squad Management"
+    ],
     "team": "Levante"
   },
   {
     "id": "api_manuel_pellegrini",
     "name": "Manuel Pellegrini",
-    "country": "Real Betis",
+    "country": "Chile",
     "style": "The Engineer",
     "reputation": 92,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/0l2l4x1549370848.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Calm Authority",
+      "Attacking Balance",
+      "Veteran Trust",
+      "Game Control"
+    ],
     "team": "Real Betis"
   },
   {
     "id": "api_michel",
     "name": "Michel",
-    "country": "Girona",
+    "country": "Spain",
     "style": "The Catalyst",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/zpdks61509459654.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "High Tempo",
+      "Attacking Transitions",
+      "Fearless Football",
+      "Momentum Play"
+    ],
     "team": "Girona"
   },
   {
     "id": "api_inigo_perez",
     "name": "Inigo Perez",
-    "country": "Rayo Vallecano",
+    "country": "Spain",
     "style": "The Rising Star",
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/r4bke81742218694.jpg&w=400&h=400&fit=cover&a=top",
+    "traits": [
+      "Emerging Tactics",
+      "Youth Focus",
+      "High Motivation",
+      "Growth Potential"
+    ],
     "team": "Rayo Vallecano"
   }
 ]

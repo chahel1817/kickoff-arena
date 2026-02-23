@@ -36,6 +36,11 @@ export default function TeamSelectPage() {
     const handleTeamSelect = (team) => {
         setSelectedTeam(team);
         localStorage.setItem('selectedTeam', JSON.stringify(team));
+
+        // Brief delay for feedback before moving to next step
+        setTimeout(() => {
+            router.push('/manager-select');
+        }, 600);
     };
 
     const handleContinue = () => {
@@ -52,6 +57,53 @@ export default function TeamSelectPage() {
             .filter(team => team.name.toLowerCase().includes(searchTerm.toLowerCase()))
             .sort((a, b) => b.rating - a.rating)
         : [];
+
+    const getTeamTier = (team) => {
+        if (team.tier) return team.tier;
+        if (team.rating >= 86) return 'Elite';
+        if (team.rating >= 82) return 'Contender';
+        if (team.rating >= 78) return 'Rebuild';
+        return 'Underdog';
+    };
+
+    const getTeamTraits = (team) => {
+        if (team.traits) return team.traits;
+
+        // Dynamic defaults based on rating
+        if (team.rating >= 85) return 'Elite Squad • High Expectations • Europe Focus';
+        if (team.rating >= 80) return 'Strong Core • Growth Project • Domestic Focus';
+        if (team.rating >= 75) return 'Balanced Squad • Mid-Table Stability';
+        return 'Underdog • Development Project • Passionate Fanbase';
+    };
+
+    const getStadiumHint = (team) => {
+        const stadia = {
+            'mci': 'Etihad Stadium • Tactical Cauldron',
+            'ars': 'Emirates Stadium • Modern Fortress',
+            'liv': 'Anfield • Iconic Atmosphere',
+            'tot': 'Tottenham Stadium • Elite Facilities',
+            'mun': 'Old Trafford • Theatre of Dreams',
+            'che': 'Stamford Bridge • London Tradition',
+            'rma': 'Santiago Bernabéu • Royal Heritage',
+            'bar': 'Spotify Camp Nou • Global Stage',
+            'atm': 'Metropolitano • Electric Passion',
+            'aja': 'Johan Cruyff Arena • Total Legacy',
+            'psv': 'Philips Stadion • High Pressure',
+            'fey': 'De Kuip • Traditional Fortress',
+            'bvb': 'Signal Iduna Park • Yellow Wall',
+            'bay': 'Allianz Arena • German Powerhouse',
+            'milan': 'San Siro • Historic Arena',
+            'inter': 'San Siro • Tactical Stage',
+            'juve': 'Allianz Stadium • Black & White Pride'
+        };
+
+        if (stadia[team.id]) return stadia[team.id];
+
+        // Generic defaults
+        if (team.rating >= 82) return `Ground Zero • Iconic Fortress`;
+        if (team.rating >= 76) return `${team.name} Arena • Passionate Faith`;
+        return `${team.name} Ground • Local Identity`;
+    };
 
     return (
         <div className="entry-page no-snap">
@@ -132,77 +184,72 @@ export default function TeamSelectPage() {
                                 </div>
                             </div>
 
-                            <div className="teams-grid-refined">
+                            <div className={`teams-grid-refined ${selectedTeam ? 'has-selection' : ''}`}>
                                 {filteredTeams.map((team) => (
                                     <button
                                         key={team.id}
                                         onClick={() => handleTeamSelect(team)}
-                                        className={`team-card-premium glass ${selectedTeam?.id === team.id ? 'selected' : ''}`}
+                                        className={`team-card-premium glass ${selectedTeam?.id === team.id ? 'selected' : ''} ${getTeamTier(team) === 'Elite' ? 'tier-elite-featured' : ''}`}
+                                        style={{ '--team-accent': team.colors[0] || 'var(--primary)' }}
                                     >
                                         <div className="card-accent-glow" style={{ background: team.colors[0] }}></div>
 
                                         <div className="crest-display">
                                             <div className="crest-halo" style={{ borderColor: `${team.colors[0]}44` }}></div>
-                                            {team.logo ? (
+                                            <div className="crest-inner-fallback">
+                                                <Shield size={40} className="fallback-shield-icon" style={{ color: team.colors[0] }} />
+                                            </div>
+                                            {team.logo && (
                                                 <img
                                                     src={team.logo}
                                                     alt={`${team.name} Logo`}
                                                     className="team-logo-img"
+                                                    onError={(e) => {
+                                                        e.target.style.opacity = '0';
+                                                        e.target.nextSibling?.classList.add('show-fallback');
+                                                    }}
                                                 />
-                                            ) : (
-                                                <Shield size={40} color="#fff" strokeWidth={1.5} />
                                             )}
                                         </div>
 
                                         <div className="team-core-info">
                                             <h3 className="team-name-label">{team.name}</h3>
-                                            <div className="team-stats-row">
-                                                <div className="stat-pill">
-                                                    <span className="pill-label">OVR</span>
-                                                    <span className="pill-value">{team.rating}</span>
+                                            <div className="identity-stack">
+                                                <span className="team-traits-micro">{getTeamTraits(team)}</span>
+                                                <div className="stadium-badge">
+                                                    <Globe size={10} />
+                                                    <span>{getStadiumHint(team)}</span>
                                                 </div>
-                                                <div className="stat-pill">
-                                                    <Shield size={10} className="text-primary" />
-                                                    <span className="pill-value">PRO</span>
+                                            </div>
+                                            <div className="team-stats-row">
+                                                <div className="stat-pill tier-pill">
+                                                    <span className="pill-label">TIER</span>
+                                                    <div className="stat-divider"></div>
+                                                    <span className="pill-value">{getTeamTier(team)}</span>
+                                                </div>
+                                                <div className="stat-pill ovr-pill">
+                                                    <span className="pill-label">OVR</span>
+                                                    <div className="stat-divider"></div>
+                                                    <span className="pill-value">{team.rating}</span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="selection-check">
-                                            <div className="check-circle">
-                                                <Check size={16} />
-                                            </div>
+                                            {selectedTeam?.id === team.id ? (
+                                                <div className="check-circle check-animate">
+                                                    <Check size={18} />
+                                                </div>
+                                            ) : (
+                                                <div className="arrow-circle">
+                                                    <ChevronRight size={18} />
+                                                </div>
+                                            )}
                                         </div>
                                     </button>
                                 ))}
                             </div>
 
-                            {/* Sticky Confirmation Bar */}
-                            <div className={`confirmation-bar glass ${selectedTeam ? 'visible' : ''}`}>
-                                <div className="bar-content">
-                                    <div className="selected-preview">
-                                        <div className="preview-logo-box" style={{ background: selectedTeam?.colors?.[0] || 'var(--primary)' }}>
-                                            {selectedTeam?.logo ? (
-                                                <img src={selectedTeam.logo} alt="" />
-                                            ) : (
-                                                <Shield size={24} color="#fff" />
-                                            )}
-                                        </div>
-                                        <div className="preview-text">
-                                            <span className="preview-status">ASSIGNMENT PENDING</span>
-                                            <h4 className="preview-name">{selectedTeam?.name}</h4>
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        onClick={handleContinue}
-                                        className="action-btn-neon"
-                                    >
-                                        <span>SIGN CONTRACT</span>
-                                        <ChevronRight size={20} />
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     )}
                 </main>
@@ -555,36 +602,98 @@ export default function TeamSelectPage() {
 
                 .team-card-premium:hover {
                     background: rgba(255, 255, 255, 0.05);
-                    border-color: rgba(255, 255, 255, 0.2);
+                    border-color: var(--team-accent);
                     transform: translateY(-8px);
+                    box-shadow: 0 15px 40px -10px color-mix(in srgb, var(--team-accent) 40%, transparent);
+                }
+
+                .teams-grid-refined.has-selection .team-card-premium:not(.selected) {
+                    opacity: 0.25;
+                    filter: blur(2px) grayscale(0.8);
+                    transform: scale(0.97);
                 }
 
                 .team-card-premium.selected {
-                    background: rgba(0, 255, 136, 0.05);
+                    background: rgba(0, 255, 136, 0.12);
                     border-color: var(--primary);
                     border-width: 2px;
-                    box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
+                    box-shadow: 0 0 45px rgba(0, 255, 136, 0.3);
+                    transform: scale(1.05);
+                    z-index: 20;
+                }
+
+                /* Elite Featured Enhancement */
+                .tier-elite-featured {
+                    border: 1px solid rgba(255, 215, 0, 0.15);
+                    background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+                    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+                }
+
+                .tier-elite-featured::before {
+                    content: 'PRESTIGE CLUB';
+                    position: absolute;
+                    top: 1.25rem;
+                    left: 1.5rem;
+                    font-size: 0.5rem;
+                    font-weight: 900;
+                    color: #FFD700;
+                    letter-spacing: 0.2em;
+                    opacity: 0.6;
+                }
+
+                .tier-elite-featured .crest-halo {
+                    border-color: rgba(255, 215, 0, 0.3);
+                    opacity: 0.3;
+                }
+
+                .tier-elite-featured:hover {
+                    border-color: #FFD700 !important;
+                    box-shadow: 0 20px 50px -10px rgba(255, 215, 0, 0.15) !important;
                 }
 
                 .card-accent-glow {
                     position: absolute;
                     top: -50px;
                     right: -50px;
-                    width: 150px;
-                    height: 150px;
+                    width: 180px;
+                    height: 180px;
                     filter: blur(80px);
-                    opacity: 0.15;
+                    opacity: 0.12;
                     pointer-events: none;
+                    transition: all 0.5s ease;
+                }
+
+                .team-card-premium:hover .card-accent-glow {
+                    opacity: 0.35;
+                    transform: scale(1.2);
                 }
 
                 .crest-display {
                     position: relative;
                     width: 100px;
                     height: 100px;
-                    margin-bottom: 2rem;
+                    margin-bottom: 1.5rem;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    z-index: 2;
+                }
+
+                .crest-inner-fallback {
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(255, 255, 255, 0.03);
+                    border-radius: 50%;
+                    border: 1px dashed rgba(255, 255, 255, 0.1);
+                    opacity: 0.5;
+                }
+
+                .fallback-shield-icon {
+                    filter: drop-shadow(0 0 10px currentColor);
+                    opacity: 0.8;
                 }
 
                 .crest-halo {
@@ -592,33 +701,86 @@ export default function TeamSelectPage() {
                     inset: -15px;
                     border: 1px solid;
                     border-radius: 50%;
-                    opacity: 0.3;
-                    transition: 0.5s;
+                    opacity: 0.2;
+                    transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+                    filter: blur(2px);
                 }
 
                 .team-card-premium:hover .crest-halo {
-                    transform: scale(1.1);
-                    opacity: 0.6;
+                    transform: scale(1.15);
+                    opacity: 0.8;
+                    filter: blur(8px);
+                    box-shadow: 0 0 30px var(--team-accent);
                 }
 
                 .team-logo-img {
+                    position: relative;
                     width: 80px;
                     height: 80px;
                     object-fit: contain;
-                    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
-                    transition: 0.5s;
+                    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4)) grayscale(0.2);
+                    transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+                    z-index: 5;
+                    background: transparent;
                 }
 
                 .team-card-premium:hover .team-logo-img {
-                    transform: scale(1.1) translateY(-5px);
+                    transform: scale(1.1) translateY(-8px);
+                    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)) grayscale(0);
                 }
 
                 .team-name-label {
                     color: white;
-                    font-size: 1.4rem;
-                    font-weight: 800;
-                    margin-bottom: 1rem;
-                    letter-spacing: -0.02em;
+                    font-size: 1.85rem;
+                    font-weight: 900;
+                    margin-bottom: 0.15rem;
+                    letter-spacing: -0.04em;
+                    line-height: 1.1;
+                    opacity: 0.85;
+                    transition: 0.3s ease;
+                }
+
+                .team-card-premium:hover .team-name-label {
+                    opacity: 1;
+                    transform: scale(1.02);
+                }
+
+                .team-traits-micro {
+                    display: block;
+                    font-size: 0.62rem;
+                    font-weight: 600;
+                    color: rgba(255, 255, 255, 0.2);
+                    letter-spacing: 0.05em;
+                    text-transform: uppercase;
+                    transition: 0.3s ease;
+                }
+
+                .identity-stack {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.4rem;
+                    margin-bottom: 2rem;
+                }
+
+                .stadium-badge {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.4rem;
+                    font-size: 0.58rem;
+                    font-weight: 700;
+                    color: rgba(255, 255, 255, 0.15);
+                    letter-spacing: 0.03em;
+                    transition: 0.3s ease;
+                }
+
+                .team-card-premium:hover .stadium-badge {
+                    color: rgba(0, 255, 136, 0.4);
+                }
+
+                .team-card-premium:hover .team-traits-micro {
+                    color: rgba(255, 255, 255, 0.5);
+                    letter-spacing: 0.08em;
                 }
 
                 .team-stats-row {
@@ -630,37 +792,112 @@ export default function TeamSelectPage() {
                 .stat-pill {
                     display: flex;
                     align-items: center;
-                    gap: 0.5rem;
-                    background: rgba(255, 255, 255, 0.04);
-                    padding: 0.4rem 0.8rem;
-                    border-radius: 12px;
-                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    background: rgba(255, 255, 255, 0.02);
+                    padding: 0.4rem 0.9rem;
+                    border-radius: 14px;
+                    border: 1px solid rgba(255, 255, 255, 0.04);
+                    transition: all 0.3s ease;
+                }
+
+                .stat-divider {
+                    width: 1px;
+                    height: 10px;
+                    background: rgba(255, 255, 255, 0.08);
+                    margin: 0 0.75rem;
+                }
+
+                .tier-pill {
+                    background: rgba(0, 255, 136, 0.03);
+                    border-color: rgba(0, 255, 136, 0.1);
+                }
+
+                .tier-pill .pill-label {
+                    color: rgba(0, 255, 136, 0.5);
+                }
+
+                .tier-pill .pill-value {
+                    color: var(--primary);
+                    font-weight: 900;
+                    text-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+                }
+
+                .tier-pill .stat-divider {
+                    background: rgba(0, 255, 136, 0.2);
+                }
+
+                .team-card-premium:hover .stat-pill {
+                    background: rgba(255, 255, 255, 0.05);
+                    border-color: rgba(255, 255, 255, 0.08);
+                }
+
+                .team-card-premium:hover .tier-pill {
+                    background: rgba(0, 255, 136, 0.06);
+                    border-color: rgba(0, 255, 136, 0.3);
+                    box-shadow: 0 0 15px rgba(0, 255, 136, 0.1);
                 }
 
                 .pill-label {
                     font-size: 0.6rem;
+                    color: rgba(255, 255, 255, 0.2);
+                    font-weight: 900;
+                    letter-spacing: 0.1em;
+                    transition: 0.3s;
+                }
+
+                .team-card-premium:hover .pill-label {
                     color: rgba(255, 255, 255, 0.4);
-                    font-weight: 800;
                 }
 
                 .pill-value {
-                    font-size: 0.85rem;
-                    color: white;
-                    font-weight: 700;
+                    font-size: 0.75rem;
+                    color: rgba(255, 255, 255, 0.5);
+                    font-weight: 800;
+                    letter-spacing: 0.02em;
+                    transition: 0.3s;
+                }
+
+                .team-card-premium:hover .pill-value {
+                    color: rgba(255, 255, 255, 0.9);
                 }
 
                 .selection-check {
                     position: absolute;
                     top: 1.5rem;
                     right: 1.5rem;
-                    opacity: 0;
-                    transform: scale(0.5);
-                    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    opacity: 0.2;
+                    transform: scale(0.8);
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+
+                .team-card-premium:hover .selection-check {
+                    opacity: 1;
+                    transform: scale(1);
                 }
 
                 .team-card-premium.selected .selection-check {
                     opacity: 1;
-                    transform: scale(1);
+                    transform: scale(1.1);
+                }
+
+                .arrow-circle {
+                    width: 36px;
+                    height: 36px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    color: white;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: 0.3s;
+                }
+
+                .team-card-premium:hover .arrow-circle {
+                    background: var(--team-accent);
+                    color: black;
+                    border-color: var(--team-accent);
+                    transform: translateX(3px);
+                    box-shadow: 0 0 15px color-mix(in srgb, var(--team-accent) 50%, transparent);
                 }
 
                 .check-circle {
@@ -673,6 +910,15 @@ export default function TeamSelectPage() {
                     align-items: center;
                     justify-content: center;
                     box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+                }
+
+                .check-animate {
+                    animation: checkPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+                }
+
+                @keyframes checkPop {
+                    0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+                    100% { transform: scale(1) rotate(0deg); opacity: 1; }
                 }
 
                 .selected-glow-line {

@@ -53,7 +53,7 @@ export default function WelcomeScreen() {
                         <div className="welcome-stat-item">
                             <Shield size={16} className="text-primary" />
                             <div>
-                                <span className="stat-val">200+</span>
+                                <span className="stat-val">150+</span>
                                 <span className="stat-desc">CLUBS</span>
                             </div>
                         </div>
@@ -61,7 +61,7 @@ export default function WelcomeScreen() {
                         <div className="welcome-stat-item">
                             <Zap size={16} className="text-primary" />
                             <div>
-                                <span className="stat-val">5,000+</span>
+                                <span className="stat-val">350+</span>
                                 <span className="stat-desc">PLAYERS</span>
                             </div>
                         </div>
@@ -69,7 +69,7 @@ export default function WelcomeScreen() {
                         <div className="welcome-stat-item">
                             <Trophy size={16} className="text-primary" />
                             <div>
-                                <span className="stat-val">6</span>
+                                <span className="stat-val">10</span>
                                 <span className="stat-desc">LEAGUES</span>
                             </div>
                         </div>

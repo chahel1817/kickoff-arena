@@ -411,19 +411,22 @@ export default function DefenderSelectPage() {
                 .legend-card .df-card-pos { background:rgba(245,158,11,.1); color:#f59e0b; }
 
                 /* Confirm Bar */
-                .df-confirm-bar { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(150%); width:calc(100% - 4rem); max-width:900px; padding:1.25rem 2.5rem; border-radius:24px; border:1px solid rgba(16,185,129,.3); z-index:3000; box-shadow:0 25px 60px -12px rgba(0,0,0,.8); transition:all .5s cubic-bezier(.175,.885,.32,1.275); background:rgba(10,10,15,.9); backdrop-filter:blur(30px); }
+                .df-confirm-bar { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(150%); width:calc(100% - 4rem); max-width:950px; padding:1.4rem 2.5rem; border-radius:24px; border:1px solid rgba(59, 130, 246,.3); border-top: 1px solid rgba(59, 130, 246,.6); z-index:3000; box-shadow:0 30px 70px -15px rgba(0,0,0,.9), 0 0 30px rgba(59, 130, 246,.1); transition:all .6s cubic-bezier(.16,1,.3,1); background:rgba(10,10,18,.85); backdrop-filter:blur(40px); }
                 .df-confirm-bar.visible { transform:translateX(-50%) translateY(0); }
-                .df-bar-content { display:flex; justify-content:space-between; align-items:center; }
-                .df-bar-info { display:flex; flex-direction:column; gap:.15rem; }
-                .df-bar-tag { font-size:.55rem; font-weight:900; color:#10b981; letter-spacing:.15em; }
-                .df-bar-status { font-size: 1.1rem; font-weight: 900; color: white; margin: 0.2rem 0; }
-                .df-bar-names { font-size:.75rem; color:rgba(255,255,255,.4); font-weight:700; max-width:450px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+                .df-bar-content { display:flex; justify-content:space-between; align-items:center; gap: 2rem; }
+                .df-bar-info { display:flex; flex-direction:column; gap:.2rem; flex: 1; }
+                .df-bar-tag { font-size:.6rem; font-weight:950; color:#3b82f6; letter-spacing:.2em; text-transform: uppercase; }
+                .df-bar-status { font-size: 1.25rem; font-weight: 950; color: white; margin: 0.1rem 0; }
+                .df-bar-names { font-size:.75rem; color:rgba(255,255,255,.4); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 400px; }
                 
-                .df-proceed-btn { display:flex; align-items:center; gap:.8rem; background:linear-gradient(135deg,#10b981,#34d399); color:black; padding:1rem 2.5rem; border-radius:14px; font-weight:950; font-size:.95rem; letter-spacing:.05em; border:none; cursor:pointer; transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow:0 10px 30px rgba(16,185,129,0.25); white-space:nowrap; }
-                .df-proceed-btn:hover { transform:scale(1.05) translateY(-2px); box-shadow:0 15px 40px rgba(16,185,129,0.4); }
+                .df-proceed-btn { position: relative; display:flex; align-items:center; gap:.8rem; background:linear-gradient(135deg,#3b82f6,#2563eb); color:white; padding:1.1rem 2.8rem; border-radius:16px; font-weight:950; font-size:1rem; letter-spacing:.05em; border:none; cursor:pointer; transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow:0 10px 30px rgba(59, 130, 246, 0.3); white-space:nowrap; overflow: hidden; }
+                .df-proceed-btn:not(:disabled) { animation: dfBtnPulse 2s infinite; }
+                @keyframes dfBtnPulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+                
+                .df-proceed-btn:hover { transform:scale(1.04) translateY(-3px); box-shadow:0 15px 40px rgba(59, 130, 246, 0.4); }
                 .df-btn-icon { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
                 .df-proceed-btn:hover .df-btn-icon { transform: rotate(15deg) scale(1.2); }
-                .df-proceed-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+                .df-proceed-btn:disabled { opacity:.4; cursor:not-allowed; transform:none; filter: grayscale(1); }
 
                 /* Progress */
                 .df-progress-footer { position:fixed; bottom:0; left:0; right:0; display:flex; justify-content:center; padding:1rem 2rem; background:linear-gradient(to top,rgba(2,4,10,.95),transparent); pointer-events:none; z-index:50; }

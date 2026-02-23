@@ -8,18 +8,20 @@
       "#6CABDD",
       "#FFFFFF"
     ],
-    "logo": "https://apiv2.allsportsapi.com/logo/80_manchester-city.jpg"
+    "logo": "https://apiv2.allsportsapi.com/logo/80_manchester-city.jpg",
+    "traits": "Tactical Mastery • Wealth of Talent • Possession Focus"
   },
   {
     "id": "ars",
     "name": "Arsenal",
     "league": "pl",
-    "rating": 87,
+    "rating": 85,
     "colors": [
       "#EF0107",
       "#FFFFFF"
     ],
-    "logo": "https://apiv2.allsportsapi.com/logo/18233_arsenal.jpg"
+    "logo": "https://apiv2.allsportsapi.com/logo/18233_arsenal.jpg",
+    "traits": "Youth Development • Beautiful Football • Rising Power"
   },
   {
     "id": "liv",
@@ -30,7 +32,8 @@
       "#C8102E",
       "#F6EB61"
     ],
-    "logo": "https://apiv2.allsportsapi.com/logo/84_liverpool.jpg"
+    "logo": "https://apiv2.allsportsapi.com/logo/84_liverpool.jpg",
+    "traits": "Heavy Metal Football • Anfield Magic • High Intensity"
   },
   {
     "id": "avl",
@@ -69,12 +72,13 @@
     "id": "mun",
     "name": "Man United",
     "league": "pl",
-    "rating": 82,
+    "rating": 86,
     "colors": [
       "#DA291C",
       "#FBE122"
     ],
-    "logo": "https://apiv2.allsportsapi.com/logo/102_manchester-united.jpg"
+    "logo": "https://apiv2.allsportsapi.com/logo/102_manchester-united.jpg",
+    "traits": "Historic Heritage • High Pressure • Global Icon"
   },
   {
     "id": "cry",
@@ -140,7 +144,8 @@
       "#FFFFFF",
       "#FEBE10"
     ],
-    "logo": "https://apiv2.allsportsapi.com/logo/76_real-madrid.jpg"
+    "logo": "https://apiv2.allsportsapi.com/logo/76_real-madrid.jpg",
+    "traits": "Galactico Era • Champions DNA • Unmatched Prestige"
   },
   {
     "id": "bar",
@@ -151,7 +156,8 @@
       "#004D98",
       "#A50044"
     ],
-    "logo": "https://apiv2.allsportsapi.com/logo/97_barcelona.jpg"
+    "logo": "https://apiv2.allsportsapi.com/logo/97_barcelona.jpg",
+    "traits": "La Masia Roots • Tiki-Taka Legacy • More Than A Club"
   },
   {
     "id": "atm",
@@ -162,7 +168,7 @@
       "#CB3524",
       "#FFFFFF"
     ],
-    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f4/Atletico_madrid_2017_logo.svg/200px-Atletico_madrid_2017_logo.svg.png"
+    "logo": "https://apiv2.allsportsapi.com/logo/157_atletico-madrid.jpg"
   },
   {
     "id": "gir",
@@ -866,7 +872,8 @@
       "#AF122A",
       "#FFFFFF"
     ],
-    "logo": "https://apiv2.allsportsapi.com/logo/86_ajax.jpg"
+    "logo": "https://apiv2.allsportsapi.com/logo/86_ajax.jpg",
+    "traits": "Youth Academy • High Expectations • Europe Focus"
   },
   {
     "id": "psv",
@@ -877,7 +884,8 @@
       "#EE2523",
       "#FFFFFF"
     ],
-    "logo": "https://apiv2.allsportsapi.com/logo/150_psv.jpg"
+    "logo": "https://apiv2.allsportsapi.com/logo/150_psv.jpg",
+    "traits": "Balanced Squad • Domestic Focus • Technical Talent"
   },
   {
     "id": "fey",
@@ -888,7 +896,8 @@
       "#E31D23",
       "#000000"
     ],
-    "logo": "https://apiv2.allsportsapi.com/logo/168_feyenoord.jpg"
+    "logo": "https://apiv2.allsportsapi.com/logo/168_feyenoord.jpg",
+    "traits": "Passionate Fans • Defensive Grit • Working Class Pride"
   },
   {
     "id": "az",

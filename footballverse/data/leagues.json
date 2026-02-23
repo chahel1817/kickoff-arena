@@ -4,69 +4,79 @@
         "name": "Premier League",
         "country": "England",
         "code": "gb-eng",
-        "icon": "trophy"
+        "icon": "trophy",
+        "traits": "High intensity • Strong finances"
     },
     {
         "id": "laliga",
         "name": "La Liga",
         "country": "Spain",
         "code": "es",
-        "icon": "trophy"
+        "icon": "trophy",
+        "traits": "Technical play • Youth focus"
     },
     {
         "id": "bundesliga",
         "name": "Bundesliga",
         "country": "Germany",
         "code": "de",
-        "icon": "trophy"
+        "icon": "trophy",
+        "traits": "High press • Tactical depth"
     },
     {
         "id": "seriea",
         "name": "Serie A",
         "country": "Italy",
         "code": "it",
-        "icon": "trophy"
+        "icon": "trophy",
+        "traits": "Defensive mastery"
     },
     {
         "id": "ligue1",
         "name": "Ligue 1",
         "country": "France",
         "code": "fr",
-        "icon": "trophy"
+        "icon": "trophy",
+        "traits": "Elite youth pipeline"
     },
     {
         "id": "eredivisie",
         "name": "Eredivisie",
         "country": "Netherlands",
         "code": "nl",
-        "icon": "trophy"
+        "icon": "trophy",
+        "traits": "Total Football heritage • Talent factory"
     },
     {
         "id": "spl",
         "name": "Saudi Pro League",
         "country": "Saudi Arabia",
         "code": "sa",
-        "icon": "trophy"
+        "icon": "trophy",
+        "traits": "High budgets • Star signings"
     },
     {
         "id": "superlig",
         "name": "Süper Lig",
         "country": "Turkey",
         "code": "tr",
-        "icon": "trophy"
+        "icon": "trophy",
+        "traits": "Passionate atmosphere • Experienced stars"
     },
     {
         "id": "jupiler",
         "name": "Pro League",
         "country": "Belgium",
         "code": "be",
-        "icon": "trophy"
+        "icon": "trophy",
+        "traits": "Tactical flexibility • Scouting hub"
     },
     {
         "id": "isl",
         "name": "Indian Super League",
         "country": "India",
         "code": "in",
-        "icon": "trophy"
+        "icon": "trophy",
+        "traits": "Emerging league • High growth potential"
     }
 ]

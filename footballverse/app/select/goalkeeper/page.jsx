@@ -383,18 +383,22 @@ export default function GoalkeeperSelectPage() {
                 .gk-card-pos { background: rgba(245, 158, 11, 0.1); color: #f59e0b; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.6rem; font-weight: 900; letter-spacing: 0.1em; }
 
                 /* Confirm Bar */
-                .gk-confirm-bar { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(150%); width: calc(100% - 4rem); max-width: 900px; padding: 1.25rem 2.5rem; border-radius: 24px; border: 1px solid rgba(245, 158, 11, 0.3); z-index: 3000; box-shadow: 0 25px 60px -12px rgba(0,0,0,0.8); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(10, 10, 15, 0.9); backdrop-filter: blur(30px); }
+                .gk-confirm-bar { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(150%); width: calc(100% - 4rem); max-width: 950px; padding: 1.4rem 2.5rem; border-radius: 24px; border: 1px solid rgba(245, 158, 11, 0.3); border-top: 1px solid rgba(245, 158, 11, 0.6); z-index: 3000; box-shadow: 0 30px 70px -15px rgba(0,0,0,0.9), 0 0 30px rgba(245, 158, 11, 0.1); transition: all 0.6s cubic-bezier(.16,1,.3,1); background: rgba(10, 10, 18, 0.85); backdrop-filter: blur(40px); }
                 .gk-confirm-bar.visible { transform: translateX(-50%) translateY(0); }
-                .gk-bar-content { display: flex; justify-content: space-between; align-items: center; }
+                .gk-bar-content { display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
                 .gk-bar-info { flex:1; }
-                .gk-bar-tag { display:block; font-size:.55rem; font-weight:900; color:#f59e0b; letter-spacing:.15em; margin-bottom:.25rem; }
-                .gk-bar-name { font-size:1.5rem; font-weight:900; color:white; letter-spacing:-.02em; line-height:1; margin-bottom: 0.5rem; }
+                .gk-bar-tag { display:block; font-size:.6rem; font-weight:950; color:#f59e0b; letter-spacing:.2em; margin-bottom:.25rem; text-transform: uppercase; }
+                .gk-bar-name { font-size:1.5rem; font-weight:950; color:white; letter-spacing:-.02em; line-height:1; margin-bottom: 0.5rem; }
                 .gk-bar-tags { display: flex; gap: 0.6rem; margin-bottom: 0.6rem; }
                 .gk-bar-tag-pill { font-size: 0.65rem; font-weight: 600; color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 0.2rem 0.6rem; border-radius: 4px; }
                 .gk-bar-meta-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.35); }
-                .gk-bar-ovr-lock { color: #f59e0b; }
-                .gk-proceed-btn { display: flex; align-items: center; gap: 0.8rem; background: linear-gradient(135deg, #f59e0b, #fbbf24); color: black; padding: 1rem 2.5rem; border-radius: 14px; font-weight: 950; font-size: 0.95rem; letter-spacing: 0.05em; border: none; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 30px rgba(245, 158, 11, 0.25); white-space: nowrap; }
-                .gk-proceed-btn:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4); background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+                .gk-bar-ovr-lock { color: #f59e0b; font-weight: 950; }
+                
+                .gk-proceed-btn { position: relative; display: flex; align-items: center; gap: 0.8rem; background: linear-gradient(135deg, #f59e0b, #fbbf24); color: black; padding: 1.1rem 2.8rem; border-radius: 16px; font-weight: 950; font-size: 1rem; letter-spacing: 0.05em; border: none; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3); white-space: nowrap; overflow: hidden; }
+                .gk-proceed-btn:not(:disabled) { animation: gkBtnPulse 2s infinite; }
+                @keyframes gkBtnPulse { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
+                
+                .gk-proceed-btn:hover { transform: scale(1.04) translateY(-3px); box-shadow: 0 15px 40px rgba(245, 158, 11, 0.5); }
                 .gk-btn-icon { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
                 .gk-proceed-btn:hover .gk-btn-icon { transform: rotate(15deg) scale(1.2); }
 

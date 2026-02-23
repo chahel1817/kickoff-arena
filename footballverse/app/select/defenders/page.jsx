@@ -201,9 +201,7 @@ export default function DefenderSelectPage() {
                                         <span>{player.position}</span>
                                     </div>
 
-                                    {player.tier === 'legend' && (
-                                        <div className="df-legend-badge"><Star size={12} /><span>LEGEND</span></div>
-                                    )}
+                                    {/* Removed top legend badge to clear head area */}
 
                                     {isSelected && (
                                         <div className="df-selected-badge">
@@ -441,11 +439,15 @@ export default function DefenderSelectPage() {
                 /* Responsive */
                 @media(max-width:768px) {
                     .df-ctx-bar { flex-wrap:wrap; gap:.75rem; padding:.75rem 1rem; }
-                    .df-ctx-center { gap:.75rem; }
-                    .df-mega-title { font-size:2.3rem; }
+                    .df-ctx-center { gap:.75rem; order: 1; }
+                    .df-ctx-left { order: 2; width: auto; }
+                    .df-ctx-right { display: none; }
+                    .df-mega-title { font-size:2.2rem; }
                     .df-grid { grid-template-columns:1fr 1fr; gap:.75rem; }
-                    .df-photo-frame { height:180px; }
-                    .df-card-name { font-size:.9rem; }
+                    .df-photo-frame { height:160px; }
+                    .df-card-name { font-size:.95rem; }
+                    .df-card-rating { top: 0.5rem; right: 0.5rem; padding: 0.25rem 0.5rem; }
+                    .df-ovr-value { font-size: 1rem; }
                     .df-filter-section { gap:1rem; }
                     .df-search-wrapper { max-width:100%; }
                     .df-confirm-bar { width:95%; padding:1rem; }
@@ -454,8 +456,16 @@ export default function DefenderSelectPage() {
                     .df-proceed-btn { width:100%; justify-content:center; padding:.85rem; font-size:.8rem; }
                 }
                 @media(max-width:480px) {
-                    .df-grid { grid-template-columns:1fr; }
-                    .df-ctx-right { display:none; }
+                    .df-grid { grid-template-columns:1fr 1fr; gap:0.5rem; }
+                    .df-photo-frame { height: 180px; }
+                    .df-card-info { padding: 1rem 0.75rem; margin-top: -2.3rem; }
+                    .df-card-name { font-size: 0.8rem; }
+                    .df-card-club { font-size: 0.4rem; }
+                    .df-card-meta { font-size: 0.55rem; }
+                    .df-role-indicator { bottom: 0.4rem; right: 0.4rem; padding: 0.15rem 0.35rem; font-size: 0.4rem; }
+                    .df-skill-badges { top: 0.4rem; left: 0.4rem; gap: 0.2rem; }
+                    .df-skill-badge { padding: 0.15rem 0.35rem; font-size: 0.35rem; gap: 0.2rem; border-radius: 3px; }
+                    .df-skill-badge :global(svg) { width: 6px; height: 6px; }
                 }
             `}</style>
         </div>

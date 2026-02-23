@@ -192,9 +192,7 @@ export default function MidfielderSelectPage() {
                                         ))}
                                     </div>
 
-                                    {player.tier === 'legend' && (
-                                        <div className="mf-legend-badge"><Star size={12} /><span>LEGEND</span></div>
-                                    )}
+                                    {/* Top legend badge removed to clear heads */}
                                     {isSelected && (
                                         <div className="mf-selected-badge"><Check size={20} /></div>
                                     )}
@@ -447,11 +445,15 @@ export default function MidfielderSelectPage() {
 
                 @media(max-width:768px) {
                     .mf-ctx-bar { flex-wrap:wrap; gap:.75rem; padding:.75rem 1rem; }
-                    .mf-ctx-center { gap:.75rem; }
-                    .mf-mega-title { font-size:2.3rem; }
+                    .mf-ctx-center { gap:.75rem; order: 1; }
+                    .mf-ctx-left { order: 2; width: auto; }
+                    .mf-ctx-right { display: none; }
+                    .mf-mega-title { font-size:2.2rem; }
                     .mf-grid { grid-template-columns:1fr 1fr; gap:.75rem; }
-                    .mf-photo-frame { height:180px; }
-                    .mf-card-name { font-size:.9rem; }
+                    .mf-photo-frame { height:160px; }
+                    .mf-card-name { font-size:1rem; }
+                    .mf-card-rating { top: 0.5rem; right: 0.5rem; padding: 0.25rem 0.5rem; }
+                    .mf-ovr-value { font-size: 1rem; }
                     .mf-filter-section { gap:1rem; }
                     .mf-search-wrapper { max-width:100%; }
                     .mf-confirm-bar { width:95%; padding:1rem; }
@@ -460,8 +462,16 @@ export default function MidfielderSelectPage() {
                     .mf-proceed-btn { width:100%; justify-content:center; padding:.85rem; font-size:.8rem; }
                 }
                 @media(max-width:480px) {
-                    .mf-grid { grid-template-columns:1fr; }
-                    .mf-ctx-right { display:none; }
+                    .mf-grid { grid-template-columns:1fr 1fr; gap:0.5rem; }
+                    .mf-photo-frame { height: 180px; }
+                    .mf-card-info { padding: 1rem 0.75rem; margin-top: -2.3rem; }
+                    .mf-card-name { font-size: 0.8rem; }
+                    .mf-card-club { font-size: 0.45rem; }
+                    .mf-card-meta { font-size: 0.55rem; }
+                    .mf-role-badge { top: 0.4rem; left: 0.4rem; padding: 0.15rem 0.35rem; font-size: 0.4rem; }
+                    .mf-skill-badges { top: 0.4rem; left: 0.4rem; gap: 0.15rem; }
+                    .mf-skill-badge { padding: 0.12rem 0.3rem; font-size: 0.35rem; gap: 0.15rem; }
+                    .mf-skill-badge :global(svg) { width: 6px; height: 6px; }
                 }
             `}</style>
         </div>

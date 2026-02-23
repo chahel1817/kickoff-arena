@@ -11,6 +11,11 @@
       "Discipline Control",
       "Late-Game Mentality",
       "Youth Trust"
+    ],
+    "formations": [
+      "4-4-2",
+      "4-2-3-1",
+      "4-3-3"
     ]
   },
   {
@@ -21,10 +26,14 @@
     "reputation": 98,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/m4vfto1767952704.jpg&w=400&h=400&fit=cover&a=top",
     "traits": [
-      "Positional Play",
-      "Possession Dominance",
-      "Tactical Flexibility",
-      "High Press"
+      "Football Philosophy",
+      "Total Football Origin",
+      "Technical Innovation",
+      "Mentorship"
+    ],
+    "formations": [
+      "3-4-3",
+      "4-3-3"
     ]
   },
   {
@@ -39,6 +48,11 @@
       "Big Match Specialist",
       "Counter Attacks",
       "Psychological Edge"
+    ],
+    "formations": [
+      "4-2-3-1",
+      "4-3-3",
+      "5-3-2"
     ]
   },
   {
@@ -53,6 +67,11 @@
       "Tactical Adaptability",
       "Veteran Optimization",
       "Calm Leadership"
+    ],
+    "formations": [
+      "4-3-3",
+      "4-4-2",
+      "4-2-3-1"
     ]
   },
   {
@@ -63,10 +82,14 @@
     "reputation": 96,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/2gbddy1597184262.jpg&w=400&h=400&fit=cover&a=top",
     "traits": [
+      "Heavy Metal Football",
       "Gegenpressing",
-      "High Energy",
-      "Fast Transitions",
-      "Squad Unity"
+      "Inspirational Leader",
+      "Fast Transitions"
+    ],
+    "formations": [
+      "4-3-3",
+      "4-2-3-1"
     ]
   },
   {
@@ -81,6 +104,10 @@
       "Star Management",
       "Tactical Simplicity",
       "Confidence Boost"
+    ],
+    "formations": [
+      "4-3-3",
+      "4-4-2 Diamond"
     ]
   },
   {
@@ -95,6 +122,10 @@
       "Positional Freedom",
       "Youth Development",
       "Tactical Innovation"
+    ],
+    "formations": [
+      "3-4-3",
+      "4-3-3"
     ]
   },
   {
@@ -109,6 +140,10 @@
       "Tactical Innovation",
       "Progressive Build-Up",
       "Smart Rotation"
+    ],
+    "formations": [
+      "4-3-3",
+      "4-2-3-1"
     ],
     "team": "Liverpool"
   },
@@ -125,6 +160,10 @@
       "Defensive Balance",
       "Squad Discipline"
     ],
+    "formations": [
+      "4-2-3-1",
+      "4-3-3"
+    ],
     "team": "Chelsea"
   },
   {
@@ -139,6 +178,10 @@
       "Possession Balance",
       "Calm Tempo",
       "Player Development"
+    ],
+    "formations": [
+      "4-2-3-1",
+      "4-3-3"
     ],
     "team": "Manchester United"
   },
@@ -155,6 +198,10 @@
       "Youth Trust",
       "Defensive Compactness"
     ],
+    "formations": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
     "team": "Arsenal FC"
   },
   {
@@ -169,6 +216,10 @@
       "Set-Piece Mastery",
       "Adaptive Tactics",
       "Overperformance"
+    ],
+    "formations": [
+      "3-5-2",
+      "4-3-3"
     ],
     "team": "Brentford"
   },
@@ -185,6 +236,10 @@
       "Vertical Attacks",
       "Physical Demand"
     ],
+    "formations": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
     "team": "AFC Bournemouth"
   },
   {
@@ -195,10 +250,15 @@
     "reputation": 82,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/yrpxwp1471026543.jpg&w=400&h=400&fit=cover&a=top",
     "traits": [
-      "Youth Mentorship",
-      "Technical Focus",
-      "Player Growth",
-      "Long-Term Vision"
+      "Tactical Fluidity",
+      "Elite Motivation",
+      "Clutch Performance",
+      "Modern Vision"
+    ],
+    "formations": [
+      "4-3-3",
+      "4-4-2 Diamond",
+      "3-5-2"
     ],
     "team": "Everton"
   },
@@ -215,6 +275,10 @@
       "Controlled Tempo",
       "Risk Management"
     ],
+    "formations": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
     "team": "Burnley"
   },
   {
@@ -229,6 +293,10 @@
       "High Work Rate",
       "Defensive Grit",
       "Team Unity"
+    ],
+    "formations": [
+      "3-4-3",
+      "4-4-2"
     ],
     "team": "Wolverhampton Wanderers"
   },
@@ -245,6 +313,10 @@
       "High Energy",
       "Tactical Curiosity"
     ],
+    "formations": [
+      "3-4-3",
+      "4-3-3"
+    ],
     "team": "Brighton & Hove Albion"
   },
   {
@@ -259,6 +331,10 @@
       "Defensive Transitions",
       "Compact Shape",
       "Physical Play"
+    ],
+    "formations": [
+      "3-4-3",
+      "4-2-3-1"
     ],
     "team": "West Ham United"
   },
@@ -275,6 +351,10 @@
       "Structured Press",
       "Tactical Discipline"
     ],
+    "formations": [
+      "4-2-3-1",
+      "4-3-3"
+    ],
     "team": "Fulham"
   },
   {
@@ -289,6 +369,10 @@
       "Tactical Preparation",
       "Discipline Focus",
       "Marginal Gains"
+    ],
+    "formations": [
+      "4-3-3",
+      "4-2-3-1"
     ],
     "team": "Brentford"
   },
@@ -305,6 +389,10 @@
       "Tactical Preparation",
       "Opponent Analysis"
     ],
+    "formations": [
+      "4-2-3-1",
+      "4-4-2"
+    ],
     "team": "Aston Villa"
   },
   {
@@ -319,6 +407,10 @@
       "Aerial Dominance",
       "Physical Football",
       "Low-Risk Play"
+    ],
+    "formations": [
+      "4-4-2",
+      "4-5-1"
     ],
     "team": "Nottingham Forest"
   },
@@ -335,6 +427,10 @@
       "Attacking Balance",
       "Positive Culture"
     ],
+    "formations": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
     "team": "Newcastle United"
   },
   {
@@ -349,6 +445,10 @@
       "Vertical Passing",
       "Press Resistance",
       "Squad Rotation"
+    ],
+    "formations": [
+      "4-2-3-1",
+      "4-3-3"
     ],
     "team": "Leeds United"
   },
@@ -365,6 +465,10 @@
       "Long-Term Planning",
       "Development Focus"
     ],
+    "formations": [
+      "4-2-3-1",
+      "3-4-3"
+    ],
     "team": "Sunderland"
   },
   {
@@ -379,6 +483,10 @@
       "Fast Transitions",
       "Wing Utilization",
       "Intensity Control"
+    ],
+    "formations": [
+      "3-4-2-1",
+      "4-2-3-1"
     ],
     "team": "Crystal Palace"
   },
@@ -395,6 +503,10 @@
       "Compact Shape",
       "Counter Precision"
     ],
+    "formations": [
+      "4-4-2",
+      "5-3-2"
+    ],
     "team": "Atlético de Madrid"
   },
   {
@@ -409,6 +521,10 @@
       "Defensive Structure",
       "Learning Curve",
       "Club Loyalty"
+    ],
+    "formations": [
+      "4-3-3",
+      "4-2-3-1"
     ],
     "team": "Real Madrid"
   },
@@ -425,6 +541,10 @@
       "Mental Resilience",
       "Team Balance"
     ],
+    "formations": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
     "team": "Sevilla"
   },
   {
@@ -439,6 +559,10 @@
       "Vertical Attacking",
       "Fast Recovery",
       "Direct Play"
+    ],
+    "formations": [
+      "4-2-3-1",
+      "4-3-3"
     ],
     "team": "Barcelona"
   },
@@ -455,6 +579,10 @@
       "Flexible Systems",
       "Adaptive Play"
     ],
+    "formations": [
+      "3-4-3",
+      "4-3-3"
+    ],
     "team": "Real Sociedad"
   },
   {
@@ -469,6 +597,10 @@
       "Compact Defense",
       "Efficient Attacks",
       "Game Management"
+    ],
+    "formations": [
+      "4-4-2",
+      "4-2-3-1"
     ],
     "team": "Villarreal"
   },
@@ -485,6 +617,10 @@
       "Controlled Possession",
       "Match Stability"
     ],
+    "formations": [
+      "4-2-3-1",
+      "4-4-2"
+    ],
     "team": "Athletic Club"
   },
   {
@@ -500,6 +636,10 @@
       "Low Risk Play",
       "Squad Management"
     ],
+    "formations": [
+      "4-2-3-1",
+      "4-3-3"
+    ],
     "team": "Levante"
   },
   {
@@ -510,10 +650,15 @@
     "reputation": 92,
     "image": "https://images.weserv.nl/?url=r2.thesportsdb.com/images/media/player/thumb/0l2l4x1549370848.jpg&w=400&h=400&fit=cover&a=top",
     "traits": [
-      "Calm Authority",
-      "Attacking Balance",
-      "Veteran Trust",
-      "Game Control"
+      "Calm Leadership",
+      "Adaptive Tactics",
+      "Elite Man-Management",
+      "Relational Play"
+    ],
+    "formations": [
+      "4-3-3",
+      "4-4-2 Diamond",
+      "4-2-3-1"
     ],
     "team": "Real Betis"
   },

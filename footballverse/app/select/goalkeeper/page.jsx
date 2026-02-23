@@ -187,13 +187,7 @@ export default function GoalkeeperSelectPage() {
                                         ))}
                                     </div>
 
-                                    {/* Legend Badge */}
-                                    {gk.tier === 'legend' && (
-                                        <div className="gk-legend-badge">
-                                            <Star size={12} />
-                                            <span>LEGEND</span>
-                                        </div>
-                                    )}
+                                    {/* Legend Badge removed from top to clear head area */}
 
                                     {/* Rating */}
                                     <div className="gk-card-rating">
@@ -414,11 +408,32 @@ export default function GoalkeeperSelectPage() {
                 /* Responsive */
                 @media (max-width: 768px) {
                     .gk-context-bar { flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem 1rem; }
-                    .gk-ctx-center { gap: 0.75rem; }
-                    .gk-mega-title { font-size: 2.3rem; }
+                    .gk-ctx-center { gap: 0.75rem; order: 1; }
+                    .gk-ctx-left { order: 2; width: auto; }
+                    .gk-ctx-right { display: none; }
+                    .gk-mega-title { font-size: 2.2rem; }
+                    .gk-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+                    .gk-photo-frame { height: 160px; }
+                    .gk-card-name { font-size: 0.95rem; }
+                    .gk-card-rating { bottom: 6rem; right: 0.5rem; padding: 0.4rem 0.6rem; }
+                    .gk-ovr-value { font-size: 1rem; }
                     .gk-confirm-bar { width: 95%; padding: 1rem; }
                     .gk-bar-name { font-size: 1.1rem; }
                     .gk-proceed-btn { padding: 0.8rem 1.5rem; font-size: 0.8rem; }
+                }
+
+                @media (max-width: 480px) {
+                    .gk-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+                    .gk-photo-frame { height: 180px; }
+                    .gk-card-info { padding: 1rem 0.75rem; margin-top: -2.3rem; }
+                    .gk-card-name { font-size: 0.8rem; }
+                    .gk-card-rating { bottom: 5.8rem; right: 0.4rem; padding: 0.25rem 0.4rem; }
+                    .gk-ovr-value { font-size: 0.8rem; }
+                    .gk-skill-badges { top: 0.4rem; left: 0.4rem; gap: 0.2rem; }
+                    .gk-skill-badge { padding: 0.15rem 0.35rem; font-size: 0.35rem; gap: 0.2rem; border-radius: 3px; }
+                    .gk-skill-badge :global(svg) { width: 6px; height: 6px; }
+                    .gk-rank-badge { top: 0.4rem; right: 0.4rem; font-size: 0.35rem; padding: 0.15rem 0.35rem; }
+                    .gk-legend-badge { top: 0.4rem; left: 0.4rem; padding: 0.15rem 0.4rem; font-size: 0.35rem; z-index: 20; }
                 }
             `}</style>
         </div>

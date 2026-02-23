@@ -197,9 +197,7 @@ export default function ForwardSelectPage() {
                                         ))}
                                     </div>
 
-                                    {player.tier === 'legend' && (
-                                        <div className="fw-legend-badge"><Star size={12} /><span>LEGEND</span></div>
-                                    )}
+                                    {/* Removed top legend badge to clear faces */}
                                     {isSelected && (
                                         <div className="fw-selected-badge"><Check size={20} /></div>
                                     )}
@@ -422,14 +420,31 @@ export default function ForwardSelectPage() {
 
                 @media(max-width:768px) {
                     .fw-ctx-bar { flex-wrap:wrap; gap:.75rem; padding:.75rem 1rem; }
-                    .fw-ctx-center { gap:.75rem; }
-                    .fw-mega-title { font-size:2.3rem; }
+                    .fw-ctx-center { gap:.75rem; order: 1; }
+                    .fw-ctx-left { order: 2; width: auto; }
+                    .fw-ctx-right { display: none; }
+                    .fw-mega-title { font-size:2.2rem; }
                     .fw-grid { grid-template-columns:1fr 1fr; gap:.75rem; }
-                    .fw-photo-frame { height:180px; }
-                    .fw-card-name { font-size:.9rem; }
+                    .fw-photo-frame { height:160px; }
+                    .fw-card-name { font-size:1rem; }
+                    .fw-card-rating { top: 0.5rem; right: 0.5rem; padding: 0.25rem 0.5rem; }
+                    .fw-ovr-value { font-size: 1rem; }
                     .fw-confirm-bar { width:95%; padding:1rem; }
                     .fw-bar-content { flex-wrap:wrap; gap:.75rem; justify-content:center; }
                     .fw-proceed-btn { width:100%; justify-content:center; }
+                }
+
+                @media(max-width:480px) {
+                    .fw-grid { grid-template-columns:1fr 1fr; gap:0.5rem; }
+                    .fw-photo-frame { height: 180px; }
+                    .fw-card-info { padding: 1rem 0.75rem; margin-top: -2.3rem; }
+                    .fw-card-name { font-size: 0.8rem; }
+                    .fw-card-club { font-size: 0.45rem; }
+                    .fw-card-meta { font-size: 0.55rem; }
+                    .fw-role-badge { top: 0.4rem; left: 0.4rem; padding: 0.15rem 0.35rem; font-size: 0.4rem; }
+                    .fw-skill-badges { top: 0.4rem; left: 0.4rem; gap: 0.15rem; }
+                    .fw-skill-badge { padding: 0.12rem 0.3rem; font-size: 0.35rem; gap: 0.15rem; }
+                    .fw-skill-badge :global(svg) { width: 6px; height: 6px; }
                 }
             `}</style>
         </div>

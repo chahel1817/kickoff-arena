@@ -367,7 +367,8 @@ export default function FormationSelectPage() {
 
                             <span className="fm-success-tag">TACTICAL BLUEPRINT LOCKED</span>
                             <h1 className="fm-success-title">
-                                FORMATION <span className="text-gradient">{selectedFormation.name}</span>
+                                FORMATION <br />
+                                <span className="text-gradient" style={{ whiteSpace: 'nowrap' }}>{selectedFormation.name}</span>
                             </h1>
                             <p className="fm-success-sub">Your tactical DNA has been encoded. The battlefield structure is set.</p>
                         </div>

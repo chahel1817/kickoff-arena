@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, ChevronLeft, ChevronRight, Star, Users, Globe, Trophy, Search, Cpu, Check, Scan, Layers } from 'lucide-react';
+import { Shield, ChevronLeft, ChevronRight, Star, Users, Globe, Trophy, Search, Cpu, Check, Scan, Layers, Zap, Info, Target, Brain, Sprout, BrickWall, Activity, Compass, TrendingUp } from 'lucide-react';
 import managersData from '../../data/managers.json';
 import '../entry.css';
 
@@ -13,6 +13,16 @@ export default function ManagerSelectPage() {
     const [selectedManager, setSelectedManager] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
+    const [intelManager, setIntelManager] = useState(null);
+    const [isIntelOpen, setIsIntelOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const filteredManagers = managersData
         .filter(m => m.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -29,6 +39,7 @@ export default function ManagerSelectPage() {
     const handleManagerSelect = (manager) => {
         setSelectedManager(manager);
         localStorage.setItem('selectedManager', JSON.stringify(manager));
+        setIsIntelOpen(false);
 
         // Brief delay before showing phase complete overlay
         setTimeout(() => {
@@ -48,7 +59,7 @@ export default function ManagerSelectPage() {
         const teamId = selectedTeam.id;
         const managerId = manager.id;
 
-        // Primary Connection Map (Legends/Current)
+        // Primary Connection Map
         const connections = {
             'ferguson': ['mun'],
             'guardiola': ['mci', 'bar'],
@@ -67,16 +78,11 @@ export default function ManagerSelectPage() {
         if (connections[managerId]?.includes(teamId)) {
             return {
                 type: 'strong',
-                label: 'Perfect Fit',
-                icon: '✔',
-                consequences: [
-                    { label: 'Team Chemistry', value: '+5', icon: '⚡' },
-                    { label: 'Win Morale', value: '+2', icon: '🔥' }
-                ]
+                label: 'Perfect Fit for Your Squad',
+                icon: '✅'
             };
         }
 
-        // Culture/Rivalry Clash
         const clashes = {
             'mun': ['guardiola', 'cruyff', 'klopp'],
             'mci': ['ferguson', 'mourinho'],
@@ -89,24 +95,15 @@ export default function ManagerSelectPage() {
         if (clashes[teamId]?.includes(managerId)) {
             return {
                 type: 'challenging',
-                label: 'Culture Overhaul',
-                icon: '⚠',
-                consequences: [
-                    { label: 'Initial Chemistry', value: '-3', icon: '❄' },
-                    { label: 'Growth Ceiling', value: 'ULTRA', icon: '📈' }
-                ]
+                label: 'Major Club Identity Shift',
+                icon: '⚠️'
             };
         }
 
-        // Default Neutral
         return {
             type: 'neutral',
-            label: 'Tactical Shift',
-            icon: '◐',
-            consequences: [
-                { label: 'Adaptation Period', value: '5 Matches', icon: '⏳' },
-                { label: 'System Stability', value: 'Balanced', icon: '⚖' }
-            ]
+            label: 'System Adaptation Required',
+            icon: '🔄'
         };
     };
 
@@ -130,17 +127,62 @@ export default function ManagerSelectPage() {
         return 'Versatile tactical coordinator';
     };
 
-    const getTraitIcon = (trait) => {
+    const calculateTacticalMetrics = (manager) => {
+        const rep = manager.reputation || 80;
+        const traits = (manager.traits || []).join(' ').toLowerCase();
+        const primaryFormation = manager.formations?.[0] || '4-3-3';
+
+        // 1. TACTICAL STABILITY - Legendary Floor Focus
+        let stabilityScore = rep * 0.8 + 20; // Big names start high (99 rep -> 99.2 score)
+        if (traits.includes('discipline') || traits.includes('compact')) stabilityScore += 5;
+
+        // Interpretation
+        let stabilityLabel = 'Structural Development';
+        if (stabilityScore >= 95) stabilityLabel = 'Master-Class Control';
+        else if (stabilityScore >= 85) stabilityLabel = 'Elite Tactical System';
+        else if (stabilityScore >= 70) stabilityLabel = 'Reliable Foundation';
+
+        // 2. RISK TOLERANCE - Dynamic based on style context
+        const riskStyleValues = { 'tiki-taka': 88, 'high-energy': 92, 'attacking': 95, 'counter': 45, 'defensive': 20, 'balanced': 55 };
+        const styleKey = Object.keys(riskStyleValues).find(k => manager.style?.toLowerCase().includes(k)) || 'balanced';
+        let riskScore = (riskStyleValues[styleKey] * 0.7) + (rep * 0.3); // High rep boosts risk conviction
+
+        // Formation DNA (25%)
+        const formRiskValues = { "3-4-3": 90, "3-2-4-1": 95, "4-3-3": 75, "4-2-3-1": 65, "4-4-2": 50, "5-3-2": 35, "3-5-2": 70 };
+        const formRisk = formRiskValues[primaryFormation] || 60;
+        riskScore = (riskScore * 0.7) + (formRisk * 0.3);
+
+        // Interpretation
+        let riskLabel = 'Disciplined/Measured';
+        if (riskScore >= 80) riskLabel = 'High-Impact Aggression';
+        else if (riskScore >= 60) riskLabel = 'Controlled Proactivity';
+        else if (riskScore >= 40) riskLabel = 'Neutral/Strategic';
+
+        return {
+            stability: Math.min(stabilityScore, 99).toFixed(0),
+            stabilityLabel,
+            risk: Math.min(riskScore, 99).toFixed(0),
+            riskLabel
+        };
+    };
+
+    const getTraitIcon = (trait, size = 14) => {
         const lower = trait.toLowerCase();
-        if (lower.includes('tactical') || lower.includes('positi') || lower.includes('freedom') || lower.includes('mastermind') || lower.includes('innovation')) return '🧠';
-        if (lower.includes('press') || lower.includes('intens') || lower.includes('energy') || lower.includes('transit') || lower.includes('attack') || lower.includes('fast') || lower.includes('vertical')) return '⚡';
-        if (lower.includes('youth') || lower.includes('develop') || lower.includes('talent') || lower.includes('promotion') || lower.includes('scout') || lower.includes('growth') || lower.includes('mentor')) return '🌱';
-        if (lower.includes('discipline') || lower.includes('leadership') || lower.includes('aura') || lower.includes('mentality') || lower.includes('unity') || lower.includes('management') || lower.includes('morale')) return '🛡️';
-        if (lower.includes('defensive') || lower.includes('shape') || lower.includes('compact') || lower.includes('solid') || lower.includes('wall') || lower.includes('low risk') || lower.includes('grit')) return '🧱';
-        if (lower.includes('possession') || lower.includes('build-up') || lower.includes('build up') || lower.includes('passing') || lower.includes('technical') || lower.includes('tempo')) return '⚽';
-        if (lower.includes('set-piece') || lower.includes('mastery') || lower.includes('knocking') || lower.includes('knockout') || lower.includes('specialist')) return '🎯';
-        if (lower.includes('global') || lower.includes('icon') || lower.includes('big game') || lower.includes('champion') || lower.includes('tournament') || lower.includes('star') || lower.includes('authority')) return '🏆';
-        return '🔹';
+        const props = { size, className: "trait-lucide-icon" };
+
+        if (lower.includes('tactical') || lower.includes('positi') || lower.includes('freedom') || lower.includes('mastermind') || lower.includes('innovation')) return <Brain {...props} />;
+        if (lower.includes('press') || lower.includes('intens') || lower.includes('energy') || lower.includes('transit') || lower.includes('attack') || lower.includes('fast') || lower.includes('vertical')) return <Zap {...props} />;
+        if (lower.includes('youth') || lower.includes('develop') || lower.includes('talent') || lower.includes('promotion') || lower.includes('scout') || lower.includes('growth') || lower.includes('mentor')) return <Sprout {...props} />;
+        if (lower.includes('discipline') || lower.includes('leadership') || lower.includes('aura') || lower.includes('mentality') || lower.includes('unity') || lower.includes('authority')) return <Shield {...props} />;
+        if (lower.includes('defensive') || lower.includes('shape') || lower.includes('compact') || lower.includes('solid') || lower.includes('wall') || lower.includes('grit')) return <BrickWall {...props} />;
+        if (lower.includes('possession') || lower.includes('build-up') || lower.includes('build up') || lower.includes('passing') || lower.includes('technical') || lower.includes('tempo')) return <Activity {...props} />;
+        if (lower.includes('set-piece') || lower.includes('mastery') || lower.includes('knocking') || lower.includes('knockout') || lower.includes('specialist') || lower.includes('target')) return <Target {...props} />;
+        if (lower.includes('global') || lower.includes('icon') || lower.includes('big game') || lower.includes('champion') || lower.includes('tournament') || lower.includes('star')) return <Trophy {...props} />;
+        if (lower.includes('management') || lower.includes('morale') || lower.includes('relation') || lower.includes('people') || lower.includes('squad')) return <Users {...props} />;
+        if (lower.includes('philosophy') || lower.includes('visionary') || lower.includes('creative') || lower.includes('expression')) return <Compass {...props} />;
+        if (lower.includes('winning') || lower.includes('mentality') || lower.includes('resilience') || lower.includes('comeback')) return <TrendingUp {...props} />;
+
+        return <div className="trait-dot"></div>;
     };
 
     const handleFinalProceed = () => {
@@ -403,7 +445,9 @@ export default function ManagerSelectPage() {
                                 <button
                                     key={manager.id}
                                     onClick={() => handleManagerSelect(manager)}
-                                    className={`manager-card-premium glass ${selectedManager?.id === manager.id ? 'selected' : ''}`}
+                                    onMouseEnter={() => { if (!isMobile) { setIntelManager(manager); setIsIntelOpen(true); } }}
+                                    onMouseLeave={() => { if (!isMobile) setIsIntelOpen(false); }}
+                                    className={`manager-card-premium glass ${selectedManager?.id === manager.id ? 'selected' : ''} ${intelManager?.id === manager.id && isIntelOpen ? 'intel-scanning' : ''}`}
                                 >
                                     <div className="card-accent-glow"></div>
 
@@ -420,7 +464,7 @@ export default function ManagerSelectPage() {
                                                 }}
                                             />
                                         </div>
-                                        <div className="reputation-badge">
+                                        <div className={`reputation-badge ${manager.reputation >= 99 ? 'rep-legendary' : manager.reputation >= 95 ? 'rep-elite' : 'rep-tactical'}`}>
                                             <Star size={10} fill="currentColor" />
                                             <span>{manager.reputation}</span>
                                         </div>
@@ -434,41 +478,40 @@ export default function ManagerSelectPage() {
                                                     <div className={`fit-indicator ${getManagerFit(manager).type}`}>
                                                         <span className="fit-icon">{getManagerFit(manager).icon}</span>
                                                         <span className="fit-label">{getManagerFit(manager).label}</span>
-
-                                                        <div className="fit-tooltip">
-                                                            <div className="tooltip-header">Tactical Implications</div>
-                                                            <div className="tooltip-consequences">
-                                                                {getManagerFit(manager).consequences.map((cons, ci) => (
-                                                                    <div key={ci} className="cons-item">
-                                                                        <span className="cons-icon">{cons.icon}</span>
-                                                                        <span className="cons-label">{cons.label}</span>
-                                                                        <span className="cons-value">{cons.value}</span>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                            <div className="tooltip-footer">Choice influences development speed</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="fit-recommendation-hint">
-                                                        {getManagerRecommendation(manager)}
                                                     </div>
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="manager-meta-row">
-                                            <div className="meta-item">
-                                                <Trophy size={11} className="text-primary" />
-                                                <span>{manager.style}</span>
-                                            </div>
-                                        </div>
 
                                         <div className="style-panel-mini chips">
-                                            {(manager.traits || ['Tactical Balance', 'General Motivation', 'Standard Development']).map((trait, idx) => (
-                                                <div key={idx} className="style-trait-chip">
-                                                    <span className="trait-icon-mini">{getTraitIcon(trait)}</span>
-                                                    <span>{trait}</span>
+                                            <div className="passive-traits-list">
+                                                {(manager.traits || []).slice(0, 2).map((t, i) => (
+                                                    <div key={i} className="passive-trait">
+                                                        {getTraitIcon(t, 10)}
+                                                        <span>{t}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            <div className="traits-single-line-container">
+                                                <div className="elite-duo-row">
+                                                    <div className="intel-trigger-wrapper">
+                                                        <div
+                                                            className="intel-button-glow"
+                                                            onClick={(e) => {
+                                                                if (isMobile) {
+                                                                    e.stopPropagation();
+                                                                    setIntelManager(manager);
+                                                                    setIsIntelOpen(true);
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Cpu size={12} className="text-primary" />
+                                                            <span>TACTICAL INTEL</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            ))}
+                                            </div>
                                         </div>
                                     </div>
 
@@ -572,9 +615,9 @@ export default function ManagerSelectPage() {
                     color: var(--primary); opacity: 0.5; display: block; margin-bottom: 1.25rem;
                 }
                 .phase-mega-title {
-                    font-size: clamp(2.5rem, 7vw, 4rem);
-                    font-weight: 900; color: white; letter-spacing: -0.03em;
-                    margin-bottom: 1.5rem; line-height: 1.1;
+                    font-size: clamp(3rem, 10vw, 6rem);
+                    font-weight: 900; color: white; letter-spacing: -0.05em;
+                    margin-bottom: 2rem; line-height: 0.9;
                 }
                 .phase-hero-desc {
                     font-size: 1.05rem; color: rgba(255,255,255,0.4);
@@ -596,14 +639,14 @@ export default function ManagerSelectPage() {
                 /* Section Tags */
                 .section-tag-row {
                     display: flex; align-items: center; justify-content: center;
-                    gap: 1.5rem; margin-bottom: 3rem;
+                    gap: 0.75rem; margin-bottom: 1rem;
                 }
-                .tag-line { width: 50px; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,255,136,0.3)); }
-                .section-tag { font-size: 0.65rem; font-weight: 900; letter-spacing: 0.3em; color: var(--primary); opacity: 0.6; }
+                .tag-line { width: 30px; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,255,136,0.2)); }
+                .section-tag { font-size: 0.55rem; font-weight: 900; letter-spacing: 0.3em; color: var(--primary); opacity: 0.6; }
 
                 /* Recap Section */
                 .phase-recap-section {
-                    padding: 6rem 2rem;
+                    padding: 3rem 2rem 2rem;
                     display: flex; flex-direction: column; align-items: center;
                     max-width: 900px; margin: 0 auto; width: 100%;
                 }
@@ -695,7 +738,7 @@ export default function ManagerSelectPage() {
 
                 /* Pillars / Systems Check */
                 .phase-pillars-section {
-                    padding: 5rem 2rem;
+                    padding: 2.5rem 2rem;
                     display: flex; flex-direction: column; align-items: center;
                     max-width: 900px; margin: 0 auto; width: 100%;
                 }
@@ -723,7 +766,7 @@ export default function ManagerSelectPage() {
 
                 /* Next Phase CTA */
                 .phase-next-section {
-                    padding: 5rem 2rem 4rem;
+                    padding: 2.5rem 2rem 6rem;
                     display: flex; flex-direction: column; align-items: center;
                 }
                 .next-preview-card {
@@ -752,6 +795,7 @@ export default function ManagerSelectPage() {
                     padding: 0.5rem 1rem; background: rgba(255,255,255,0.03);
                     border: 1px solid rgba(255,255,255,0.06); border-radius: 12px;
                     font-size: 0.68rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.1em;
+                    white-space: nowrap;
                 }
 
                 .giant-btn { width: 100%; height: 64px; font-size: 1.05rem; border-radius: 18px; justify-content: center; }
@@ -826,6 +870,15 @@ export default function ManagerSelectPage() {
                     padding: 0.6rem 1.5rem;
                     border-radius: 50px;
                     border: 1px solid rgba(255,255,255,0.06);
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    cursor: pointer;
+                }
+
+                .center-identity:hover {
+                    background: rgba(255,255,255,0.07);
+                    border-color: rgba(0, 255, 136, 0.4);
+                    transform: translateY(-2px);
+                    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
                 }
 
                 .club-mini-badge {
@@ -837,6 +890,12 @@ export default function ManagerSelectPage() {
                     align-items: center;
                     justify-content: center;
                     background: rgba(0,0,0,0.2);
+                    transition: 0.4s;
+                }
+
+                .center-identity:hover .club-mini-badge {
+                    transform: scale(1.1) rotate(5deg);
+                    box-shadow: 0 0 15px var(--primary);
                 }
 
                 .identity-text-stack {
@@ -935,12 +994,12 @@ export default function ManagerSelectPage() {
                 }
 
                 .search-container.glass-premium {
-                    display: flex;
-                    align-items: center;
-                    padding: 0 2rem;
-                    height: 64px;
-                    width: 100%;
-                    max-width: 800px;
+                    /* Context Cards */
+                .fm-success-context {
+                    padding: 2.5rem 2rem;
+                    max-width: 800px; margin: 0 auto; width: 100%;
+                }
+    max-width: 800px;
                     background: rgba(10, 10, 15, 0.6);
                     backdrop-filter: blur(20px);
                     border: 1px solid rgba(255,255,255,0.08);
@@ -1001,23 +1060,24 @@ export default function ManagerSelectPage() {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    padding: 1.75rem 1.25rem;
-                    background: rgba(255, 255, 255, 0.02);
+                    padding: 1.25rem 0.75rem;
+                    background: rgba(255, 255, 255, 0.015);
                     border: 1px solid rgba(255, 255, 255, 0.05);
-                    border-radius: 24px;
+                    border-radius: 20px;
                     transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
                     cursor: pointer;
-                    overflow: hidden;
                     text-align: center;
-                    backdrop-filter: blur(5px);
-                    min-height: 420px;
+                    backdrop-filter: blur(10px);
+                    min-height: 330px;
+                    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
                 }
 
                 .manager-card-premium:hover {
                     background: rgba(255, 255, 255, 0.04);
                     border-color: rgba(0, 255, 136, 0.3);
-                    transform: translateY(-8px);
-                    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 136, 0.05);
+                    transform: scale(0.97) translateY(-4px);
+                    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 255, 136, 0.03);
+                    z-index: 100;
                 }
 
                 .managers-grid-refined.has-selection .manager-card-premium:not(.selected) {
@@ -1038,9 +1098,9 @@ export default function ManagerSelectPage() {
                 /* Portrait Display */
                 .portrait-display {
                     position: relative;
-                    width: 110px;
-                    height: 110px;
-                    margin-bottom: 1.5rem;
+                    width: 85px;
+                    height: 85px;
+                    margin-bottom: 0.5rem;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -1098,20 +1158,49 @@ export default function ManagerSelectPage() {
 
                 .reputation-badge {
                     position: absolute;
-                    bottom: 0;
-                    right: 0;
-                    background: var(--primary);
-                    color: black;
-                    padding: 0.4rem 0.8rem;
-                    border-radius: 12px;
+                    bottom: -8px;
+                    right: -8px;
+                    background: #111;
+                    padding: 0.35rem 0.6rem;
+                    border-radius: 50px;
                     display: flex;
                     align-items: center;
                     gap: 0.4rem;
-                    font-size: 0.75rem;
+                    font-size: 0.7rem;
                     font-weight: 800;
-                    box-shadow: 0 8px 16px rgba(0, 255, 136, 0.3);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+                    z-index: 10;
+                    transition: all 0.3s ease;
                 }
 
+                .reputation-badge.rep-legendary {
+                    background: linear-gradient(135deg, #FFD700, #FFA500);
+                    color: black;
+                    border: 1px solid #FFF5B7;
+                    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.5);
+                    animation: goldShimmer 3s ease-in-out infinite;
+                }
+
+                @keyframes goldShimmer {
+                    0%, 100% { filter: brightness(1); }
+                    50% { filter: brightness(1.3) contrast(1.1); box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+                }
+
+                .reputation-badge.rep-elite {
+                    background: rgba(0, 255, 136, 0.9);
+                    color: black;
+                    border: 1px solid #A7FFD8;
+                    box-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
+                }
+
+                .reputation-badge.rep-tactical {
+                    background: rgba(255, 255, 255, 0.1);
+                    color: rgba(255, 255, 255, 0.7);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    backdrop-filter: blur(10px);
+                }
                 .manager-core-info {
                     width: 100%;
                     display: flex;
@@ -1123,8 +1212,8 @@ export default function ManagerSelectPage() {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    gap: 1rem;
-                    margin-bottom: 1.25rem;
+                    gap: 0.4rem;
+                    margin-bottom: 0.4rem;
                     width: 100%;
                 }
 
@@ -1141,7 +1230,7 @@ export default function ManagerSelectPage() {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    gap: 0.5rem;
+                    gap: 0.3rem;
                     width: 100%;
                 }
 
@@ -1176,74 +1265,8 @@ export default function ManagerSelectPage() {
                     color: rgba(255, 255, 255, 0.5);
                 }
 
-                .fit-tooltip {
-                    position: absolute;
-                    bottom: 100%;
-                    right: 0;
-                    margin-bottom: 0.75rem;
-                    width: 220px;
-                    background: rgba(10, 15, 25, 0.98);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    border-radius: 12px;
-                    padding: 1rem;
-                    z-index: 100;
-                    opacity: 0;
-                    visibility: hidden;
-                    transform: translateY(10px);
-                    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-                    backdrop-filter: blur(15px);
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-                    pointer-events: none;
-                }
-
-                .fit-indicator:hover .fit-tooltip {
-                    opacity: 1;
-                    visibility: visible;
-                    transform: translateY(0);
-                }
-
-                .tooltip-header {
-                    font-size: 0.65rem;
-                    color: rgba(255, 255, 255, 0.4);
-                    margin-bottom: 0.75rem;
-                    letter-spacing: 0.1em;
-                }
-
-                .tooltip-consequences {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.6rem;
-                    margin-bottom: 0.75rem;
-                }
-
-                .cons-item {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.6rem;
-                    font-size: 0.7rem;
-                    color: white;
-                }
-
-                .cons-label { flex: 1; color: rgba(255, 255, 255, 0.6); }
-                .cons-value { 
-                    font-weight: 900; 
-                    color: var(--primary);
-                    background: rgba(0, 255, 136, 0.05);
-                    padding: 0.1rem 0.4rem;
-                    border-radius: 4px;
-                }
-
-                .fit-indicator.challenging .cons-value {
-                    color: #FFAA00;
-                    background: rgba(255, 170, 0, 0.05);
-                }
-
-                .tooltip-footer {
-                    font-size: 0.55rem;
-                    color: rgba(255, 255, 255, 0.2);
-                    font-style: italic;
-                    border-top: 1px solid rgba(255, 255, 255, 0.05);
-                    padding-top: 0.5rem;
+                .fit-indicator:hover {
+                    background: rgba(255, 255, 255, 0.08);
                 }
 
                 .fit-indicator.strong {
@@ -1268,11 +1291,11 @@ export default function ManagerSelectPage() {
 
                 .manager-meta-row {
                     display: flex;
-                    gap: 1rem;
-                    margin-bottom: 1.25rem;
+                    gap: 0.4rem;
+                    margin-bottom: 0.4rem;
                     justify-content: center;
-                    padding-top: 0.6rem;
-                    border-top: 1px solid rgba(255, 255, 255, 0.05);
+                    padding-top: 0.3rem;
+                    border-top: 1px solid rgba(255, 255, 255, 0.03);
                     width: 100%;
                 }
 
@@ -1288,49 +1311,274 @@ export default function ManagerSelectPage() {
                 }
 
                 .style-panel-mini.chips {
-                    background: transparent;
-                    border: none;
-                    padding: 0;
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 0.5rem;
-                    justify-content: center;
-                    width: 100%;
-                }
+                                    width: 100%;
+                                    padding: 0;
+                                    margin-top: 1rem;
+                                }
 
-                .style-trait-chip {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.4rem;
-                    padding: 0.35rem 0.6rem;
-                    background: rgba(255, 255, 255, 0.03);
-                    border: 1px solid rgba(255, 255, 255, 0.06);
-                    border-radius: 8px;
-                    font-size: 0.58rem;
-                    font-weight: 700;
-                    color: rgba(255, 255, 255, 0.3);
-                    transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-                    text-transform: uppercase;
-                    letter-spacing: 0.03em;
-                }
+                                .passive-traits-list {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 0.4rem;
+                                    align-items: center;
+                                    margin-bottom: 1.25rem;
+                                    opacity: 0.4;
+                                    transition: opacity 0.3s ease;
+                                }
 
-                .manager-card-premium:hover .style-trait-chip {
-                    background: rgba(255, 255, 255, 0.06);
-                    border-color: rgba(255, 255, 255, 0.12);
-                    color: rgba(255, 255, 255, 0.7);
-                    transform: translateY(-2px);
-                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-                }
+                                .manager-card-premium:hover .passive-traits-list {
+                                    opacity: 0.8;
+                                }
 
-                .trait-icon-mini {
-                    font-size: 0.75rem;
-                    filter: grayscale(0.5);
-                    transition: 0.3s;
-                }
+                                .passive-trait {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.4rem;
+                                    font-size: 0.62rem;
+                                    color: white;
+                                    font-weight: 700;
+                                    letter-spacing: 0.02em;
+                                    text-transform: uppercase;
+                                }
 
-                .manager-card-premium:hover .trait-icon-mini {
-                    filter: grayscale(0); transform: scale(1.1);
-                }
+                                .trait-bullet {
+                                    width: 4px;
+                                    height: 4px;
+                                    background: var(--primary);
+                                    border-radius: 50%;
+                                    box-shadow: 0 0 5px var(--primary);
+                                }
+
+                                .traits-single-line-container {
+                                    display: flex;
+                                    justify-content: center;
+                                    width: 100%;
+                                }
+
+                                .elite-duo-row {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.6rem;
+                                    flex-wrap: wrap;
+                                    justify-content: center;
+                                }
+
+                                .duo-chip {
+                                    position: relative;
+                                    display: flex;
+                                    align-items: center;
+                                    background: rgba(255, 255, 255, 0.01);
+                                    border: 1px solid rgba(255, 255, 255, 0.03);
+                                    border-radius: 50px;
+                                    padding: 0.3rem 0.6rem;
+                                    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+                                }
+
+                                .duo-chip-inner {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.45rem;
+                                }
+
+                                .trait-lucide-icon {
+                                    color: var(--primary);
+                                    opacity: 0.6;
+                                    filter: drop-shadow(0 0 5px rgba(0, 255, 136, 0.2));
+                                }
+
+                                .duo-label {
+                                    font-size: 0.55rem;
+                                    font-weight: 900;
+                                    color: rgba(255, 255, 255, 0.25);
+                                    letter-spacing: 0.08em;
+                                    text-transform: uppercase;
+                                }
+
+                                .manager-card-premium:hover .duo-chip {
+                                    background: rgba(255, 255, 255, 0.04);
+                                    border-color: rgba(0, 255, 136, 0.1);
+                                    transform: translateY(-2px);
+                                }
+
+                                .manager-card-premium:hover .trait-lucide-icon {
+                                    opacity: 1;
+                                    color: white;
+                                }
+
+                                .manager-card-premium:hover .duo-label { 
+                                    color: rgba(255, 255, 255, 0.9); 
+                                }
+
+                                .intel-trigger-wrapper {
+                                    position: relative;
+                                    z-index: 50;
+                                }
+
+                                .intel-button-glow {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.35rem;
+                                    background: rgba(0, 255, 136, 0.03);
+                                    border: 1px solid rgba(0, 255, 136, 0.15);
+                                    border-radius: 50px;
+                                    padding: 0.3rem 0.75rem;
+                                    font-size: 0.52rem;
+                                    font-weight: 900;
+                                    color: var(--primary);
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                                    letter-spacing: 0.12em;
+                                    backdrop-filter: blur(5px);
+                                }
+
+                                .intel-button-glow:hover {
+                                    background: var(--primary);
+                                    color: black;
+                                    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+                                    transform: scale(1.02);
+                                }
+
+                                .intelligence-hub-panel {
+                                    position: absolute;
+                                    top: calc(100% + 0.75rem);
+                                    left: 50%;
+                                    transform: translateX(-50%) translateY(-8px);
+                                    width: 280px;
+                                    background: rgba(6, 12, 18, 0.98);
+                                    border: 1px solid rgba(0, 255, 136, 0.2);
+                                    border-radius: 20px;
+                                    padding: 1.25rem;
+                                    opacity: 0;
+                                    visibility: hidden;
+                                    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+                                    backdrop-filter: blur(35px);
+                                    box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 50px rgba(0, 255, 136, 0.1);
+                                    z-index: 5000;
+                                    overflow: hidden;
+                                }
+
+                                .hub-scanline {
+                                    position: absolute;
+                                    inset: 0;
+                                    height: 100%;
+                                    width: 100%;
+                                    background: linear-gradient(
+                                        to bottom,
+                                        transparent 0%,
+                                        rgba(0, 255, 136, 0.02) 50%,
+                                        transparent 100%
+                                    );
+                                    background-size: 100% 4px;
+                                    pointer-events: none;
+                                    opacity: 0.4;
+                                }
+
+                                .intel-trigger-wrapper:hover .intelligence-hub-panel {
+                                    opacity: 1;
+                                    visibility: visible;
+                                    transform: translateX(-50%) translateY(0);
+                                }
+
+                                .hub-header {
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                    margin-bottom: 1.5rem;
+                                    border-bottom: 1px solid rgba(255,255,255,0.06);
+                                    padding-bottom: 0.75rem;
+                                }
+
+                                .hub-header-main { display: flex; align-items: center; gap: 0.8rem; }
+                                .hub-identity-group { display: flex; flex-direction: column; gap: 0.1rem; text-align: left; }
+                                .hub-title { font-size: 0.65rem; font-weight: 900; color: white; letter-spacing: 0.15em; }
+                                .hub-subtitle { font-size: 0.55rem; font-weight: 600; color: var(--primary); opacity: 0.8; letter-spacing: 0.05em; }
+                                .hub-icon-anim { animation: hub-pulse 2s infinite ease-in-out; }
+
+                                .hub-status-bar {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.4rem;
+                                    font-size: 0.45rem;
+                                    font-weight: 900;
+                                    color: rgba(255,255,255,0.3);
+                                }
+
+                                .status-dot { width: 4px; height: 4px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 6px var(--primary); }
+
+                                .hub-traits-list {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 0.75rem;
+                                    margin-bottom: 1.5rem;
+                                }
+
+                                .hub-trait-row {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 1rem;
+                                    padding: 0.5rem 0.75rem;
+                                    background: rgba(255,255,255,0.015);
+                                    border-radius: 12px;
+                                    border: 1px solid rgba(255,255,255,0.03);
+                                    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+                                }
+
+                                .hub-trait-row:hover {
+                                    background: rgba(0, 255, 136, 0.04);
+                                    border-color: rgba(0, 255, 136, 0.2);
+                                    transform: translateX(6px);
+                                    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.05);
+                                }
+
+                                .hub-trait-icon-box {
+                                    width: 28px;
+                                    height: 28px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    background: rgba(0, 255, 136, 0.05);
+                                    border-radius: 8px;
+                                    color: var(--primary);
+                                }
+
+                                .hub-trait-name {
+                                    font-size: 0.72rem;
+                                    font-weight: 700;
+                                    color: rgba(255, 255, 255, 0.5);
+                                    letter-spacing: 0.04em;
+                                    text-transform: uppercase;
+                                }
+
+                                .hub-trait-row:hover .hub-trait-name {
+                                    color: white;
+                                }
+
+                                .trait-dot {
+                                    width: 6px;
+                                    height: 6px;
+                                    background: rgba(255,255,255,0.2);
+                                    border-radius: 50%;
+                                }
+
+                                .hub-footer {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 0.5rem;
+                                    font-size: 0.55rem;
+                                    font-weight: 800;
+                                    color: rgba(255,255,255,0.15);
+                                    letter-spacing: 0.15em;
+                                    border-top: 1px solid rgba(255,255,255,0.05);
+                                    padding-top: 1rem;
+                                    text-align: center;
+                                }
+
+                                @keyframes hub-pulse {
+                                    0%, 100% { opacity: 0.6; transform: scale(1); }
+                                    50% { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 10px var(--primary)); }
+                                }
+
 
                 .selection-check {
                     position: absolute;
@@ -1405,6 +1653,8 @@ export default function ManagerSelectPage() {
                     border-radius: 24px;
                     border: 1px solid rgba(0, 255, 136, 0.3);
                     z-index: 2000;
+                    background: rgba(6, 12, 18, 0.95);
+                    backdrop-filter: blur(20px);
                     box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
                     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
@@ -1466,31 +1716,280 @@ export default function ManagerSelectPage() {
                     box-shadow: 0 0 40px rgba(0, 255, 136, 0.5);
                 }
 
-                @media (max-width: 768px) {
+                @media (max-width: 1024px) {
                     .premium-nav-bar { padding: 1rem 1.25rem; flex-wrap: wrap; gap: 0.75rem; }
                     .center-identity { display: none; }
                     .main-selection-title { font-size: 2.5rem; }
-                    .managers-grid-refined { grid-template-columns: 1fr; }
-                    .confirmation-bar { width: 95%; padding: 1rem; }
+                    .managers-grid-refined { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); padding: 1rem; }
+                    .confirmation-bar { width: 95%; padding: 1rem; bottom: 1rem; }
                     .preview-name { font-size: 1.2rem; }
                     .action-btn-neon { padding: 0.8rem 1.5rem; font-size: 0.8rem; }
-                    .subtitle-premium { font-size: 1rem; }
+                    .subtitle-premium { font-size: 0.95rem; }
+
+                    /* Phase Overlay Mobile */
+                    .phase-hero-section { min-height: 80vh; padding: 2rem 1.5rem; }
+                    .phase-mega-title { font-size: 3rem; }
+                    .recap-grid-premium { grid-template-columns: 1fr; gap: 2rem; }
+                    .pillars-grid { grid-template-columns: 1fr; gap: 1rem; }
+                    .recap-img-showcase { width: 140px; height: 140px; }
+                    .phase-recap-section, .phase-pillars-section, .phase-next-section { padding: 4rem 1.5rem; }
+
+                    .intel-modal-overlay {
+                        pointer-events: auto;
+                        background: rgba(0,0,0,0.6);
+                        backdrop-filter: blur(8px);
+                        justify-content: flex-end;
+                        align-items: flex-end;
+                    }
+
+                    .intel-drawer { 
+                        width: 100% !important; 
+                        height: 75vh !important; 
+                        border-radius: 32px 32px 0 0 !important; 
+                        border-left: none;
+                        border-top: 1px solid rgba(0, 255, 136, 0.3);
+                        animation: slideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+                        pointer-events: auto;
+                    }
+
+                    .drawer-header { padding: 1.5rem; text-align: center; }
+                    .hub-header-main { flex-direction: column; align-items: center; gap: 1rem; }
+                    .drawer-body { padding: 1.5rem; overflow-y: auto !important; }
                     
-                    /* Phase Complete Mobile */
-                    .phase-mega-title { font-size: 2rem; }
-                    .phase-hero-desc { font-size: 0.9rem; }
-                    .recap-grid-premium { grid-template-columns: 1fr; gap: 1.5rem; }
-                    .recap-card-v2 { padding: 1.75rem 1.25rem; }
-                    .recap-img-showcase { width: 120px; height: 120px; }
-                    .recap-item-title-lg { font-size: 1.25rem; }
-                    .pillars-grid { grid-template-columns: 1fr; }
-                    .pillar-card { padding: 1.5rem 1.25rem; }
-                    .next-preview-card { padding: 2.5rem 1.75rem; }
-                    .npc-title { font-size: 1.6rem; }
-                    .phase-recap-section { padding: 4rem 1.25rem; }
-                    .phase-pillars-section { padding: 3rem 1.25rem; }
+                    /* Selection Grid Mobile */
+                    .managers-grid-refined { grid-template-columns: 1fr; gap: 1rem; }
+                    .manager-card-premium { min-height: auto; padding: 1.5rem; }
+
+                    @keyframes slideUp {
+                        from { transform: translateY(100%); }
+                        to { transform: translateY(0); }
+                    }
                 }
+
+                @media (max-width: 480px) {
+                    .main-selection-title { font-size: 1.8rem; }
+                    .subtitle-premium { font-size: 0.85rem; }
+                    .phase-mega-title { font-size: 2.2rem; }
+                    .phase-hero-desc { font-size: 0.9rem; }
+                    .recap-img-showcase { width: 120px; height: 120px; }
+                    .recap-item-title-lg { font-size: 1.3rem; }
+                }
+
+                .intel-modal-overlay {
+                    position: fixed;
+                    inset: 0;
+                    z-index: 9999;
+                    background: transparent;
+                    backdrop-filter: none;
+                    display: flex;
+                    justify-content: flex-end;
+                    pointer-events: none;
+                    overflow: hidden;
+                }
+
+                .intel-drawer {
+                    width: 380px;
+                    background: rgba(6, 8, 12, 0.85);
+                    height: 100vh;
+                    border-left: 1px solid rgba(0, 255, 136, 0.2);
+                    display: flex;
+                    flex-direction: column;
+                    box-shadow: -20px 0 60px rgba(0,0,0,0.8);
+                    animation: slideInRight 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+                    position: relative;
+                    overflow: hidden;
+                    pointer-events: none;
+                    backdrop-filter: blur(30px);
+                }
+
+                .drawer-header {
+                    padding: 1.25rem 1.75rem;
+                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                    position: relative;
+                    background: rgba(0,0,0,0.2);
+                }
+
+                .drawer-body {
+                    flex: 1;
+                    padding: 1.5rem 1.75rem;
+                    overflow-y: hidden;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.25rem;
+                }
+
+                .intel-section-title {
+                    font-size: 0.6rem;
+                    font-weight: 900;
+                    color: rgba(255,255,255,0.25);
+                    letter-spacing: 0.25em;
+                    margin-bottom: 1.25rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                }
+
+                .intel-section-title::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.05); }
+
+                .formation-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+                .formation-chip-large {
+                    background: rgba(0, 255, 136, 0.04);
+                    border: 1px solid rgba(0, 255, 136, 0.12);
+                    padding: 0.6rem 1rem;
+                    border-radius: 10px;
+                    color: var(--primary);
+                    font-weight: 800;
+                    font-size: 0.8rem;
+                    letter-spacing: 0.05em;
+                }
+
+                .meter-stack { display: flex; flex-direction: column; gap: 1.5rem; }
+                .meter-item { display: flex; flex-direction: column; gap: 0.5rem; }
+                .meter-label-row { display: flex; justify-content: space-between; align-items: center; }
+                .meter-name { font-size: 0.7rem; font-weight: 800; color: white; opacity: 0.6; }
+                .meter-value { font-size: 0.6rem; font-weight: 900; color: var(--primary); }
+                
+                .meter-track { height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; position: relative; overflow: hidden; margin-bottom: 0.25rem; }
+                .meter-fill { height: 100%; background: var(--primary); border-radius: 10px; box-shadow: 0 0 10px var(--primary); transition: width 0.8s cubic-bezier(0.19, 1, 0.22, 1); }
+                .meter-interpretation { font-size: 0.5rem; color: rgba(255,255,255,0.2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
+                .bias-row { display: flex; justify-content: space-between; padding: 1.25rem; background: rgba(255,255,255,0.015); border-radius: 16px; border: 1px solid rgba(255,255,255,0.04); }
+                .bias-side { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; flex: 1; }
+                .bias-label { font-size: 0.6rem; font-weight: 800; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; }
+                .bias-val { font-size: 1rem; font-weight: 900; color: white; }
+                .bias-divider { width: 1px; background: rgba(255,255,255,0.1); margin: 0 1rem; }
+
+                .bonus-card { display: flex; align-items: center; gap: 1rem; background: rgba(255,255,255,0.01); padding: 1rem; border-radius: 14px; border: 1px solid rgba(255,255,255,0.02); margin-bottom: 0.5rem; }
+                .bonus-icon-box { width: 34px; height: 34px; background: rgba(0, 255, 136, 0.04); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary); }
+                .bonus-name { font-size: 0.75rem; font-weight: 800; color: white; }
+                .bonus-desc { font-size: 0.6rem; color: rgba(255,255,255,0.25); font-weight: 600; line-height: 1.4; }
+
+                .mobile-drawer-handle {
+                    width: 100%;
+                    padding: 1rem;
+                    display: flex;
+                    justify-content: center;
+                    cursor: pointer;
+                }
+                .handle-bar {
+                    width: 40px;
+                    height: 4px;
+                    background: rgba(255,255,255,0.2);
+                    border-radius: 10px;
+                }
+
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); }
+                    to { transform: translateX(0); }
+                }
+                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
             `}</style>
+            {isIntelOpen && intelManager && (
+                <div className="intel-modal-overlay" onClick={() => setIsIntelOpen(false)}>
+                    <div className="intel-drawer" onClick={(e) => e.stopPropagation()}>
+                        <div className="hub-scanline"></div>
+
+                        {isMobile && (
+                            <div className="mobile-drawer-handle" onClick={() => setIsIntelOpen(false)}>
+                                <div className="handle-bar"></div>
+                            </div>
+                        )}
+
+                        <div className="drawer-header">
+                            <div className="hub-header-main">
+                                <Zap size={24} className="text-primary hub-icon-anim" />
+                                <div className="hub-identity-group">
+                                    <span className="hub-title" style={{ fontSize: '0.8rem' }}>TACTICAL DOSSIER</span>
+                                    <h2 style={{ fontSize: '1.8rem', color: 'white', fontWeight: 900, margin: 0 }}>{intelManager.name}</h2>
+                                    <span className="hub-subtitle" style={{ fontSize: '0.75rem' }}>{intelManager.style}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="drawer-body">
+                            <div className="intel-data-section">
+                                <div className="intel-section-title">PREFERRED FORMATIONS</div>
+                                <div className="formation-grid">
+                                    {(intelManager.formations || ['4-3-3', '4-2-3-1', '4-4-2']).map(form => (
+                                        <div key={form} className="formation-chip-large">{form}</div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="intel-data-section">
+                                <div className="intel-section-title">SQUAD METERS</div>
+                                {(() => {
+                                    const metrics = calculateTacticalMetrics(intelManager);
+                                    return (
+                                        <div className="meter-stack">
+                                            <div className="meter-item">
+                                                <div className="meter-label-row">
+                                                    <span className="meter-name">TACTICAL STABILITY</span>
+                                                    <span className="meter-value">{metrics.stability}%</span>
+                                                </div>
+                                                <div className="meter-track">
+                                                    <div className="meter-fill" style={{ width: `${metrics.stability}%` }}></div>
+                                                </div>
+                                                <div className="meter-interpretation">{metrics.stabilityLabel}</div>
+                                            </div>
+                                            <div className="meter-item">
+                                                <div className="meter-label-row">
+                                                    <span className="meter-name">RISK TOLERANCE</span>
+                                                    <span className="meter-value">{metrics.risk}%</span>
+                                                </div>
+                                                <div className="meter-track">
+                                                    <div className="meter-fill" style={{ width: `${metrics.risk}%` }}></div>
+                                                </div>
+                                                <div className="meter-interpretation">{metrics.riskLabel}</div>
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+
+                            <div className="intel-data-section">
+                                <div className="intel-section-title">RECRUITMENT BIAS</div>
+                                <div className="bias-row">
+                                    <div className="bias-side">
+                                        <span className="bias-label">YOUTH TRUST</span>
+                                        <span className="bias-val">{intelManager.traits?.some(t => t.includes('Youth')) ? 'ELITE' : 'MODERATE'}</span>
+                                    </div>
+                                    <div className="bias-divider"></div>
+                                    <div className="bias-side">
+                                        <span className="bias-label">VETERAN USE</span>
+                                        <span className="bias-val">{intelManager.reputation > 95 ? 'HIGH' : 'LOW'}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="intel-data-section">
+                                <div className="intel-section-title">TRAINING BONUSES</div>
+                                <div className="bonus-stack">
+                                    <div className="bonus-card">
+                                        <div className="bonus-icon-box"><Zap size={18} /></div>
+                                        <div className="bonus-info">
+                                            <span className="bonus-name">Tactical Coherence</span>
+                                            <span className="bonus-desc">Reduces system adaptation period by 25%.</span>
+                                        </div>
+                                    </div>
+                                    <div className="bonus-card">
+                                        <div className="bonus-icon-box"><Shield size={18} /></div>
+                                        <div className="bonus-info">
+                                            <span className="bonus-name">Board Confidence</span>
+                                            <span className="bonus-desc">Increased protection during initial season dip.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="hub-footer" style={{ padding: '2rem' }}>
+                            <Shield size={14} />
+                            <span>ENCRYPTED BOARD DATA • NOT FOR PUBLIC RELEASE</span>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div >
     );
 }

@@ -18,12 +18,17 @@ export default function GoalkeeperSelectPage() {
 
     useEffect(() => {
         const storedFormation = localStorage.getItem('formation');
-        if (storedFormation) setFormation(JSON.parse(storedFormation));
+        if (storedFormation) {
+            setFormation(JSON.parse(storedFormation));
+        } else {
+            router.push('/formation-select');
+            return;
+        }
         const storedTeam = localStorage.getItem('selectedTeam');
         if (storedTeam) setSelectedTeam(JSON.parse(storedTeam));
         const storedGK = localStorage.getItem('goalkeeper');
         if (storedGK) setSelectedGK(JSON.parse(storedGK));
-    }, []);
+    }, [router]);
 
     const sortedGKs = useMemo(() => {
         return [...GOALKEEPERS].sort((a, b) => b.rating - a.rating);

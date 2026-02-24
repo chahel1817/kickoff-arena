@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Trophy, ChevronRight, ChevronLeft, Globe, Cpu, Check } from 'lucide-react';
+import { Trophy, ChevronRight, ChevronLeft, Globe, Check } from 'lucide-react';
 import leaguesData from '../../data/leagues.json';
 import '../entry.css';
 
@@ -13,11 +13,22 @@ export default function LeagueSelectionPage() {
 
     useEffect(() => {
         const storedName = localStorage.getItem('userName');
-        if (storedName) setName(storedName);
+        if (storedName) {
+            setName(storedName);
+        } else {
+            router.push('/');
+            return;
+        }
 
         // Clear previous selections to ensure a fresh flow
         localStorage.removeItem('selectedLeague');
         localStorage.removeItem('selectedTeam');
+        localStorage.removeItem('selectedManager');
+        localStorage.removeItem('formation');
+        localStorage.removeItem('goalkeeper');
+        localStorage.removeItem('defenders');
+        localStorage.removeItem('midfielders');
+        localStorage.removeItem('forwards');
     }, []);
 
     const handleLeagueSelect = (league) => {

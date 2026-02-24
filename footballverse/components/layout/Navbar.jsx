@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Trophy, Users, LayoutDashboard, Search } from 'lucide-react';
+import { Trophy, Users, LayoutDashboard, Search, LogOut } from 'lucide-react';
 import './navbar.css';
 
 export default function Navbar() {
@@ -13,9 +13,14 @@ export default function Navbar() {
         if (name) setUsername(name);
     }, []);
 
+    const handleLogout = () => {
+        localStorage.clear();
+        window.location.href = '/';
+    };
+
     return (
         <nav className="navbar">
-            <Link href="/home" className="navbar-brand">
+            <Link href="/dashboard" className="navbar-brand">
                 <div className="navbar-logo">
                     <Trophy className="navbar-logo-icon" />
                 </div>
@@ -23,7 +28,7 @@ export default function Navbar() {
             </Link>
 
             <div className="navbar-links">
-                <Link href="/home" className="navbar-link">
+                <Link href="/dashboard" className="navbar-link">
                     <LayoutDashboard className="navbar-icon" /> Dashboard
                 </Link>
                 <Link href="/league" className="navbar-link">
@@ -34,9 +39,14 @@ export default function Navbar() {
                 </Link>
             </div>
 
-            <div className="navbar-user">
-                <div className="navbar-avatar"></div>
-                <span className="navbar-username">{username}</span>
+            <div className="navbar-right">
+                <div className="navbar-user">
+                    <div className="navbar-avatar"></div>
+                    <span className="navbar-username">{username}</span>
+                </div>
+                <button onClick={handleLogout} className="navbar-logout-btn" title="Logout">
+                    <LogOut size={16} />
+                </button>
             </div>
         </nav>
     );

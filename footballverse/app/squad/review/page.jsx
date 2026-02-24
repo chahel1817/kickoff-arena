@@ -48,7 +48,11 @@ export default function SquadReviewPage() {
         if (storedMids) setMidfielders(JSON.parse(storedMids));
         if (storedFwds) setForwards(JSON.parse(storedFwds));
         if (storedCap) setUserCaptainId(storedCap);
-    }, []);
+
+        if (!storedFormation) {
+            router.push('/formation-select');
+        }
+    }, [router]);
 
     const handleSetCaptain = (id) => {
         setUserCaptainId(id);

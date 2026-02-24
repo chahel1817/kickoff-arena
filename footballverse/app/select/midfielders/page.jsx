@@ -17,12 +17,17 @@ export default function MidfielderSelectPage() {
     useEffect(() => {
         window.scrollTo(0, 0);
         const f = localStorage.getItem('formation');
-        if (f) setFormation(JSON.parse(f));
+        if (f) {
+            setFormation(JSON.parse(f));
+        } else {
+            router.push('/formation-select');
+            return;
+        }
         const t = localStorage.getItem('selectedTeam');
         if (t) setSelectedTeam(JSON.parse(t));
         const m = localStorage.getItem('midfielders');
         if (m) setSelectedMids(JSON.parse(m));
-    }, []);
+    }, [router]);
 
     const maxMid = formation?.midfielders || 3;
 

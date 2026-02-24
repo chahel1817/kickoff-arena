@@ -18,12 +18,17 @@ export default function DefenderSelectPage() {
 
     useEffect(() => {
         const f = localStorage.getItem('formation');
-        if (f) setFormation(JSON.parse(f));
+        if (f) {
+            setFormation(JSON.parse(f));
+        } else {
+            router.push('/formation-select');
+            return;
+        }
         const t = localStorage.getItem('selectedTeam');
         if (t) setSelectedTeam(JSON.parse(t));
         const d = localStorage.getItem('defenders');
         if (d) setSelectedDefs(JSON.parse(d));
-    }, []);
+    }, [router]);
 
     const maxDef = formation?.defenders || 4;
 

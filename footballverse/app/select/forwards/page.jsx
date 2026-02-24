@@ -17,10 +17,15 @@ export default function ForwardSelectPage() {
     useEffect(() => {
         window.scrollTo(0, 0);
         const f = localStorage.getItem('formation');
-        if (f) setFormation(JSON.parse(f));
+        if (f) {
+            setFormation(JSON.parse(f));
+        } else {
+            router.push('/formation-select');
+            return;
+        }
         const saved = localStorage.getItem('forwards');
         if (saved) setSelectedFwds(JSON.parse(saved));
-    }, []);
+    }, [router]);
 
     const maxFwd = formation?.forwards || 3;
 

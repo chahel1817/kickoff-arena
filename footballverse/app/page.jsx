@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Trophy, Users, Target, Zap, Shield, TrendingUp, Globe, Star, BarChart3, ChevronDown } from 'lucide-react';
+import { Trophy, Users, Target, Zap, Shield, TrendingUp, Globe, Star, ChevronDown } from 'lucide-react';
 import './entry.css';
 
 export default function EntryPage() {
@@ -38,10 +38,10 @@ export default function EntryPage() {
 
                 <div className="hero-content">
                     <p className="hero-tagline text-300">The Most Advanced Football Career Simulation</p>
-                    <div className="scroll-indicator bounce-animation" onClick={scrollToJoin}>
+                    <button type="button" className="scroll-indicator bounce-animation" onClick={scrollToJoin} aria-label="Scroll to account setup">
                         <span>Explore the Arena</span>
                         <ChevronDown className="bounce-icon" />
-                    </div>
+                    </button>
                 </div>
             </section>
 
@@ -159,11 +159,14 @@ export default function EntryPage() {
                     <form onSubmit={handleStart} className="init-form">
                         <div className="init-input-wrapper">
                             <div className="input-glow-ring"></div>
+                            <label className="sr-only" htmlFor="manager-name">Manager name</label>
                             <input
+                                id="manager-name"
                                 type="text"
                                 placeholder="Enter Your Manager Name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                                autoComplete="name"
                                 required
                                 className="init-input text-600"
                             />

@@ -27,7 +27,7 @@ export default function TeamSelectPage() {
             // Redirect to league selection if none found
             router.push('/league');
         }
-    }, [leaguesData, router]);
+    }, [router]);
 
     const handleBack = () => {
         router.push('/league');

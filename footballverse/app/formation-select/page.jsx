@@ -32,11 +32,20 @@ export default function FormationSelectPage() {
         window.scrollTo(0, 0);
 
         const storedTeam = localStorage.getItem('selectedTeam');
-        if (storedTeam) setSelectedTeam(JSON.parse(storedTeam));
+        if (storedTeam) {
+            setSelectedTeam(JSON.parse(storedTeam));
+        } else {
+            router.push('/manager-select');
+            return;
+        }
 
         const storedManager = localStorage.getItem('selectedManager');
-        if (storedManager) setSelectedManager(JSON.parse(storedManager));
-    }, []);
+        if (storedManager) {
+            setSelectedManager(JSON.parse(storedManager));
+        } else {
+            router.push('/manager-select');
+        }
+    }, [router]);
 
     const handleSelect = (formation) => {
         setSelectedFormation(formation);
@@ -46,6 +55,12 @@ export default function FormationSelectPage() {
             midfielders: formation.midfielders,
             forwards: formation.forwards,
         }));
+
+        // Clear previously selected players as the formation has changed
+        localStorage.removeItem('goalkeeper');
+        localStorage.removeItem('defenders');
+        localStorage.removeItem('midfielders');
+        localStorage.removeItem('forwards');
     };
 
     const handleProceed = () => {

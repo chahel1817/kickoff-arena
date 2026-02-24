@@ -33,8 +33,12 @@ export default function ManagerSelectPage() {
         if (storedName) setName(storedName);
 
         const storedTeam = localStorage.getItem('selectedTeam');
-        if (storedTeam) setSelectedTeam(JSON.parse(storedTeam));
-    }, []);
+        if (storedTeam) {
+            setSelectedTeam(JSON.parse(storedTeam));
+        } else {
+            router.push('/team-select');
+        }
+    }, [router]);
 
     const handleManagerSelect = (manager) => {
         setSelectedManager(manager);

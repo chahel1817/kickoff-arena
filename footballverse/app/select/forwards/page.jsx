@@ -150,14 +150,26 @@ export default function ForwardSelectPage() {
 
                         <div className="fw-search-row">
                             <div className="fw-search-wrapper">
-                                <input type="text" placeholder="Search forwards..."
+                                <input type="text" placeholder="Search by name, club or country..."
                                     value={search} onChange={e => setSearch(e.target.value)}
                                     className="fw-search" />
+                                {search && (
+                                    <button className="fw-search-clear" onClick={() => setSearch('')}>
+                                        <X size={16} />
+                                    </button>
+                                )}
                                 <div className="fw-search-icon-wrapper">
                                     <Search className="fw-search-icon" size={22} />
                                 </div>
                             </div>
                         </div>
+                        {search && (
+                            <div className="fw-result-count">
+                                <span className="fw-result-num">{filtered.length}</span>
+                                <span className="fw-result-label">forward{filtered.length !== 1 ? 's' : ''} found</span>
+                                {filtered.length === 0 && <span className="fw-no-results">— Try a different search</span>}
+                            </div>
+                        )}
                     </div>
 
                     {/* Selected Summary */}
@@ -287,8 +299,7 @@ export default function ForwardSelectPage() {
 
                 .fw-stadium-bg { 
                     position: fixed; inset: 0; 
-                    background: url('/stadium-red.jpg') center/cover no-repeat;
-                    filter: brightness(0.06) saturate(1.5) contrast(1.2); z-index: -2; 
+                    filter: brightness(0.25) saturate(1.1) contrast(1.1); z-index: -2; 
                 }
 
                 .fw-ctx-bar { display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; background:rgba(10,10,15,.6); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,.08); border-radius:18px; margin-bottom:2.5rem; position:sticky; top:0; z-index:100; }
@@ -346,14 +357,25 @@ export default function ForwardSelectPage() {
                 .fw-search-row { display:flex; justify-content:center; width: 100%; margin: 2rem 0; }
                 .fw-search-wrapper { position:relative; width:100%; max-width:750px; display: flex; align-items: center; }
                 .fw-search { 
-                    width:100%; padding:1.2rem 4rem 1.2rem 2rem; border-radius:100px; 
+                    width:100%; padding:1.4rem 5rem 1.4rem 2.5rem; border-radius:100px; 
                     border:1px solid rgba(239, 68, 68, 0.3); background:rgba(15, 5, 5, 0.7); 
-                    color:white; font-size:1.1rem; outline:none; transition: all .4s cubic-bezier(.165,.84,.44,1); 
+                    color:white; font-size:1.2rem; font-weight:500;
+                    outline:none; transition: all .4s cubic-bezier(.165,.84,.44,1); 
+                    box-shadow:0 10px 40px rgba(0,0,0,0.4), inset 0 0 20px rgba(239,68,68,0.05);
+                    backdrop-filter: blur(20px);
                 }
-                .fw-search:focus { border-color: #ef4444; background: rgba(25, 10, 10, 0.9); box-shadow: 0 0 40px rgba(239, 68, 68, 0.2); transform: translateY(-3px) scale(1.01); }
-                .fw-search-icon-wrapper { position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); pointer-events: none; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; }
+                .fw-search:focus { border-color: #ef4444; background: rgba(25, 10, 10, 0.9); box-shadow: 0 20px 50px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239,68,68,0.08); transform: translateY(-3px) scale(1.01); }
+                .fw-search::placeholder { color:rgba(255,255,255,0.25); }
+                .fw-search-icon-wrapper { position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); pointer-events: none; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; }
                 .fw-search-icon { color: #ef4444; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.4)); transition: .3s; }
-                .fw-search:focus + .fw-search-icon-wrapper .fw-search-icon { transform: scale(1.2) rotate(-5deg); color: #f87171; }
+                .fw-search-wrapper:focus-within .fw-search-icon { color: #f87171; transform: scale(1.2) rotate(-5deg); transition: .4s; }
+                .fw-search-clear { position: absolute; right: 4.5rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: rgba(255,255,255,0.5); cursor: pointer; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: .2s; }
+                .fw-search-clear:hover { background: rgba(239,68,68,0.2); color: #ef4444; }
+                .fw-result-count { display:flex; align-items:center; justify-content:center; gap:.5rem; animation: fwCountIn .3s ease-out; }
+                @keyframes fwCountIn { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
+                .fw-result-num { font-size:1.1rem; font-weight:950; color:#ef4444; }
+                .fw-result-label { font-size:.75rem; font-weight:700; color:rgba(255,255,255,.4); }
+                .fw-no-results { font-size:.7rem; color:rgba(255,255,255,.25); font-style:italic; }
 
                 .fw-selection-summary { padding:.75rem 1.5rem; border-radius:16px; margin-bottom:1.5rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; background:rgba(10,10,15,.6); border:1px solid rgba(239,68,68,.15); }
                 .fw-sum-label { font-size:.55rem; font-weight:900; color:#ef4444; letter-spacing:.15em; white-space:nowrap; }
@@ -364,7 +386,7 @@ export default function ForwardSelectPage() {
                 .fw-chip-remove { opacity: 0; width: 0; transition: .3s; }
                 .fw-chip:hover .fw-chip-remove { opacity: 1; width: 14px; }
 
-                                .fw-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; margin-bottom:12rem; }
+                                .fw-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:1.5rem; margin-bottom:12rem; }
 
                 .fw-card { position:relative; text-align:left; border-radius:24px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .45s cubic-bezier(.23,1,.32,1); }
                 .fw-card:hover, .fw-card.kb-focus { transform:translateY(-10px); border-color:rgba(239,68,68,.3); box-shadow:0 25px 60px -15px rgba(0,0,0,.7),0 0 20px rgba(239,68,68,0.1); }
@@ -440,6 +462,9 @@ export default function ForwardSelectPage() {
 
                 .fw-progress-footer { position:fixed; bottom:0; left:0; right:0; display:flex; justify-content:center; padding:1rem 2rem; background:linear-gradient(to top,rgba(2,4,10,.95),transparent); pointer-events:none; z-index:50; }
 
+                @media(max-width:1200px) {
+                    .fw-grid { grid-template-columns:repeat(3, 1fr); }
+                }
                 @media(max-width:768px) {
                     .fw-ctx-bar { flex-wrap:wrap; gap:.75rem; padding:.75rem 1rem; }
                     .fw-ctx-center { gap:.75rem; order: 1; }

@@ -109,7 +109,7 @@ export default function DefenderSelectPage() {
 
     return (
         <div className={`entry-page no-snap ${isExiting ? 'page-exit' : ''}`}>
-            <div className="stadium-bg" style={{ filter: 'brightness(0.06) grayscale(0.8)' }}></div>
+            <div className="stadium-bg df-stadium-bg"></div>
             <div className="overlay-gradient"></div>
 
             <section className="df-page">
@@ -177,14 +177,26 @@ export default function DefenderSelectPage() {
 
                         <div className="df-search-row">
                             <div className="df-search-wrapper">
-                                <input type="text" placeholder="Search defenders..."
+                                <input type="text" placeholder="Search by name, club or country..."
                                     value={search} onChange={e => setSearch(e.target.value)}
                                     className="df-search" />
+                                {search && (
+                                    <button className="df-search-clear" onClick={() => setSearch('')}>
+                                        <X size={16} />
+                                    </button>
+                                )}
                                 <div className="df-search-icon-wrapper">
                                     <Search className="df-search-icon" size={22} />
                                 </div>
                             </div>
                         </div>
+                        {search && (
+                            <div className="df-result-count">
+                                <span className="df-result-num">{filtered.length}</span>
+                                <span className="df-result-label">defender{filtered.length !== 1 ? 's' : ''} found</span>
+                                {filtered.length === 0 && <span className="df-no-results">— Try a different search</span>}
+                            </div>
+                        )}
                     </div>
 
                     {/* Selected Summary */}
@@ -377,6 +389,13 @@ export default function DefenderSelectPage() {
                 .df-search-icon { color: #3b82f6; filter: drop-shadow(0 0 10px rgba(59,130,246,0.5)); }
                 .df-search-wrapper:focus-within .df-search-icon { color: #60a5fa; transform: scale(1.2) rotate(-5deg); transition: .4s; }
                 .df-search::placeholder { color:rgba(255,255,255,0.25); }
+                .df-search-clear { position: absolute; right: 4.5rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: rgba(255,255,255,0.5); cursor: pointer; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: .2s; }
+                .df-search-clear:hover { background: rgba(59,130,246,0.2); color: #3b82f6; }
+                .df-result-count { display:flex; align-items:center; justify-content:center; gap:.5rem; animation: dfCountIn .3s ease-out; }
+                @keyframes dfCountIn { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
+                .df-result-num { font-size:1.1rem; font-weight:950; color:#3b82f6; }
+                .df-result-label { font-size:.75rem; font-weight:700; color:rgba(255,255,255,.4); }
+                .df-no-results { font-size:.7rem; color:rgba(255,255,255,.25); font-style:italic; }
 
                 /* Selection Summary */
                 .df-selection-summary { padding:.75rem 1.5rem; border-radius:16px; margin-bottom:1.5rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; background:rgba(10,10,15,.6); border:1px solid rgba(59,130,246,.15); }
@@ -386,7 +405,7 @@ export default function DefenderSelectPage() {
                                 .df-chip:hover { background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.3); transform: translateY(-2px); }
 
                 /* Grid */
-                .df-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; margin-bottom:12rem; }
+                .df-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:1.5rem; margin-bottom:12rem; }
 
                 /* Card */
                 .df-card { position:relative; text-align:left; border-radius:24px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .4s cubic-bezier(.23,1,.32,1); }
@@ -474,6 +493,10 @@ export default function DefenderSelectPage() {
                 .df-step-line { width:30px; height:1px; background:rgba(255,255,255,.06); margin-bottom:1rem; }
 
                 /* Responsive */
+                .df-stadium-bg { filter: brightness(0.25) saturate(1.1) contrast(1.1); }
+                @media(max-width:1200px) {
+                    .df-grid { grid-template-columns:repeat(3, 1fr); }
+                }
                 @media(max-width:768px) {
                     .df-ctx-bar { flex-wrap:wrap; gap:.75rem; padding:.75rem 1rem; }
                     .df-ctx-center { gap:.75rem; order: 1; }

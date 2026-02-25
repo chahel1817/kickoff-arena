@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Trophy, Shield, Users, Layers, ChevronRight, Sparkles } from 'lucide-react';
+import { Trophy, Shield, Users, Layers, ChevronRight, Sparkles, Activity, LayoutDashboard, Check } from 'lucide-react';
 import leagues from '../../data/leagues.json';
 import './summary.css';
 

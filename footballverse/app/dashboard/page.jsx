@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Trophy, Users, Shield, Layers, Play, ChevronRight, Activity, Star, Rocket } from 'lucide-react';
+import { Zap, Trophy, Users, Shield, Layers, Play, ChevronRight, Activity, Star, Rocket } from 'lucide-react';
 import leagues from '../../data/leagues.json';
 import './dashboard.css';
 

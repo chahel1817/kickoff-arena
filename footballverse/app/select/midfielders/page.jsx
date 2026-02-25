@@ -82,7 +82,7 @@ export default function MidfielderSelectPage() {
 
     return (
         <div className="entry-page no-snap">
-            <div className="stadium-bg" style={{ filter: 'brightness(0.06) grayscale(0.8)' }}></div>
+            <div className="stadium-bg mf-stadium-bg"></div>
             <div className="overlay-gradient"></div>
 
             <section className="mf-page">
@@ -165,14 +165,26 @@ export default function MidfielderSelectPage() {
 
                         <div className="mf-search-row">
                             <div className="mf-search-wrapper">
-                                <input type="text" placeholder="Search midfielders..."
+                                <input type="text" placeholder="Search by name, club or country..."
                                     value={search} onChange={e => setSearch(e.target.value)}
                                     className="mf-search" />
+                                {search && (
+                                    <button className="mf-search-clear" onClick={() => setSearch('')}>
+                                        <X size={16} />
+                                    </button>
+                                )}
                                 <div className="mf-search-icon-wrapper">
                                     <Search className="mf-search-icon" size={22} />
                                 </div>
                             </div>
                         </div>
+                        {search && (
+                            <div className="mf-result-count">
+                                <span className="mf-result-num">{filtered.length}</span>
+                                <span className="mf-result-label">midfielder{filtered.length !== 1 ? 's' : ''} found</span>
+                                {filtered.length === 0 && <span className="mf-no-results">— Try a different search</span>}
+                            </div>
+                        )}
                     </div>
 
                     {/* Selected Summary */}
@@ -391,13 +403,20 @@ export default function MidfielderSelectPage() {
                     color: #c084fc; transform: scale(1.2) rotate(-5deg); transition: .4s;
                 }
                 .mf-search::placeholder { color:rgba(255,255,255,0.25); }
+                .mf-search-clear { position: absolute; right: 4.5rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: rgba(255,255,255,0.5); cursor: pointer; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: .2s; }
+                .mf-search-clear:hover { background: rgba(168,85,247,0.2); color: #a855f7; }
+                .mf-result-count { display:flex; align-items:center; justify-content:center; gap:.5rem; animation: mfCountIn .3s ease-out; }
+                @keyframes mfCountIn { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
+                .mf-result-num { font-size:1.1rem; font-weight:950; color:#a855f7; }
+                .mf-result-label { font-size:.75rem; font-weight:700; color:rgba(255,255,255,.4); }
+                .mf-no-results { font-size:.7rem; color:rgba(255,255,255,.25); font-style:italic; }
 
                 .mf-selection-summary { padding:.75rem 1.5rem; border-radius:16px; margin-bottom:1.5rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; background:rgba(10,10,15,.6); border:1px solid rgba(168,85,247,.15); }
                 .mf-sum-label { font-size:.55rem; font-weight:900; color:#a855f7; letter-spacing:.15em; white-space:nowrap; }
                 .mf-sum-chips { display:flex; gap:.4rem; flex-wrap:wrap; }
                                 .mf-chip { display:flex; align-items:center; gap:.4rem; padding:.35rem .8rem; border-radius:8px; background:rgba(168,85,247,.1); border:1px solid rgba(168,85,247,.25); color:white; font-size:.65rem; font-weight:700; cursor:pointer; transition:.3s; }
 
-                .mf-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; margin-bottom:12rem; }
+                .mf-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:1.5rem; margin-bottom:12rem; }
 
                 .mf-card { position:relative; text-align:left; border-radius:24px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .45s cubic-bezier(.23,1,.32,1); }
                 .mf-card:hover { transform:translateY(-10px); border-color:rgba(168,85,247,.3); box-shadow:0 25px 60px -15px rgba(0,0,0,.7),0 0 20px rgba(168,85,247,.08); }
@@ -485,6 +504,10 @@ export default function MidfielderSelectPage() {
                 .mf-step-circle.done { background:#10b981; border-color:#10b981; color:black; }
                 .mf-step-line { width:30px; height:1px; background:rgba(255,255,255,.06); margin-bottom:1rem; }
 
+                .mf-stadium-bg { filter: brightness(0.25) saturate(1.1) contrast(1.1); }
+                @media(max-width:1200px) {
+                    .mf-grid { grid-template-columns:repeat(3, 1fr); }
+                }
                 @media(max-width:768px) {
                     .mf-ctx-bar { flex-wrap:wrap; gap:.75rem; padding:.75rem 1rem; }
                     .mf-ctx-center { gap:.75rem; order: 1; }

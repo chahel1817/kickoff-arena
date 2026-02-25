@@ -21,6 +21,7 @@ export default function SquadSuccessPage() {
     const [captainId, setCaptainId] = useState(null);
 
     useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
         const storedTeam = localStorage.getItem('selectedTeam');
         const storedManager = localStorage.getItem('selectedManager');
         const storedFormation = localStorage.getItem('formation');

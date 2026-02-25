@@ -16,6 +16,7 @@ const ONBOARDING_PATHS = new Set([
     '/select/midfielders',
     '/select/forwards',
     '/squad/review',
+    '/summary',
 ]);
 
 export default function ClientChrome({ children }) {

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Zap, Layers, ChevronRight, ChevronLeft, Star, Check, X, Shield, Activity } from 'lucide-react';
 import { MIDFIELDERS } from './data';
 import '../../entry.css';
@@ -13,6 +13,9 @@ export default function MidfielderSelectPage() {
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [filterPos, setFilterPos] = useState('ALL');
     const [search, setSearch] = useState('');
+    const [brokenIds, setBrokenIds] = useState(new Set());
+    const searchParams = useSearchParams();
+    const isEditMode = searchParams.get('edit') === 'true';
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -27,18 +30,31 @@ export default function MidfielderSelectPage() {
         if (t) setSelectedTeam(JSON.parse(t));
         const m = localStorage.getItem('midfielders');
         if (m) setSelectedMids(JSON.parse(m));
-    }, [router]);
+    }, [router, isEditMode]);
 
     const maxMid = formation?.midfielders || 3;
 
     const filtered = useMemo(() => {
-        let list = MIDFIELDERS;
+        let list = MIDFIELDERS.filter(m => !brokenIds.has(m.id));
         if (filterPos !== 'ALL') list = list.filter(m => m.position === filterPos);
         if (search) list = list.filter(m => m.name.toLowerCase().includes(search.toLowerCase()) || m.club.toLowerCase().includes(search.toLowerCase()));
         return list;
-    }, [filterPos, search]);
+    }, [filterPos, search, brokenIds]);
 
-    const handleSelect = (player) => {
+    const handleImageError = (player) => {
+        setBrokenIds(prev => {
+            const next = new Set(prev);
+            next.add(player.id);
+            return next;
+        });
+        if (selectedMids.some(p => p.id === player.id)) {
+            const updated = selectedMids.filter(p => p.id !== player.id);
+            setSelectedMids(updated);
+            localStorage.setItem('midfielders', JSON.stringify(updated));
+        }
+    };
+
+    const handleSelect = useCallback((player) => {
         setSelectedMids(prev => {
             const exists = prev.find(p => p.id === player.id);
             let next;
@@ -50,11 +66,17 @@ export default function MidfielderSelectPage() {
             localStorage.setItem('midfielders', JSON.stringify(next));
             return next;
         });
-    };
+    }, [maxMid]);
 
-    const handleConfirm = () => {
-        if (selectedMids.length === maxMid) router.push('/select/forwards');
-    };
+    const handleConfirm = useCallback(() => {
+        if (selectedMids.length === maxMid) {
+            if (isEditMode) {
+                router.push('/squad/review');
+            } else {
+                router.push('/select/forwards');
+            }
+        }
+    }, [isEditMode, selectedMids, maxMid, router]);
 
     const positions = ['ALL', 'CDM', 'CM', 'CAM'];
 
@@ -69,8 +91,8 @@ export default function MidfielderSelectPage() {
                     {/* Context Bar */}
                     <div className="mf-ctx-bar glass">
                         <div className="mf-ctx-left">
-                            <button onClick={() => router.push('/select/defenders')} className="mf-back-btn">
-                                <ChevronLeft size={18} /><span>DEFENDERS</span>
+                            <button onClick={() => isEditMode ? router.push('/squad/review') : router.push('/select/defenders')} className="mf-back-btn">
+                                <ChevronLeft size={18} /><span>{isEditMode ? 'BACK TO REVIEW' : 'DEFENDERS'}</span>
                             </button>
                         </div>
                         <div className="mf-ctx-center">
@@ -206,7 +228,13 @@ export default function MidfielderSelectPage() {
                                         <span className="mf-ovr-value">{player.rating}</span>
                                     </div>
                                     <div className="mf-photo-frame">
-                                        <img src={player.image} alt={player.name} className="mf-photo" loading="lazy" />
+                                        <img
+                                            src={player.image}
+                                            alt={player.name}
+                                            className="mf-photo"
+                                            loading="lazy"
+                                            onError={() => handleImageError(player)}
+                                        />
                                         <div className="mf-photo-vignette"></div>
                                     </div>
                                     <div className="mf-card-info">
@@ -227,36 +255,44 @@ export default function MidfielderSelectPage() {
                     <div className={`mf-confirm-bar glass ${selectedMids.length === maxMid ? 'visible' : ''}`}>
                         <div className="mf-bar-content">
                             <div className="mf-bar-info">
-                                <span className="mf-bar-tag">MIDFIELD ENGINE READY</span>
-                                <div className="mf-bar-status">
-                                    {selectedMids.length}/{maxMid} PLAYERS SELECTED
-                                </div>
-                                <div className="mf-bar-names">
-                                    {selectedMids.map(p => p.name.split(' ').pop()).join(' • ')}
+                                <span className="mf-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'CORE ENGINE'}</span>
+                                <h3 className="mf-bar-name">
+                                    {selectedMids.length} / {maxMid} SELECTED
+                                </h3>
+                                <div className="mf-bar-list">
+                                    {selectedMids.map((m, i) => (
+                                        <span key={m.id} className="mf-bar-player-name">
+                                            {m.name}{i < selectedMids.length - 1 ? ', ' : ''}
+                                        </span>
+                                    ))}
                                 </div>
                             </div>
-                            <button onClick={handleConfirm} className="mf-proceed-btn"
-                                disabled={selectedMids.length !== maxMid}>
-                                <span>LOCK IN MIDFIELD</span>
-                                <Activity size={22} className="mf-btn-icon" />
+                            <button
+                                onClick={handleConfirm}
+                                className={`mf-proceed-btn ${selectedMids.length === maxMid ? 'active' : ''}`}
+                                disabled={selectedMids.length !== maxMid}
+                            >
+                                <span>{isEditMode ? 'CONFIRM CHANGES' : 'LOCK MIDFIELD'}</span>
+                                <Zap size={22} className="mf-btn-icon" />
                             </button>
                         </div>
                     </div>
 
-                    {/* Progress */}
-                    <div className="mf-progress-footer">
-                        <div className="mf-progress-steps">
-                            {['GK', 'DEF', 'MID', 'FWD', 'REVIEW'].map((s, i) => (
-                                <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <div className={`mf-step ${i <= 2 ? 'active' : ''}`}>
-                                        <div className={`mf-step-circle ${i <= 2 ? 'active' : ''} ${i <= 1 ? 'done' : ''}`}>{i + 1}</div>
-                                        <span>{s}</span>
+                    {!isEditMode && (
+                        <div className="mf-progress-footer">
+                            <div className="mf-progress-steps">
+                                {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
+                                    <div key={s} style={{ display: 'flex', alignItems: 'center' }}>
+                                        <div className={`mf-step ${i === 2 ? 'active' : ''} ${i < 2 ? 'completed' : ''}`}>
+                                            <div className="mf-step-circle">{i < 2 ? <Check size={12} /> : i + 1}</div>
+                                            <span>{s}</span>
+                                        </div>
+                                        {i < 4 && <div className="mf-step-line"></div>}
                                     </div>
-                                    {i < 4 && <div className="mf-step-line"></div>}
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                 </main>
             </section>
@@ -359,18 +395,16 @@ export default function MidfielderSelectPage() {
                 .mf-selection-summary { padding:.75rem 1.5rem; border-radius:16px; margin-bottom:1.5rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; background:rgba(10,10,15,.6); border:1px solid rgba(168,85,247,.15); }
                 .mf-sum-label { font-size:.55rem; font-weight:900; color:#a855f7; letter-spacing:.15em; white-space:nowrap; }
                 .mf-sum-chips { display:flex; gap:.4rem; flex-wrap:wrap; }
-                .mf-chip { display:flex; align-items:center; gap:.4rem; padding:.35rem .8rem; border-radius:8px; background:rgba(168,85,247,.1); border:1px solid rgba(168,85,247,.25); color:white; font-size:.65rem; font-weight:700; cursor:pointer; transition:.3s; }
-                .mf-chip:hover { background:rgba(239,68,68,.15); border-color:rgba(239,68,68,.3); }
-                .mf-chip-pos { color:#a855f7; font-weight:900; font-size:.55rem; }
+                                .mf-chip { display:flex; align-items:center; gap:.4rem; padding:.35rem .8rem; border-radius:8px; background:rgba(168,85,247,.1); border:1px solid rgba(168,85,247,.25); color:white; font-size:.65rem; font-weight:700; cursor:pointer; transition:.3s; }
 
-                .mf-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.25rem; margin-bottom:12rem; }
+                .mf-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; margin-bottom:12rem; }
 
-                .mf-card { position:relative; text-align:left; border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .45s cubic-bezier(.23,1,.32,1); }
-                .mf-card:hover { transform:translateY(-8px); border-color:rgba(168,85,247,.3); box-shadow:0 20px 50px -15px rgba(0,0,0,.7),0 0 20px rgba(168,85,247,.08); }
-                .mf-card.selected { border-color:#10b981 !important; border-width:2px; box-shadow:0 0 40px rgba(16,185,129,.15); transform:translateY(-8px) scale(1.02); }
+                .mf-card { position:relative; text-align:left; border-radius:24px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .45s cubic-bezier(.23,1,.32,1); }
+                .mf-card:hover { transform:translateY(-10px); border-color:rgba(168,85,247,.3); box-shadow:0 25px 60px -15px rgba(0,0,0,.7),0 0 20px rgba(168,85,247,.08); }
+                .mf-card.selected { border-color:#10b981 !important; border-width:2px; box-shadow:0 0 40px rgba(16,185,129,.15); transform:translateY(-10px) scale(1.03); }
                 
                 /* Role Accents */
-                .mf-card.badge-cdm-wrap { border-left: 4px solid #7c3aed !important; } /* Need to apply class in JSX */
+                .mf-card.badge-cdm-wrap { border-left: 4px solid #7c3aed !important; }
                 .mf-card.badge-cm-wrap { border-left: 4px solid #a855f7 !important; }
                 .mf-card.badge-cam-wrap { border-left: 4px solid #d8b4fe !important; }
                 
@@ -404,22 +438,22 @@ export default function MidfielderSelectPage() {
                 .mf-selected-badge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:30; width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#10b981,#34d399); color:black; display:flex; align-items:center; justify-content:center; box-shadow:0 0 40px rgba(16,185,129,.5); animation:badgePop .4s cubic-bezier(.175,.885,.32,1.275); }
                 @keyframes badgePop { from{transform:translate(-50%,-50%) scale(0)} to{transform:translate(-50%,-50%) scale(1)} }
 
-                .mf-card-rating { position:absolute; top:.8rem; right:.8rem; z-index:10; background:rgba(0,0,0,.85); backdrop-filter:blur(10px); padding:.3rem .7rem; border-radius:10px; border:1px solid rgba(255,255,255,.08); text-align:center; }
-                .mf-ovr-label { display:block; font-size:.35rem; font-weight:900; color:rgba(255,255,255,.3); letter-spacing:.1em; }
-                .mf-ovr-value { font-size:1.2rem; font-weight:900; color:white; line-height:1; }
+                .mf-card-rating { position:absolute; bottom:8rem; right:1rem; z-index:10; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); padding:.5rem .8rem; border-radius:12px; border:1px solid rgba(255,255,255,.08); text-align:center; }
+                .mf-ovr-label { display:block; font-size:.4rem; font-weight:900; color:rgba(255,255,255,.3); letter-spacing:.1em; }
+                .mf-ovr-value { font-size:1.3rem; font-weight:900; color:white; line-height:1; }
 
-                .mf-photo-frame { position:relative; height:260px; overflow:hidden; background:#080810; }
+                .mf-photo-frame { position:relative; height:300px; overflow:hidden; background:#080810; }
                 .mf-photo { width:100%; height:100%; object-fit:cover; object-position:center top; transition:.6s; filter:saturate(1.15) contrast(1.1); }
                 .mf-card:hover .mf-photo { transform:scale(1.1); filter:saturate(1.3) contrast(1.15); }
-                .mf-photo-vignette { position:absolute; bottom:0; left:0; right:0; height:7rem; background:linear-gradient(to top,rgba(10,10,15,1),transparent); }
+                .mf-photo-vignette { position:absolute; bottom:0; left:0; right:0; height:8rem; background:linear-gradient(to top,rgba(10,10,15,1),transparent); }
 
-                .mf-card-info { padding:1.2rem 1.2rem 1.4rem; margin-top:-2.5rem; position:relative; z-index:5; }
-                .mf-card-club { font-size:.5rem; font-weight:900; color:#a855f7; letter-spacing:.25em; opacity:.7; display:block; margin-bottom:.3rem; }
+                .mf-card-info { padding:1.5rem 1.5rem 1.75rem; margin-top:-3rem; position:relative; z-index:5; }
+                .mf-card-club { font-size:.55rem; font-weight:900; color:#a855f7; letter-spacing:.25em; opacity:.7; display:block; margin-bottom:.4rem; }
                 .legend-card .mf-card-club { color:#f59e0b; }
-                .mf-card-name { font-size:1.15rem; font-weight:900; color:white; line-height:1.1; text-transform:uppercase; font-style:italic; margin-bottom:.5rem; }
-                .mf-card-meta { display:flex; align-items:center; gap:.4rem; font-size:.65rem; color:rgba(255,255,255,.3); font-weight:700; }
+                .mf-card-name { font-size:1.35rem; font-weight:900; color:white; line-height:1.1; text-transform:uppercase; font-style:italic; margin-bottom:.6rem; }
+                .mf-card-meta { display:flex; align-items:center; gap:.4rem; font-size:.7rem; color:rgba(255,255,255,0.3); font-weight:700; }
                 .mf-meta-dot { opacity:.3; }
-                .mf-card-pos { background:rgba(168,85,247,.1); color:#a855f7; padding:.15rem .5rem; border-radius:4px; font-size:.55rem; font-weight:900; letter-spacing:.1em; }
+                .mf-card-pos { background:rgba(168,85,247,.1); color:#a855f7; padding:.15rem 0.5rem; border-radius:4px; font-size:.6rem; font-weight:900; letter-spacing:.1em; }
                 .legend-card .mf-card-pos { background:rgba(245,158,11,.1); color:#f59e0b; }
 
                 .mf-confirm-bar { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(150%); width:calc(100% - 4rem); max-width:950px; padding:1.4rem 2.5rem; border-radius:24px; border:1px solid rgba(168,85,247,.3); border-top: 1px solid rgba(168,85,247,.6); z-index:3000; box-shadow:0 30px 70px -15px rgba(0,0,0,.9), 0 0 30px rgba(168,85,247,.1); transition:all .6s cubic-bezier(.16,1,.3,1); background:rgba(10,10,18,.85); backdrop-filter:blur(40px); }
@@ -428,9 +462,12 @@ export default function MidfielderSelectPage() {
                 .mf-bar-info { display:flex; flex-direction:column; gap:.2rem; flex: 1; }
                 .mf-bar-tag { font-size:.6rem; font-weight:950; color:#a855f7; letter-spacing:.2em; text-transform: uppercase; }
                 .mf-bar-status { font-size: 1.25rem; font-weight: 950; color: white; letter-spacing: -0.01em; margin: 0.1rem 0; }
-                .mf-bar-names { font-size:.75rem; color:rgba(255,255,255,.4); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 400px; }
                 
-                .mf-proceed-btn { position: relative; display:flex; align-items:center; gap:.8rem; background:linear-gradient(135deg,#a855f7,#7c3aed); color:white; padding:1.1rem 2.8rem; border-radius:16px; font-weight:950; font-size:1rem; letter-spacing:.05em; border:none; cursor:pointer; transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow:0 10px 30px rgba(124, 58, 237, 0.3); white-space:nowrap; overflow: hidden; }
+                .mf-bar-list { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.3rem; }
+                .mf-bar-player-name { font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 500; }
+                
+                .mf-proceed-btn { display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); padding: 1.1rem 2.8rem; border-radius: 18px; font-weight: 950; font-size: 1.1rem; border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); white-space:nowrap; overflow: hidden; }
+                .mf-proceed-btn.active { background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; cursor: pointer; border: none; box-shadow: 0 15px 35px rgba(124, 58, 237, 0.3); }
                 .mf-proceed-btn:not(:disabled) { animation: mfBtnPulse 2s infinite; }
                 @keyframes mfBtnPulse { 0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(168, 85, 247, 0); } 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); } }
                 

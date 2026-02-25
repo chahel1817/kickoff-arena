@@ -20,6 +20,8 @@ export const DEFENDERS = [
     { id: 'martinez', name: 'Lisandro Martínez', country: 'Argentina', club: 'Man United', rating: 83, position: 'CB', tier: 'current', image: tsdb('62xrby1770994011.jpg'), skills: ['Butcher', 'Long Pass'] },
     { id: 'akanji', name: 'Manuel Akanji', country: 'Switzerland', club: 'Man City', rating: 82, position: 'CB', tier: 'current', image: img('rkw8nb1703327216.jpg'), skills: ['Solid', 'Tactical'] },
     { id: 'bremer', name: 'Gleison Bremer', country: 'Brazil', club: 'Juventus', rating: 84, position: 'CB', tier: 'current', image: img('icn9je1716707438.jpg'), skills: ['Man-Marking', 'Power'] },
+    { id: 'white', name: 'Ben White', country: 'England', club: 'Arsenal', rating: 84, position: 'RB', tier: 'current', image: img('8k8zvn1627670783.jpg'), skills: ['Elite Overlap', 'Aggressive'] },
+    { id: 'botman', name: 'Sven Botman', country: 'Netherlands', club: 'Newcastle', rating: 83, position: 'CB', tier: 'current', image: tsdb('botman-sven.jpg'), skills: ['Aerial Dominance', 'Blocking'] },
 
     // ── CURRENT RBs ──
     { id: 'kounde', name: 'Jules Koundé', country: 'France', club: 'Barcelona', rating: 85, position: 'RB', tier: 'current', image: tsdb('0rzza71771254479.jpg'), skills: ['1v1 Defense', 'Flexible'] },
@@ -29,6 +31,7 @@ export const DEFENDERS = [
     { id: 'james', name: 'Reece James', country: 'England', club: 'Chelsea', rating: 84, position: 'RB', tier: 'current', image: img('uqrxvv1431677357.jpg'), skills: ['Strong', 'Delivery'] },
     { id: 'walker', name: 'Kyle Walker', country: 'England', club: 'Man City', rating: 84, position: 'RB', tier: 'current', image: img('1x2kej1557864016.jpg'), skills: ['Speedster', 'Recovery'] },
     { id: 'porro', name: 'Pedro Porro', country: 'Spain', club: 'Tottenham', rating: 83, position: 'RB', tier: 'current', image: tsdb('l9i5lo1770894141.jpg'), skills: ['Winger-like', 'Energy'] },
+    { id: 'gusto', name: 'Malo Gusto', country: 'France', club: 'Chelsea', rating: 81, position: 'RB', tier: 'current', image: tsdb('gusto-malo.jpg'), skills: ['Pace', 'Crossing'] },
     { id: 'arnold', name: 'T. Alexander-Arnold', country: 'England', club: 'Liverpool', rating: 86, position: 'RB', tier: 'current', image: img('5rv3m91621544715.jpg'), skills: ['Elite Cross', 'Vision'] },
 
     // ── CURRENT LBs ──
@@ -36,6 +39,8 @@ export const DEFENDERS = [
     { id: 'robertson', name: 'Andy Robertson', country: 'Scotland', club: 'Liverpool', rating: 85, position: 'LB', tier: 'current', image: img('mvmpbc1710165540.jpg'), skills: ['Crossing', 'Engine'] },
     { id: 'theo', name: 'Theo Hernández', country: 'France', club: 'AC Milan', rating: 85, position: 'LB', tier: 'current', image: img('zilv2j1609512210.jpg'), skills: ['Speed-Train', 'Strike'] },
     { id: 'dimarco', name: 'Federico Dimarco', country: 'Italy', club: 'Inter', rating: 84, position: 'LB', tier: 'current', image: img('q7lkrg1546596582.jpg'), skills: ['Vision', 'Elite Cross'] },
+    { id: 'udogie', name: 'Destiny Udogie', country: 'Italy', club: 'Tottenham', rating: 82, position: 'LB', tier: 'current', image: tsdb('udogie-destiny.jpg'), skills: ['Powerful', 'Modern LB'] },
+    { id: 'grimaldo', name: 'Alex Grimaldo', country: 'Spain', club: 'Leverkusen', rating: 84, position: 'LB', tier: 'current', image: tsdb('grimaldo-alex.jpg'), skills: ['Set-Piece', 'Clinical'] },
     { id: 'mendes', name: 'Nuno Mendes', country: 'Portugal', club: 'PSG', rating: 83, position: 'LB', tier: 'current', image: tsdb('ocycug1771261313.jpg'), skills: ['Dynamic', 'Pace'] },
     { id: 'zinchenko', name: 'O. Zinchenko', country: 'Ukraine', club: 'Arsenal', rating: 80, position: 'LB', tier: 'current', image: img('g4wvkd1715902407.jpg'), skills: ['Inverted', 'Technical'] },
 
@@ -48,13 +53,17 @@ export const DEFENDERS = [
     { id: 'nesta', name: 'Alessandro Nesta', country: 'Italy', club: 'Legend', rating: 93, position: 'CB', tier: 'legend', image: img('usysts1484137424.jpg'), skills: ['Slide-Tackle', 'Elite'] },
     { id: 'beckenbauer', name: 'Franz Beckenbauer', country: 'Germany', club: 'Legend', rating: 95, position: 'CB', tier: 'legend', image: img('e7yicv1544985651.jpg'), skills: ['Kaiser', 'Playmaker'] },
     { id: 'kompany', name: 'Vincent Kompany', country: 'Belgium', club: 'Legend', rating: 89, position: 'CB', tier: 'legend', image: img('4qyq7r1509999901.jpg'), skills: ['Leader', 'Tactical'] },
+    { id: 'ferdinand', name: 'Rio Ferdinand', country: 'England', club: 'Legend', rating: 90, position: 'CB', tier: 'legend', image: img('rio-ferdinand.jpg'), skills: ['Ball Playing', 'Speed'] },
+    { id: 'baresi', name: 'Franco Baresi', country: 'Italy', club: 'Legend', rating: 93, position: 'CB', tier: 'legend', image: img('baresi-franco.jpg'), skills: ['Intercepting', 'Leader'] },
 
     // ── LEGEND RBs ──
     { id: 'cafu', name: 'Cafu', country: 'Brazil', club: 'Legend', rating: 93, position: 'RB', tier: 'legend', image: img('ussrws1479842265.jpg'), skills: ['Infinite Energy', 'Legend'] },
     { id: 'lahm', name: 'Philipp Lahm', country: 'Germany', club: 'Legend', rating: 93, position: 'RB', tier: 'legend', image: img('ltocxo1615114367.jpg'), skills: ['Chess-Master', 'Precise'] },
     { id: 'alves', name: 'Dani Alves', country: 'Brazil', club: 'Legend', rating: 92, position: 'RB', tier: 'legend', image: img('qitd2v1515933011.jpg'), skills: ['Attacking', 'Skillful'] },
+    { id: 'zanetti', name: 'Javier Zanetti', country: 'Argentina', club: 'Legend', rating: 91, position: 'RB', tier: 'legend', image: img('zanetti-javier.jpg'), skills: ['Versatile', 'Engine'] },
 
     // ── LEGEND LBs ──
     { id: 'roberto-carlos', name: 'Roberto Carlos', country: 'Brazil', club: 'Legend', rating: 94, position: 'LB', tier: 'legend', image: img('u4uikp1541330867.jpg'), skills: ['Rocket Shot', 'Pace'] },
     { id: 'cole', name: 'Ashley Cole', country: 'England', club: 'Legend', rating: 90, position: 'LB', tier: 'legend', image: img('qoew7z1640192930.jpg'), skills: ['Stopper', 'Speed'] },
+    { id: 'evra', name: 'Patrice Evra', country: 'France', club: 'Legend', rating: 88, position: 'LB', tier: 'legend', image: img('evra-patrice.jpg'), skills: ['Leap', 'Experience'] },
 ];

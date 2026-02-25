@@ -149,8 +149,7 @@ export default function SquadReviewPage() {
     }, [pitchPositions]);
 
     const handleStartCareer = () => {
-        // Ultimate goal page
-        router.push('/dashboard');
+        router.push('/squad/success');
     };
 
     const captain = useMemo(() => {
@@ -278,7 +277,7 @@ export default function SquadReviewPage() {
                             <div className="rev-pos-group glass">
                                 <div className="rev-group-header">
                                     <h3 className="rev-group-title">GOALKEEPER</h3>
-                                    <button onClick={() => router.push('/select/goalkeeper')} className="rev-edit-btn">
+                                    <button onClick={() => router.push('/select/goalkeeper?edit=true')} className="rev-edit-btn">
                                         <Edit3 size={14} /> <span>EDIT</span>
                                     </button>
                                 </div>
@@ -305,7 +304,7 @@ export default function SquadReviewPage() {
                             <div className="rev-pos-group glass">
                                 <div className="rev-group-header">
                                     <h3 className="rev-group-title">DEFENDERS</h3>
-                                    <button onClick={() => router.push('/select/defenders')} className="rev-edit-btn">
+                                    <button onClick={() => router.push('/select/defenders?edit=true')} className="rev-edit-btn">
                                         <Edit3 size={14} /> <span>EDIT</span>
                                     </button>
                                 </div>
@@ -332,7 +331,7 @@ export default function SquadReviewPage() {
                             <div className="rev-pos-group glass">
                                 <div className="rev-group-header">
                                     <h3 className="rev-group-title">MIDFIELDERS</h3>
-                                    <button onClick={() => router.push('/select/midfielders')} className="rev-edit-btn">
+                                    <button onClick={() => router.push('/select/midfielders?edit=true')} className="rev-edit-btn">
                                         <Edit3 size={14} /> <span>EDIT</span>
                                     </button>
                                 </div>
@@ -359,7 +358,7 @@ export default function SquadReviewPage() {
                             <div className="rev-pos-group glass">
                                 <div className="rev-group-header">
                                     <h3 className="rev-group-title">FORWARDS</h3>
-                                    <button onClick={() => router.push('/select/forwards')} className="rev-edit-btn">
+                                    <button onClick={() => router.push('/select/forwards?edit=true')} className="rev-edit-btn">
                                         <Edit3 size={14} /> <span>EDIT</span>
                                     </button>
                                 </div>

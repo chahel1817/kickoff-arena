@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Shield, Search, ChevronRight, ChevronLeft, Star, Check, X, ShieldCheck, Zap } from 'lucide-react';
 import { DEFENDERS } from './data';
 import '../../entry.css';
@@ -15,6 +15,9 @@ export default function DefenderSelectPage() {
     const [search, setSearch] = useState('');
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const [isExiting, setIsExiting] = useState(false);
+    const [brokenIds, setBrokenIds] = useState(new Set());
+    const searchParams = useSearchParams();
+    const isEditMode = searchParams.get('edit') === 'true';
 
     useEffect(() => {
         const f = localStorage.getItem('formation');
@@ -28,16 +31,29 @@ export default function DefenderSelectPage() {
         if (t) setSelectedTeam(JSON.parse(t));
         const d = localStorage.getItem('defenders');
         if (d) setSelectedDefs(JSON.parse(d));
-    }, [router]);
+    }, [router, isEditMode]);
 
     const maxDef = formation?.defenders || 4;
 
     const filtered = useMemo(() => {
-        let list = DEFENDERS;
+        let list = DEFENDERS.filter(d => !brokenIds.has(d.id));
         if (filterPos !== 'ALL') list = list.filter(d => d.position === filterPos);
         if (search) list = list.filter(d => d.name.toLowerCase().includes(search.toLowerCase()) || d.club.toLowerCase().includes(search.toLowerCase()));
         return list;
-    }, [filterPos, search]);
+    }, [filterPos, search, brokenIds]);
+
+    const handleImageError = (player) => {
+        setBrokenIds(prev => {
+            const next = new Set(prev);
+            next.add(player.id);
+            return next;
+        });
+        if (selectedDefs.some(p => p.id === player.id)) {
+            const updated = selectedDefs.filter(p => p.id !== player.id);
+            setSelectedDefs(updated);
+            localStorage.setItem('defenders', JSON.stringify(updated));
+        }
+    };
 
     const handleSelect = useCallback((player) => {
         setSelectedDefs(prev => {
@@ -76,14 +92,18 @@ export default function DefenderSelectPage() {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [filtered, focusedIndex, handleSelect, search, selectedDefs]);
 
-    const handleConfirm = () => {
+    const handleConfirm = useCallback(() => {
         if (selectedDefs.length === maxDef) {
             setIsExiting(true);
             setTimeout(() => {
-                router.push('/select/midfielders');
+                if (isEditMode) {
+                    router.push('/squad/review');
+                } else {
+                    router.push('/select/midfielders');
+                }
             }, 600);
         }
-    };
+    }, [isEditMode, selectedDefs, maxDef, router]);
 
     const positions = ['ALL', 'CB', 'LB', 'RB'];
 
@@ -98,8 +118,8 @@ export default function DefenderSelectPage() {
                     {/* Context Bar */}
                     <div className="df-ctx-bar glass">
                         <div className="df-ctx-left">
-                            <button onClick={() => router.push('/select/goalkeeper')} className="df-back-btn">
-                                <ChevronLeft size={18} /><span>GOALKEEPER</span>
+                            <button onClick={() => isEditMode ? router.push('/squad/review') : router.push('/select/goalkeeper')} className="df-back-btn">
+                                <ChevronLeft size={18} /><span>{isEditMode ? 'BACK TO REVIEW' : 'GOALKEEPER'}</span>
                             </button>
                         </div>
                         <div className="df-ctx-center">
@@ -228,7 +248,13 @@ export default function DefenderSelectPage() {
                                         <span className="df-ovr-value">{player.rating}</span>
                                     </div>
                                     <div className="df-photo-frame">
-                                        <img src={player.image} alt={player.name} className="df-photo" loading="lazy" />
+                                        <img
+                                            src={player.image}
+                                            alt={player.name}
+                                            className="df-photo"
+                                            loading="lazy"
+                                            onError={() => handleImageError(player)}
+                                        />
                                         <div className="df-photo-vignette"></div>
                                         <div className="df-card-glow"></div>
                                     </div>
@@ -250,36 +276,45 @@ export default function DefenderSelectPage() {
                     <div className={`df-confirm-bar glass ${selectedDefs.length === maxDef ? 'visible' : ''}`}>
                         <div className="df-bar-content">
                             <div className="df-bar-info">
-                                <span className="df-bar-tag">
-                                    {selectedDefs.length === maxDef ? '✔ DEFENSIVE LINE COMPLETE' : 'DEFENSE LOCKED'}
-                                </span>
-                                <h3 className="df-bar-status">
-                                    {selectedDefs.length} / {maxDef} DEFENDERS SELECTED
+                                <span className="df-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'DEFENSIVE LINE'}</span>
+                                <h3 className="df-bar-name">
+                                    {selectedDefs.length} / {maxDef} SELECTED
                                 </h3>
-                                <div className="df-bar-names">{selectedDefs.map(p => p.name).join(' • ')}</div>
+                                <div className="df-bar-list">
+                                    {selectedDefs.map((d, i) => (
+                                        <span key={d.id} className="df-bar-player-name">
+                                            {d.name}{i < selectedDefs.length - 1 ? ', ' : ''}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
-                            <button onClick={handleConfirm} className="df-proceed-btn"
-                                disabled={selectedDefs.length !== maxDef}>
-                                <span>CONFIRM DEFENSE</span>
+                            <button
+                                onClick={handleConfirm}
+                                className={`df-proceed-btn ${selectedDefs.length === maxDef ? 'active' : ''}`}
+                                disabled={selectedDefs.length !== maxDef}
+                            >
+                                <span>{isEditMode ? 'CONFIRM CHANGES' : 'LOCK DEFENDERS'}</span>
                                 <ShieldCheck size={22} className="df-btn-icon" />
                             </button>
                         </div>
                     </div>
 
                     {/* Progress */}
-                    <div className="df-progress-footer">
-                        <div className="df-progress-steps">
-                            {['GK', 'DEF', 'MID', 'FWD', 'REVIEW'].map((s, i) => (
-                                <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <div className={`df-step ${i <= 1 ? 'active' : ''}`}>
-                                        <div className={`df-step-circle ${i <= 1 ? 'active' : ''} ${i === 0 ? 'done' : ''}`}>{i + 1}</div>
-                                        <span>{s}</span>
+                    {!isEditMode && (
+                        <div className="df-progress-footer">
+                            <div className="df-progress-steps">
+                                {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
+                                    <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <div className={`df-step ${i === 1 ? 'active' : ''} ${i < 1 ? 'completed' : ''}`}>
+                                            <div className="df-step-circle">{i < 1 ? <Check size={12} /> : i + 1}</div>
+                                            <span>{s}</span>
+                                        </div>
+                                        {i < 4 && <div className="df-step-line"></div>}
                                     </div>
-                                    {i < 4 && <div className="df-step-line"></div>}
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                 </main>
             </section>
@@ -348,19 +383,15 @@ export default function DefenderSelectPage() {
                 .df-sum-label { font-size:.55rem; font-weight:900; color:#3b82f6; letter-spacing:.15em; white-space:nowrap; }
                 .df-sum-chips { display:flex; gap:.4rem; flex-wrap:wrap; }
                 .df-chip { position: relative; display:flex; align-items:center; gap:.5rem; padding:.35rem .8rem; border-radius:8px; background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.25); color:white; font-size:.65rem; font-weight:800; cursor:pointer; transition:.3s; overflow: hidden; }
-                .df-chip:hover { background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.3); transform: translateY(-2px); }
-                .df-chip-pos { color:#3b82f6; font-weight:900; font-size:.55rem; }
-                .df-chip-remove { width: 0; opacity: 0; transition: 0.3s; color: #ef4444; }
-                .df-chip:hover .df-chip-remove { width: 14px; opacity: 1; }
-                .df-chip:hover .df-chip-name { color: #ef4444; }
+                                .df-chip:hover { background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.3); transform: translateY(-2px); }
 
                 /* Grid */
-                .df-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.25rem; margin-bottom:12rem; }
+                .df-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; margin-bottom:12rem; }
 
                 /* Card */
-                .df-card { position:relative; text-align:left; border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .4s cubic-bezier(.23,1,.32,1); }
-                .df-card:hover, .df-card.kb-focus { transform:translateY(-8px); border-color:rgba(59,130,246,.4); box-shadow:0 20px 50px -15px rgba(0,0,0,.7),0 0 20px rgba(59,130,246,.1); }
-                .df-card.selected { border-color:#10b981; border-width:2px; box-shadow:0 0 40px rgba(16,185,129,.15); transform:translateY(-8px) scale(1.02); }
+                .df-card { position:relative; text-align:left; border-radius:24px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .4s cubic-bezier(.23,1,.32,1); }
+                .df-card:hover, .df-card.kb-focus { transform:translateY(-10px); border-color:rgba(59,130,246,.4); box-shadow:0 25px 60px -15px rgba(0,0,0,.7), 0 0 25px rgba(59,130,246,.1); }
+                .df-card.selected { border-color:#10b981; border-width:2px; box-shadow:0 0 40px rgba(16,185,129,.15); transform:translateY(-10px) scale(1.03); }
                 .df-card-cb { border-left: 4px solid #3b82f6 !important; }
                 .df-card-fb { border-left: 4px solid #14b8a6 !important; }
                 .df-card.dimmed { opacity:.25; filter:grayscale(.6); pointer-events:none; }
@@ -391,44 +422,45 @@ export default function DefenderSelectPage() {
                 .legend-card .df-skill-badge { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.3); color: #f59e0b; }
 
                 /* Rating */
-                .df-card-rating { position:absolute; top:.8rem; right:.8rem; z-index:10; background:rgba(0,0,0,.85); backdrop-filter:blur(10px); padding:.3rem .7rem; border-radius:10px; border:1px solid rgba(255,255,255,.08); text-align:center; }
-                .df-ovr-label { display:block; font-size:.35rem; font-weight:900; color:rgba(255,255,255,.3); letter-spacing:.1em; }
-                .df-ovr-value { font-size:1.2rem; font-weight:900; color:white; line-height:1; }
+                .df-card-rating { position:absolute; bottom:8rem; right:1rem; z-index:10; background:rgba(0,0,0,.85); backdrop-filter:blur(10px); padding:.5rem .8rem; border-radius:12px; border:1px solid rgba(255,255,255,.08); text-align:center; }
+                .df-ovr-label { display:block; font-size:.4rem; font-weight:900; color:rgba(255,255,255,.3); letter-spacing:.1em; }
+                .df-ovr-value { font-size:1.3rem; font-weight:900; color:white; line-height:1; }
 
                 /* Photo */
-                .df-photo-frame { position:relative; height:260px; overflow:hidden; background:#080810; }
+                .df-photo-frame { position:relative; height:300px; overflow:hidden; background:#080810; }
                 .df-photo { width:100%; height:100%; object-fit:cover; object-position:center top; transition:.6s; filter:saturate(1.15) contrast(1.1); }
                 .df-card:hover .df-photo, .df-card.kb-focus .df-photo { transform:scale(1.1); filter:saturate(1.3) contrast(1.15); }
-                .df-photo-vignette { position:absolute; bottom:0; left:0; right:0; height:7rem; background:linear-gradient(to top,rgba(10,10,15,1),transparent); }
+                .df-photo-vignette { position:absolute; bottom:0; left:0; right:0; height:8rem; background:linear-gradient(to top,rgba(10,10,15,1),transparent); }
                 .df-card-glow { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: transparent; transition: 0.4s; }
                 .df-card:hover .df-card-glow, .df-card.kb-focus .df-card-glow { background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), transparent); box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
 
                 /* Info */
-                .df-card-info { padding:1.2rem 1.2rem 1.4rem; margin-top:-2.5rem; position:relative; z-index:5; }
-                .df-card-club { font-size:.5rem; font-weight:900; color:#3b82f6; letter-spacing:.25em; opacity:.7; display:block; margin-bottom:.3rem; }
+                .df-card-info { padding:1.5rem 1.5rem 1.75rem; margin-top:-3rem; position:relative; z-index:5; }
+                .df-card-club { font-size:.55rem; font-weight:900; color:#3b82f6; letter-spacing:.25em; opacity:.7; display:block; margin-bottom:.4rem; }
                 .legend-card .df-card-club { color:#f59e0b; }
-                .df-card-name { font-size:1.15rem; font-weight:900; color:white; line-height:1.1; text-transform:uppercase; font-style:italic; margin-bottom:.5rem; }
-                .df-card-meta { display:flex; align-items:center; gap:.4rem; font-size:.65rem; color:rgba(255,255,255,.3); font-weight:700; }
+                .df-card-name { font-size:1.35rem; font-weight:900; color:white; line-height:1.1; text-transform:uppercase; font-style:italic; margin-bottom:.6rem; }
+                .df-card-meta { display:flex; align-items:center; gap:.4rem; font-size:.7rem; color:rgba(255,255,255,0.3); font-weight:700; }
                 .df-meta-dot { opacity:.3; }
-                .df-card-pos { background:rgba(59,130,246,.1); color:#3b82f6; padding:.15rem .5rem; border-radius:4px; font-size:.55rem; font-weight:900; letter-spacing:.1em; }
+                .df-card-pos { background:rgba(59,130,246,.1); color:#3b82f6; padding:.15rem 0.5rem; border-radius:4px; font-size:.6rem; font-weight:900; letter-spacing:.1em; }
                 .legend-card .df-card-pos { background:rgba(245,158,11,.1); color:#f59e0b; }
 
-                /* Confirm Bar */
                 .df-confirm-bar { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(150%); width:calc(100% - 4rem); max-width:950px; padding:1.4rem 2.5rem; border-radius:24px; border:1px solid rgba(59, 130, 246,.3); border-top: 1px solid rgba(59, 130, 246,.6); z-index:3000; box-shadow:0 30px 70px -15px rgba(0,0,0,.9), 0 0 30px rgba(59, 130, 246,.1); transition:all .6s cubic-bezier(.16,1,.3,1); background:rgba(10,10,18,.85); backdrop-filter:blur(40px); }
                 .df-confirm-bar.visible { transform:translateX(-50%) translateY(0); }
                 .df-bar-content { display:flex; justify-content:space-between; align-items:center; gap: 2rem; }
                 .df-bar-info { display:flex; flex-direction:column; gap:.2rem; flex: 1; }
                 .df-bar-tag { font-size:.6rem; font-weight:950; color:#3b82f6; letter-spacing:.2em; text-transform: uppercase; }
                 .df-bar-status { font-size: 1.25rem; font-weight: 950; color: white; margin: 0.1rem 0; }
-                .df-bar-names { font-size:.75rem; color:rgba(255,255,255,.4); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 400px; }
                 
-                .df-proceed-btn { position: relative; display:flex; align-items:center; gap:.8rem; background:linear-gradient(135deg,#3b82f6,#2563eb); color:white; padding:1.1rem 2.8rem; border-radius:16px; font-weight:950; font-size:1rem; letter-spacing:.05em; border:none; cursor:pointer; transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow:0 10px 30px rgba(59, 130, 246, 0.3); white-space:nowrap; overflow: hidden; }
+                .df-bar-list { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.3rem; }
+                .df-bar-player-name { font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 500; }
+                
+                .df-proceed-btn { display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); padding: 1.1rem 2.8rem; border-radius: 18px; font-weight: 950; font-size: 1.1rem; border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); white-space:nowrap; overflow: hidden; }
+                .df-proceed-btn.active { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; cursor: pointer; border: none; box-shadow: 0 15px 35px rgba(37, 99, 235, 0.3); }
                 .df-proceed-btn:not(:disabled) { animation: dfBtnPulse 2s infinite; }
                 @keyframes dfBtnPulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
                 
                 .df-proceed-btn:hover { transform:scale(1.04) translateY(-3px); box-shadow:0 15px 40px rgba(59, 130, 246, 0.4); }
                 .df-btn-icon { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-                .df-proceed-btn:hover .df-btn-icon { transform: rotate(15deg) scale(1.2); }
                 .df-proceed-btn:disabled { opacity:.4; cursor:not-allowed; transform:none; filter: grayscale(1); }
 
                 /* Progress */

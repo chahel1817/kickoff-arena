@@ -1,0 +1,323 @@
+.shootout-page {
+    position: relative;
+    min-height: 100vh;
+    padding: 3.5rem 1.5rem 5rem;
+}
+
+.shootout-hero h1 {
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+.shootout-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+}
+
+.shootout-card {
+    padding: 1.5rem;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(9, 12, 20, 0.65);
+}
+
+.slot-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.slot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.slot.active {
+    border-color: rgba(0, 255, 136, 0.4);
+    box-shadow: 0 0 24px rgba(0, 255, 136, 0.15);
+}
+
+.slot-name {
+    font-weight: 700;
+}
+
+.player-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.player-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.player-chip:hover {
+    border-color: rgba(0, 255, 136, 0.5);
+    transform: translateY(-2px);
+}
+
+.player-chip.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.shootout-field {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 2.5rem auto 0;
+    padding: 2.5rem 1.5rem 3rem;
+    border-radius: 32px;
+    background: linear-gradient(180deg, rgba(7, 12, 22, 0.7) 0%, rgba(5, 7, 12, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.penalty-spot {
+    position: absolute;
+    left: 50%;
+    bottom: 18%;
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.kicker {
+    position: absolute;
+    left: 50%;
+    bottom: 6%;
+    width: 46px;
+    height: 60px;
+    background: linear-gradient(180deg, rgba(0, 255, 136, 0.9), rgba(0, 255, 136, 0.1));
+    border-radius: 12px 12px 18px 18px;
+    transform: translateX(-50%);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.25);
+    transition: transform 0.4s ease;
+    z-index: 1;
+}
+
+.kicker::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    width: 18px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    transform: translateX(-50%);
+}
+
+.kicker.shoot {
+    transform: translateX(-50%) translateY(-18px) rotate(-6deg);
+}
+
+.goal {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    border-bottom: none;
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+}
+
+.goal-net {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.4;
+}
+
+.goal-target-layer {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 6px;
+    padding: 10px;
+    z-index: 2;
+}
+
+.goal-target {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    cursor: crosshair;
+    transition: 0.2s ease;
+}
+
+.goal-target:hover {
+    border-color: rgba(0, 255, 136, 0.6);
+    background: rgba(0, 255, 136, 0.08);
+}
+
+.goal-target.selected {
+    border-color: rgba(0, 255, 136, 0.8);
+    box-shadow: 0 0 18px rgba(0, 255, 136, 0.35);
+    background: rgba(0, 255, 136, 0.12);
+}
+
+.keeper {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 2px solid rgba(59, 130, 246, 0.6);
+    background: radial-gradient(circle at 35% 30%, rgba(59, 130, 246, 0.9), rgba(7, 12, 22, 0.9));
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+    transition: transform 0.6s ease;
+    z-index: 3;
+}
+
+.keeper::after {
+    content: "";
+    position: absolute;
+    inset: 16px;
+    border-radius: 50%;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+.keeper.tl { transform: translateX(-160%) translateY(-55%); }
+.keeper.tc { transform: translateX(-50%) translateY(-60%); }
+.keeper.tr { transform: translateX(60%) translateY(-55%); }
+.keeper.ml { transform: translateX(-160%) translateY(-20%); }
+.keeper.mc { transform: translateX(-50%) translateY(-20%); }
+.keeper.mr { transform: translateX(60%) translateY(-20%); }
+.keeper.bl { transform: translateX(-160%) translateY(5%); }
+.keeper.bc { transform: translateX(-50%) translateY(5%); }
+.keeper.br { transform: translateX(60%) translateY(5%); }
+
+.ball {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff, #d4d4d4);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+    left: 50%;
+    top: 78%;
+    transform: translate(-50%, 0);
+    transition: transform 0.65s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.2s ease;
+    z-index: 4;
+}
+
+.ball.shooting {
+    transform: translate(var(--shot-x, 0px), var(--shot-y, -150px)) scale(0.85);
+}
+
+.ball.fade {
+    opacity: 0;
+}
+
+.shot-targets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.target-btn {
+    padding: 0.7rem 0.9rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.target-btn:hover {
+    border-color: rgba(0, 255, 136, 0.6);
+    transform: translateY(-2px);
+}
+
+.target-btn.selected {
+    border-color: rgba(0, 255, 136, 0.7);
+    background: rgba(0, 255, 136, 0.12);
+}
+
+.shoot-btn {
+    margin-top: 1rem;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+}
+
+.result-banner {
+    margin-top: 1.25rem;
+    padding: 0.9rem 1.2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    font-weight: 700;
+}
+
+.score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    font-weight: 700;
+}
+
+.attempts {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.dot.hit {
+    background: #00ff88;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.dot.miss {
+    background: #ef4444;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+@media (max-width: 640px) {
+    .shootout-page {
+        padding: 2.5rem 1rem 4rem;
+    }
+
+    .goal {
+        height: 190px;
+    }
+}

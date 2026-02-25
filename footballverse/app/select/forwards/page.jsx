@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Zap, Target, ChevronRight, ChevronLeft, Star, Check, X, Shield, Activity, Flame, Trophy } from 'lucide-react';
 import { FORWARDS } from './data';
 import '../../entry.css';
@@ -14,18 +14,21 @@ export default function ForwardSelectPage() {
     const [search, setSearch] = useState('');
     const [focusedIndex, setFocusedIndex] = useState(-1);
 
+    const searchParams = useSearchParams();
+    const isEditMode = searchParams.get('edit') === 'true';
+
     useEffect(() => {
         window.scrollTo(0, 0);
         const f = localStorage.getItem('formation');
         if (f) {
             setFormation(JSON.parse(f));
-        } else {
+        } else if (!isEditMode) {
             router.push('/formation-select');
             return;
         }
         const saved = localStorage.getItem('forwards');
         if (saved) setSelectedFwds(JSON.parse(saved));
-    }, [router]);
+    }, [router, isEditMode]);
 
     const maxFwd = formation?.forwards || 3;
 
@@ -40,7 +43,7 @@ export default function ForwardSelectPage() {
         return list;
     }, [filterPos, search]);
 
-    const handleSelect = (player) => {
+    const handleSelect = useCallback((player) => {
         setSelectedFwds(prev => {
             const exists = prev.find(p => p.id === player.id);
             let next;
@@ -52,11 +55,13 @@ export default function ForwardSelectPage() {
             localStorage.setItem('forwards', JSON.stringify(next));
             return next;
         });
-    };
+    }, [maxFwd]);
 
-    const handleConfirm = () => {
-        if (selectedFwds.length === maxFwd) router.push('/squad/review');
-    };
+    const handleConfirm = useCallback(() => {
+        if (selectedFwds.length === maxFwd) {
+            router.push('/squad/review');
+        }
+    }, [selectedFwds, maxFwd, router]);
 
     const positions = ['ALL', 'ST', 'LW', 'RW'];
 
@@ -71,8 +76,8 @@ export default function ForwardSelectPage() {
                     {/* Context Bar */}
                     <div className="fw-ctx-bar glass">
                         <div className="fw-ctx-left">
-                            <button onClick={() => router.push('/select/midfielders')} className="fw-back-btn">
-                                <ChevronLeft size={18} /><span>MIDFIELDERS</span>
+                            <button onClick={() => isEditMode ? router.push('/squad/review') : router.push('/select/midfielders')} className="fw-back-btn">
+                                <ChevronLeft size={18} /><span>{isEditMode ? 'BACK TO REVIEW' : 'MIDFIELDERS'}</span>
                             </button>
                         </div>
                         <div className="fw-ctx-center">
@@ -233,36 +238,44 @@ export default function ForwardSelectPage() {
                     <div className={`fw-confirm-bar glass ${selectedFwds.length === maxFwd ? 'visible' : ''}`}>
                         <div className="fw-bar-content">
                             <div className="fw-bar-info">
-                                <span className="fw-bar-tag">ATTACK FORCE READY</span>
-                                <div className="fw-bar-status">
-                                    {selectedFwds.length}/{maxFwd} FORWARDS SELECTED
-                                </div>
-                                <div className="fw-bar-names">
-                                    {selectedFwds.map(p => p.name.split(' ').pop()).join(' • ')}
+                                <span className="fw-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'STRIKE FORCE'}</span>
+                                <h3 className="fw-bar-name">
+                                    {selectedFwds.length} / {maxFwd} SELECTED
+                                </h3>
+                                <div className="fw-bar-list">
+                                    {selectedFwds.map((f, i) => (
+                                        <span key={f.id} className="fw-bar-player-name">
+                                            {f.name}{i < selectedFwds.length - 1 ? ', ' : ''}
+                                        </span>
+                                    ))}
                                 </div>
                             </div>
-                            <button onClick={handleConfirm} className="fw-proceed-btn"
-                                disabled={selectedFwds.length !== maxFwd}>
-                                <span>FINALIZE SQUAD</span>
-                                <Trophy size={22} className="fw-btn-icon" />
+                            <button
+                                onClick={handleConfirm}
+                                className={`fw-proceed-btn ${selectedFwds.length === maxFwd ? 'active' : ''}`}
+                                disabled={selectedFwds.length !== maxFwd}
+                            >
+                                <span>{isEditMode ? 'CONFIRM CHANGES' : 'LOCK ATTACK'}</span>
+                                <Activity size={22} className="fw-btn-icon" />
                             </button>
                         </div>
                     </div>
 
-                    {/* Progress */}
-                    <div className="fw-progress-footer">
-                        <div className="fw-progress-steps">
-                            {['GK', 'DEF', 'MID', 'FWD', 'REVIEW'].map((s, i) => (
-                                <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <div className={`fw-step ${i <= 3 ? 'active' : ''}`}>
-                                        <div className={`fw-step-circle ${i <= 3 ? 'active' : ''} ${i <= 2 ? 'done' : ''}`}>{i + 1}</div>
-                                        <span>{s}</span>
+                    {!isEditMode && (
+                        <div className="fw-progress-footer">
+                            <div className="fw-progress-steps">
+                                {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
+                                    <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <div className={`fw-step ${i === 3 ? 'active' : ''} ${i < 3 ? 'completed' : ''}`}>
+                                            <div className={`fw-step-circle ${i === 3 ? 'active' : ''} ${i < 3 ? 'done' : ''}`}>{i < 3 ? <Check size={12} /> : i + 1}</div>
+                                            <span>{s}</span>
+                                        </div>
+                                        {i < 4 && <div className="fw-step-line"></div>}
                                     </div>
-                                    {i < 4 && <div className="fw-step-line"></div>}
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                 </main>
             </section>
@@ -351,11 +364,11 @@ export default function ForwardSelectPage() {
                 .fw-chip-remove { opacity: 0; width: 0; transition: .3s; }
                 .fw-chip:hover .fw-chip-remove { opacity: 1; width: 14px; }
 
-                .fw-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.25rem; margin-bottom:12rem; }
+                                .fw-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; margin-bottom:12rem; }
 
-                .fw-card { position:relative; text-align:left; border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .45s cubic-bezier(.23,1,.32,1); }
-                .fw-card:hover, .fw-card.kb-focus { transform:translateY(-8px); border-color:rgba(239,68,68,.3); box-shadow:0 20px 50px -15px rgba(0,0,0,.7),0 0 20px rgba(239,68,68,0.1); }
-                .fw-card.selected { border-color:#10b981 !important; border-width:2px; box-shadow:0 0 40px rgba(16,185,129,.15); transform:translateY(-8px) scale(1.02); }
+                .fw-card { position:relative; text-align:left; border-radius:24px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .45s cubic-bezier(.23,1,.32,1); }
+                .fw-card:hover, .fw-card.kb-focus { transform:translateY(-10px); border-color:rgba(239,68,68,.3); box-shadow:0 25px 60px -15px rgba(0,0,0,.7),0 0 20px rgba(239,68,68,0.1); }
+                .fw-card.selected { border-color:#10b981 !important; border-width:2px; box-shadow:0 0 40px rgba(16,185,129,.15); transform:translateY(-10px) scale(1.03); }
                 .fw-card.dimmed { opacity:.25; filter:grayscale(.6); pointer-events:none; }
                 
                 .badge-st-wrap { border-left: 4px solid #ef4444 !important; }
@@ -379,22 +392,22 @@ export default function ForwardSelectPage() {
                 .fw-selected-badge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:30; width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#10b981,#34d399); color:black; display:flex; align-items:center; justify-content:center; box-shadow:0 0 40px rgba(16,185,129,.5); animation:badgePop .4s cubic-bezier(.175,.885,.32,1.275); }
                 @keyframes badgePop { from{transform:translate(-50%,-50%) scale(0)} to{transform:translate(-50%,-50%) scale(1)} }
 
-                .fw-card-rating { position:absolute; top:.8rem; right:.8rem; z-index:10; background:rgba(0,0,0,.85); backdrop-filter:blur(10px); padding:.3rem .7rem; border-radius:10px; border:1px solid rgba(255,255,255,.08); text-align:center; }
-                .fw-ovr-label { display:block; font-size:.35rem; font-weight:900; color:rgba(255,255,255,.3); letter-spacing:.1em; }
-                .fw-ovr-value { font-size:1.2rem; font-weight:900; color:white; line-height:1; }
+                .fw-card-rating { position:absolute; bottom:8rem; right:1rem; z-index:10; background:rgba(0,0,0,.85); backdrop-filter:blur(10px); padding:.5rem .8rem; border-radius:12px; border:1px solid rgba(255,255,255,.08); text-align:center; }
+                .fw-ovr-label { display:block; font-size:.4rem; font-weight:900; color:rgba(255,255,255,.3); letter-spacing:.1em; }
+                .fw-ovr-value { font-size:1.3rem; font-weight:900; color:white; line-height:1; }
 
-                .fw-photo-frame { position:relative; height:260px; overflow:hidden; background:#080810; }
+                .fw-photo-frame { position:relative; height:300px; overflow:hidden; background:#080810; }
                 .fw-photo { width:100%; height:100%; object-fit:cover; object-position:center top; transition:.6s; filter:saturate(1.15) contrast(1.1); }
                 .fw-card:hover .fw-photo { transform:scale(1.1); filter:saturate(1.3) contrast(1.15); }
-                .fw-photo-vignette { position:absolute; bottom:0; left:0; right:0; height:7rem; background:linear-gradient(to top,rgba(10,10,15,1),transparent); }
+                .fw-photo-vignette { position:absolute; bottom:0; left:0; right:0; height:8rem; background:linear-gradient(to top,rgba(10,10,15,1),transparent); }
                 .fw-card-glow { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: transparent; transition: 0.4s; }
                 .fw-card:hover .fw-card-glow, .fw-card.kb-focus .fw-card-glow { background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.4), transparent); box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
 
-                .fw-card-info { padding:1.2rem 1.2rem 1.4rem; margin-top:-2.5rem; position:relative; z-index:5; }
-                .fw-card-club { font-size:.5rem; font-weight:900; color:#ef4444; letter-spacing:.25em; opacity:.7; display:block; margin-bottom:.3rem; }
-                .fw-card-name { font-size:1.15rem; font-weight:900; color:white; line-height:1.1; text-transform:uppercase; font-style:italic; margin-bottom:.5rem; }
-                .fw-card-meta { display:flex; align-items:center; gap:.4rem; font-size:.65rem; color:rgba(255,255,255,.3); font-weight:700; }
-                .fw-card-pos { background:rgba(239,68,68,.1); color:#ef4444; padding:.15rem .5rem; border-radius:4px; font-size:.55rem; font-weight:900; letter-spacing:.1em; }
+                .fw-card-info { padding:1.5rem 1.5rem 1.75rem; margin-top:-3rem; position:relative; z-index:5; }
+                .fw-card-club { font-size:.55rem; font-weight:900; color:#ef4444; letter-spacing:.25em; opacity:.7; display:block; margin-bottom:.4rem; }
+                .fw-card-name { font-size:1.35rem; font-weight:900; color:white; line-height:1.1; text-transform:uppercase; font-style:italic; margin-bottom:.6rem; }
+                .fw-card-meta { display:flex; align-items:center; gap:.4rem; font-size:.7rem; color:rgba(255,255,255,0.3); font-weight:700; }
+                .fw-card-pos { background:rgba(239,68,68,.1); color:#ef4444; padding:.15rem 0.5rem; border-radius:4px; font-size:.6rem; font-weight:900; letter-spacing:.1em; }
 
                 .fw-confirm-bar { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(150%); width:calc(100% - 4rem); max-width:950px; padding:1.4rem 2.5rem; border-radius:24px; border:1px solid rgba(239, 68, 68, 0.3); border-top: 1px solid rgba(239, 68, 68, 0.6); z-index:3000; box-shadow:0 30px 70px -15px rgba(0,0,0,.9), 0 0 30px rgba(239, 68, 68, 0.1); transition:all .6s cubic-bezier(.16,1,.3,1); background:rgba(18, 5, 5, 0.9); backdrop-filter:blur(40px); }
                 .fw-confirm-bar.visible { transform:translateX(-50%) translateY(0); }
@@ -404,7 +417,11 @@ export default function ForwardSelectPage() {
                 .fw-bar-status { font-size: 1.25rem; font-weight: 950; color: white; letter-spacing: -0.01em; margin: 0.1rem 0; }
                 .fw-bar-names { font-size:.75rem; color:rgba(255,255,255,.4); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 400px; }
                 
-                .fw-proceed-btn { position: relative; display:flex; align-items:center; gap:.8rem; background:linear-gradient(135deg,#ef4444,#dc2626); color:white; padding:1.1rem 2.8rem; border-radius:16px; font-weight:950; font-size:1rem; letter-spacing:.05em; border:none; cursor:pointer; transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow:0 10px 30px rgba(239, 68, 68, 0.3); white-space:nowrap; overflow: hidden; }
+                .fw-bar-list { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.3rem; }
+                .fw-bar-player-name { font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 500; }
+                
+                .fw-proceed-btn { display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); padding: 1.1rem 2.8rem; border-radius: 18px; font-weight: 950; font-size: 1.1rem; border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+                .fw-proceed-btn.active { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; cursor: pointer; border: none; box-shadow: 0 15px 35px rgba(239, 68, 68, 0.3); }
                 .fw-proceed-btn:not(:disabled) { animation: fwBtnPulse 2s infinite; }
                 @keyframes fwBtnPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
                 

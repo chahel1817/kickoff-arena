@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, ChevronRight, ChevronLeft, Swords, Layers, Zap, Crosshair, Crown, Star, AlertTriangle, Target, Wind, ArrowLeftRight, FlaskConical, Gauge, Check, Users, Sparkles } from 'lucide-react';
+import { Shield, ChevronRight, ChevronLeft, ChevronDown, Swords, Layers, Zap, Crosshair, Crown, Star, AlertTriangle, Target, Wind, ArrowLeftRight, FlaskConical, Gauge, Check, Users, Sparkles } from 'lucide-react';
 import formationsData from '../../data/formations.json';
 import '../entry.css';
 
@@ -386,6 +386,14 @@ export default function FormationSelectPage() {
                                 <span className="text-gradient" style={{ whiteSpace: 'nowrap' }}>{selectedFormation.name}</span>
                             </h1>
                             <p className="fm-success-sub">Your tactical DNA has been encoded. The battlefield structure is set.</p>
+
+                            <div className="fm-scroll-cue" onClick={() => {
+                                const nextSection = document.querySelector('.fm-success-recap');
+                                nextSection?.scrollIntoView({ behavior: 'smooth' });
+                            }}>
+                                <span>SWIPE DOWN</span>
+                                <ChevronDown size={20} />
+                            </div>
                         </div>
 
                         {/* Formation Recap */}
@@ -1013,6 +1021,32 @@ export default function FormationSelectPage() {
                 @keyframes fadeSlideUp {
                     from { opacity: 0; transform: translateY(20px); }
                     to { opacity: 1; transform: translateY(0); }
+                }
+
+                .fm-scroll-cue {
+                    position: absolute;
+                    bottom: 2.5rem;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.5rem;
+                    color: var(--primary);
+                    font-size: 0.65rem;
+                    font-weight: 950;
+                    letter-spacing: 0.3em;
+                    opacity: 0.5;
+                    cursor: pointer;
+                    animation: bounceDown 2s infinite, fadeSlideUp 0.6s ease-out 1.2s both;
+                    transition: opacity 0.3s;
+                }
+
+                .fm-scroll-cue:hover {
+                    opacity: 1;
+                }
+
+                @keyframes bounceDown {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(10px); }
                 }
 
                 /* Formation Recap */

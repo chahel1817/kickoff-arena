@@ -444,13 +444,18 @@ export default function ManagerSelectPage() {
                             </div>
                         </div>
 
+                        <div className="search-instruction-row">
+                            <div className="search-instruction">
+                                <Info size={14} className="text-primary" />
+                                <span>Hover <span className="text-primary" style={{ fontWeight: 800, textTransform: 'uppercase' }}>Tactical Intel</span> to view the detailed tactical dossier.</span>
+                            </div>
+                        </div>
+
                         <div className={`managers-grid-refined ${selectedManager ? 'has-selection' : ''}`}>
                             {filteredManagers.map((manager) => (
                                 <button
                                     key={manager.id}
                                     onClick={() => handleManagerSelect(manager)}
-                                    onMouseEnter={() => { if (!isMobile) { setIntelManager(manager); setIsIntelOpen(true); } }}
-                                    onMouseLeave={() => { if (!isMobile) setIsIntelOpen(false); }}
                                     className={`manager-card-premium glass ${selectedManager?.id === manager.id ? 'selected' : ''} ${intelManager?.id === manager.id && isIntelOpen ? 'intel-scanning' : ''}`}
                                 >
                                     <div className="card-accent-glow"></div>
@@ -502,6 +507,8 @@ export default function ManagerSelectPage() {
                                                     <div className="intel-trigger-wrapper">
                                                         <div
                                                             className="intel-button-glow"
+                                                            onMouseEnter={() => { if (!isMobile) { setIntelManager(manager); setIsIntelOpen(true); } }}
+                                                            onMouseLeave={() => { if (!isMobile) setIsIntelOpen(false); }}
                                                             onClick={(e) => {
                                                                 if (isMobile) {
                                                                     e.stopPropagation();
@@ -998,17 +1005,76 @@ export default function ManagerSelectPage() {
                 }
 
                 .search-container.glass-premium {
-                    /* Context Cards */
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    max-width: 720px;
+                    height: 64px;
+                    background: rgba(6, 8, 12, 0.85);
+                    backdrop-filter: blur(24px);
+                    border: 1px solid rgba(255,255,255,0.1);
+                    border-radius: 100px;
+                    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+                    padding: 0 2rem;
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    margin: 0 auto;
+                }
+
+                .teams-search-row.centered-row {
+                    display: flex;
+                    justify-content: center;
+                    width: 100%;
+                    margin-bottom: 0.5rem;
+                }
+
+                .search-instruction-row {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 0.5rem;
+                    margin-bottom: 3.5rem;
+                }
+
+                .search-instruction {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    font-size: 0.85rem;
+                    color: rgba(255, 255, 255, 0.4);
+                    font-weight: 500;
+                    letter-spacing: 0.02em;
+                    padding: 0.6rem 1.5rem;
+                    background: rgba(255, 255, 255, 0.02);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-radius: 100px;
+                    backdrop-filter: blur(10px);
+                }
+
+                .search-icon-wrapper {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 42px;
+                    height: 42px;
+                    background: rgba(255, 255, 255, 0.03);
+                    border-radius: 50%;
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                }
+
                 .fm-success-context {
                     padding: 2.5rem 2rem;
                     max-width: 800px; margin: 0 auto; width: 100%;
-                }
-    max-width: 800px;
                     background: rgba(10, 10, 15, 0.6);
                     backdrop-filter: blur(20px);
                     border: 1px solid rgba(255,255,255,0.08);
                     border-radius: 20px;
                     box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+                }
+
+                .team-search-input-premium::placeholder {
+                    color: rgba(255, 255, 255, 0.2);
+                    letter-spacing: 0.1em;
+                    font-size: 0.85rem;
                 }
 
                 .team-search-input-premium {

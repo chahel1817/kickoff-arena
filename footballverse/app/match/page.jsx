@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Zap, Target, Check, X, Trophy, RotateCcw, ChevronLeft, Crown, Play, Star } from 'lucide-react';
+import { Shield, Zap, Target, Check, X, Trophy, RotateCcw, ChevronLeft, Crown, Play } from 'lucide-react';
 import './match.css';
 
 const ZONES = [
@@ -11,14 +11,11 @@ const ZONES = [
 ];
 const ZONE_LABELS = { tl: 'Top L', tc: 'Top C', tr: 'Top R', ml: 'Mid L', mc: 'Centre', mr: 'Mid R', bl: 'Low L', bc: 'Low C', br: 'Low R' };
 
-// Power quality thresholds — GOOD/PERFECT tiny, RISKY huge
-const PWR_WEAK = 22;   // 0-22   WEAK      (22%)
-const PWR_GOOD_LO = 28;   // 22-28  GOOD       (6%)
-const PWR_PERFECT_LO = 31;   // 28-31  PERFECT    (3%! - top tier)
-const PWR_PERFECT_HI = 37;   // 31-37  PERFECT    (6% total)
-const PWR_GOOD_HI = 43;   // 37-43  GOOD       (6%)
-const PWR_OVER = 75;   // 43-75  RISKY      (32%)
-// 75-100             TOO HARD (25%)
+const PWR_WEAK = 22;
+const PWR_GOOD_LO = 28;
+const PWR_PERFECT_HI = 37;
+const PWR_GOOD_HI = 43;
+const PWR_OVER = 75;
 
 const FALLBACK_PLAYERS = [
     { id: 'p1', name: 'Captain Prime', rating: 87, position: 'FW', image: null },
@@ -51,46 +48,43 @@ const CROWD_SAVES = ['🧤 NO WAY!', '👏 WHAT A SAVE!', '🛑 THE KEEPER!!!', 
 export default function ShootoutPage() {
     const router = useRouter();
 
-    // Squad
     const [squad, setSquad] = useState([]);
     const [shooters, setShooters] = useState([null, null, null, null, null]);
     const [activeSlot, setActiveSlot] = useState(0);
-
-    // Match state
     const [shotIndex, setShotIndex] = useState(0);
-    const [results, setResults] = useState([]); // {outcome:'goal'|'save'|'miss', power, zone}
-    const [phase, setPhase] = useState('setup'); // setup|aim|power|shooting|between|done
-
-    // Aim
+    const [results, setResults] = useState([]);
+    const [phase, setPhase] = useState('setup');
     const [aimZone, setAimZone] = useState(null);
     const [countdown, setCountdown] = useState(5);
-
-    // Power bar
     const [power, setPower] = useState(0);
-    const [pwrDir, setPwrDir] = useState(1);
     const [lockedPower, setLockedPower] = useState(null);
-
-    // Keeper
-    const [keeperLean, setKeeperLean] = useState(null); // 'left'|'right'|'center'
+    const [keeperLean, setKeeperLean] = useState(null);
     const [keeperDiveZone, setKeeperDiveZone] = useState(null);
     const [keeperCommitted, setKeeperCommitted] = useState(false);
-
-    // Feedback
     const [banner, setBanner] = useState(null);
     const [shakeClass, setShakeClass] = useState('');
-    const [ballPos, setBallPos] = useState(null); // {x,y} percent of goal
+    const [ballPos, setBallPos] = useState(null);
     const [ballVisible, setBallVisible] = useState(false);
     const [aiComment, setAiComment] = useState('');
     const [crowdEnergy, setCrowdEnergy] = useState(40);
     const [pressure, setPressure] = useState(0);
-    const [streak, setStreak] = useState(0); // positive=goals, negative=saves
+    const [streak, setStreak] = useState(0);
+    const [showBriefing, setShowBriefing] = useState(true);
 
+
+    // ── Refs (never stale inside callbacks) ──
     const cdRef = useRef(null);
     const pwrRef = useRef(null);
     const pwrVal = useRef(0);
     const pwrDirR = useRef(1);
     const history = useRef([]);
-    const aimZoneRef = useRef(null); // always holds latest aimZone for callbacks
+    const aimZoneRef = useRef(null);   // mirrors aimZone, safe in callbacks
+    const phaseRef = useRef('setup');// mirrors phase, safe in callbacks
+    const pwrSpeedRef = useRef(1.8);
+
+    // Keep mirrors in sync
+    useEffect(() => { phaseRef.current = phase; }, [phase]);
+    useEffect(() => { aimZoneRef.current = aimZone; }, [aimZone]);
 
     useEffect(() => {
         const fwds = JSON.parse(localStorage.getItem('forwards') || '[]');
@@ -114,19 +108,16 @@ export default function ShootoutPage() {
     const currentShooter = shooters[shotIndex] || null;
     const shooterRating = currentShooter?.rating || 75;
 
-    // Speed of power bar — fast by default, even faster under pressure
+    // Power bar speed — keep in ref so interval reads live value
     const pwrSpeed = useMemo(() => {
-        const base = 1.8;                                   // was 0.8 — much faster
-        const pressBump = pressure * 0.006;                // pressure ramps it higher
-        const ratingEase = (shooterRating - 70) * 0.003;   // elite players: tiny benefit
-        return Math.max(1.2, Math.min(3.2, base + pressBump - ratingEase));
+        const base = 1.8;
+        const pressBump = pressure * 0.006;
+        const ease = (shooterRating - 70) * 0.003;
+        return Math.max(1.2, Math.min(3.2, base + pressBump - ease));
     }, [pressure, shooterRating]);
-
-    // Keep pwrSpeed in a ref so interval always reads latest value
-    const pwrSpeedRef = useRef(1.8);
     useEffect(() => { pwrSpeedRef.current = pwrSpeed; }, [pwrSpeed]);
 
-    // ─── POWER BAR (no deps — reads live speed via ref) ───
+    // ── POWER BAR ── (stable — reads speed from ref)
     const startPowerBar = useCallback(() => {
         pwrVal.current = 0; pwrDirR.current = 1;
         setPower(0);
@@ -137,9 +128,9 @@ export default function ShootoutPage() {
             if (pwrVal.current <= 0) { pwrVal.current = 0; pwrDirR.current = 1; }
             setPower(Math.round(pwrVal.current));
         }, 16);
-    }, []); // stable — no deps needed
+    }, []);
 
-    // ─── COUNTDOWN ───
+    // ── COUNTDOWN ──
     const startCountdown = useCallback(() => {
         setCountdown(5);
         clearInterval(cdRef.current);
@@ -147,7 +138,6 @@ export default function ShootoutPage() {
             setCountdown(c => {
                 if (c <= 1) {
                     clearInterval(cdRef.current);
-                    // Set phase then start bar (phase update async, but bar guard removed)
                     setPhase('power');
                     startPowerBar();
                     return 0;
@@ -157,41 +147,43 @@ export default function ShootoutPage() {
         }, 1000);
     }, [startPowerBar]);
 
-    // ─── PICK ZONE ───
+    // ── PICK ZONE ──
     const handleAimZone = (z) => {
-        if (phase !== 'aim') return;
+        if (phaseRef.current !== 'aim') return;
         setAimZone(z);
-        aimZoneRef.current = z; // keep ref in sync for handleShoot
-        const leanOptions = ['left', 'right', 'center'];
-        setKeeperLean(leanOptions[Math.floor(Math.random() * 3)]);
+        aimZoneRef.current = z;                 // set ref immediately — don't wait for state flush
+        const opts = ['left', 'right', 'center'];
+        setKeeperLean(opts[Math.floor(Math.random() * 3)]);
         clearInterval(cdRef.current);
         setPhase('power');
         startPowerBar();
     };
 
-    // ─── SHOOT ─── (guard uses ref so it works even right after setPhase)
-    const phaseRef = useRef(phase);
-    useEffect(() => { phaseRef.current = phase; }, [phase]);
-
+    // ── SHOOT ── (uses refs — never reads stale state)
     const handleShoot = useCallback(async () => {
-        if (phaseRef.current !== 'power' || !aimZoneRef.current) return;
+        const az = aimZoneRef.current;
+        if (phaseRef.current !== 'power' || !az) return;
+
         clearInterval(pwrRef.current);
         const p = pwrVal.current;
+
+        // Snapshot mutable values before any async gap
+        const snapShooter = shooters[shotIndex] || null;   // read from array directly
+        const snapRating = snapShooter?.rating || 75;
+        const snapIndex = shotIndex;
+
         setLockedPower(Math.round(p));
         setPhase('shooting');
         setKeeperCommitted(true);
 
-        // Determine miss before save: over-hit = miss over bar
         const isOverHit = p > PWR_OVER;
         const isUnderHit = p <= PWR_WEAK;
 
-        // Ball position in goal (visual)
-        const bx = aimZone.x === -1 ? 18 : aimZone.x === 0 ? 50 : 82;
-        const by = aimZone.y === -1 ? 15 : aimZone.y === 0 ? 50 : 80;
+        const bx = az.x === -1 ? 18 : az.x === 0 ? 50 : 82;
+        const by = az.y === -1 ? 15 : az.y === 0 ? 50 : 80;
         setBallPos({ x: bx, y: isOverHit ? -20 : by });
         setBallVisible(true);
 
-        // Fetch AI keeper decision
         let keeperZone = ZONES[Math.floor(Math.random() * 9)].id;
         let comment = '';
         try {
@@ -199,39 +191,38 @@ export default function ShootoutPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    shooterName: currentShooter?.name,
-                    shooterRating, shooterPosition: currentShooter?.position,
-                    shotZone: aimZone.id, shotHistory: history.current,
-                    keeperType: 'READER', shotNumber: shotIndex + 1, difficulty: 'NORMAL',
+                    shooterName: snapShooter?.name,
+                    shooterRating: snapRating,
+                    shooterPosition: snapShooter?.position,
+                    shotZone: az.id,
+                    shotHistory: history.current,
+                    keeperType: 'READER',
+                    shotNumber: snapIndex + 1,
                 }),
                 signal: AbortSignal.timeout(3500),
             });
             if (res.ok) { const d = await res.json(); keeperZone = d.keeperZone || keeperZone; comment = d.comment || ''; }
-        } catch { }
+        } catch { /* silent — stays with random zone */ }
 
         setKeeperDiveZone(keeperZone);
         setAiComment(comment);
 
-        // Determine outcome
         let outcome = 'goal';
         if (isOverHit || isUnderHit) {
             outcome = 'miss';
         } else {
-            const saved = keeperZone === aimZone.id;
+            const saved = keeperZone === az.id;
             if (saved) {
-                // Elite shooters can still score even if keeper guessed right
-                const genius = Math.random() < (shooterRating - 70) * 0.018;
+                const genius = Math.random() < (snapRating - 70) * 0.018;
                 outcome = genius ? 'goal' : 'save';
             }
-            // Weak-ish shot: keeper can get to adjacent zones
             if (outcome === 'goal' && p < PWR_GOOD_LO) {
-                const adjacent = Math.random() < 0.25;
-                if (adjacent) outcome = 'save';
+                if (Math.random() < 0.25) outcome = 'save';
             }
         }
 
-        const newRes = { outcome, power: Math.round(p), zone: aimZone.id };
-        history.current = [...history.current, aimZone.id];
+        const newRes = { outcome, power: Math.round(p), zone: az.id };
+        history.current = [...history.current, az.id];
 
         setTimeout(() => {
             setResults(prev => [...prev, newRes]);
@@ -242,12 +233,9 @@ export default function ShootoutPage() {
                     : '😬 OVER THE BAR!';
             setBanner({ text: msg, type: outcome });
             setShakeClass(outcome === 'goal' ? 'shake-goal' : 'shake-save');
-            // Crowd energy
             setCrowdEnergy(e => Math.min(100, outcome === 'goal' ? e + 18 : Math.max(10, e - 8)));
-            // Streak
             setStreak(s => outcome === 'goal' ? Math.max(0, s) + 1 : Math.min(0, s) - 1);
-            // Pressure increases each shot
-            setPressure(p => Math.min(100, p + 15));
+            setPressure(prev => Math.min(100, prev + 15));
 
             setTimeout(() => {
                 setShakeClass('');
@@ -258,34 +246,35 @@ export default function ShootoutPage() {
                 setKeeperLean(null);
                 setKeeperCommitted(false);
                 setAimZone(null);
+                aimZoneRef.current = null;
                 setLockedPower(null);
-                const next = shotIndex + 1;
+                const next = snapIndex + 1;
                 setShotIndex(next);
                 if (next >= 5) setPhase('done');
                 else { setPhase('aim'); startCountdown(); }
             }, 2200);
         }, 700);
-    }, [phase, aimZone, shooterRating, currentShooter, shotIndex, startCountdown]);
+    }, [shooters, shotIndex, startCountdown]);
 
-    // Space bar = shoot
+    // Space = shoot
     useEffect(() => {
-        const h = (e) => { if (e.code === 'Space' && phase === 'power') { e.preventDefault(); handleShoot(); } };
+        const h = (e) => { if (e.code === 'Space' && phaseRef.current === 'power') { e.preventDefault(); handleShoot(); } };
         window.addEventListener('keydown', h);
         return () => window.removeEventListener('keydown', h);
-    }, [phase, handleShoot]);
+    }, [handleShoot]);
 
-    // Start countdown when phase becomes aim (after setup)
+    // Countdown fires when aim starts
     useEffect(() => {
         if (phase === 'aim' && shotIndex < 5) startCountdown();
         return () => clearInterval(cdRef.current);
     }, [phase, shotIndex]);
 
-    // Auto-start when lineup ready
+    // Auto-advance from setup
     useEffect(() => {
-        if (isReady && phase === 'setup') { setPhase('aim'); }
+        if (isReady && phase === 'setup') setPhase('aim');
     }, [isReady, phase]);
 
-    // Cleanup on unmount
+    // Cleanup
     useEffect(() => () => { clearInterval(cdRef.current); clearInterval(pwrRef.current); }, []);
 
     const pwrInfo = getPowerLabel(power);
@@ -302,7 +291,8 @@ export default function ShootoutPage() {
         clearInterval(cdRef.current); clearInterval(pwrRef.current);
         setShooters([null, null, null, null, null]); setActiveSlot(0);
         setShotIndex(0); setResults([]); setPhase('setup');
-        setAimZone(null); setPower(0); setLockedPower(null);
+        setAimZone(null); aimZoneRef.current = null;
+        setPower(0); setLockedPower(null);
         setKeeperLean(null); setKeeperDiveZone(null); setKeeperCommitted(false);
         setBanner(null); setShakeClass(''); setBallPos(null); setBallVisible(false);
         setAiComment(''); setCrowdEnergy(40); setPressure(0); setStreak(0);
@@ -312,8 +302,66 @@ export default function ShootoutPage() {
     return (
         <div className={`sp-root ${shakeClass}`}>
             <div className="sp-bg"><div className="sp-bg-img" /><div className="sp-bg-ov" /></div>
-
             <button className="sp-back" onClick={() => router.back()}><ChevronLeft size={16} />BACK</button>
+
+
+            {/* ─── PRE-MATCH BRIEFING MODAL ─── */}
+            {showBriefing && (
+                <div className="brief-overlay">
+                    <div className="brief-modal">
+                        <div className="brief-eyebrow">MATCH BRIEFING</div>
+                        <h2 className="brief-title">How Penalties Work</h2>
+                        <p className="brief-sub">Read carefully — then step up to the spot.</p>
+
+                        <div className="brief-rules">
+                            <div className="brief-rule">
+                                <div className="brief-icon" style={{ '--ic': 'rgba(245,158,11,.15)', '--ib': 'rgba(245,158,11,.4)' }}>⏱️</div>
+                                <div className="brief-rule-body">
+                                    <div className="brief-rule-title">5-Second Aim Timer</div>
+                                    <div className="brief-rule-desc">Click a zone on the goal within 5 seconds. If time runs out, the power bar launches automatically — you still shoot, just without a chosen spot.</div>
+                                </div>
+                            </div>
+                            <div className="brief-rule">
+                                <div className="brief-icon" style={{ '--ic': 'rgba(0,255,136,.1)', '--ib': 'rgba(0,255,136,.35)' }}>⚡</div>
+                                <div className="brief-rule-body">
+                                    <div className="brief-rule-title">Power Bar — Time Your Shot</div>
+                                    <div className="brief-rule-desc">Press <kbd>SPACE</kbd> or tap <strong>SHOOT</strong> when the needle is in the green zone. PERFECT = hardest to save. RISKY = might go wide. TOO HARD = over the bar!</div>
+                                </div>
+                            </div>
+                            <div className="brief-rule">
+                                <div className="brief-icon" style={{ '--ic': 'rgba(96,165,250,.1)', '--ib': 'rgba(96,165,250,.35)' }}>👁️</div>
+                                <div className="brief-rule-body">
+                                    <div className="brief-rule-title">Keeper Lean Hint</div>
+                                    <div className="brief-rule-desc">After you pick a zone, the AI keeper subtly leans a direction. It is not always correct — use it as a mind-game or ignore it and trust your instinct.</div>
+                                </div>
+                            </div>
+                            <div className="brief-rule">
+                                <div className="brief-icon" style={{ '--ic': 'rgba(239,68,68,.1)', '--ib': 'rgba(239,68,68,.35)' }}>🔥</div>
+                                <div className="brief-rule-body">
+                                    <div className="brief-rule-title">Rising Pressure</div>
+                                    <div className="brief-rule-desc">Each kick builds pressure — the bar moves faster. Your 5th penalty is nearly double the speed of the 1st. Higher-rated players handle it better.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="brief-bar-preview">
+                            <div className="brief-bar-lbl">POWER BAR GUIDE</div>
+                            <div className="brief-bar-track">
+                                <div title="WEAK" style={{ width: '22%', background: 'rgba(120,120,120,.5)' }}>WEAK</div>
+                                <div title="GOOD" style={{ width: '6%', background: 'rgba(0,255,136,.45)' }}>G</div>
+                                <div title="PERFECT" style={{ width: '9%', background: 'rgba(0,255,136,.85)', animation: 'briefPerfect 1s infinite' }}>✅</div>
+                                <div title="GOOD" style={{ width: '6%', background: 'rgba(0,255,136,.45)' }}>G</div>
+                                <div title="RISKY" style={{ width: '32%', background: 'rgba(245,158,11,.45)' }}>RISKY</div>
+                                <div title="TOO HARD" style={{ width: '25%', background: 'rgba(239,68,68,.4)' }}>OVER</div>
+                            </div>
+                        </div>
+
+                        <button className="brief-go" onClick={() => setShowBriefing(false)}>
+                            <Zap size={18} /> LET&apos;S GO — I&apos;M READY
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* TOP BAR */}
             <div className="sp-topbar">
@@ -339,8 +387,7 @@ export default function ShootoutPage() {
             </div>
 
             <div className="sp-layout">
-
-                {/* ─── LEFT: LINEUP ─── */}
+                {/* LEFT */}
                 <aside className="sp-lineup glass">
                     <div className="sp-panel-hdr"><Target size={14} /><span>SHOOTERS</span></div>
                     {shooters.map((s, i) => {
@@ -364,7 +411,6 @@ export default function ShootoutPage() {
                             </div>
                         );
                     })}
-                    {/* Pip row */}
                     <div className="sp-pips">
                         {[0, 1, 2, 3, 4].map(i => (
                             <div key={i} className={`sp-pip ${results[i]?.outcome === 'goal' ? 'pip-g' : results[i]?.outcome ? 'pip-m' : i === shotIndex && !isDone ? 'pip-cur' : ''}`}>
@@ -374,10 +420,8 @@ export default function ShootoutPage() {
                     </div>
                 </aside>
 
-                {/* ─── CENTRE: PITCH ─── */}
+                {/* CENTRE */}
                 <div className="sp-pitch-wrap">
-
-                    {/* Shooter info bar */}
                     {!isDone && currentShooter && (
                         <div className="sp-shooter-bar">
                             <div className="sp-sh-av" style={{ borderColor: shooterColor }}>
@@ -391,22 +435,16 @@ export default function ShootoutPage() {
                         </div>
                     )}
 
-                    {/* GOAL */}
                     <div className="sp-goal-wrap">
-                        {/* Keeper lean hint */}
                         {keeperLean && !keeperCommitted && (
                             <div className={`sp-lean sp-lean-${keeperLean}`}>
                                 <Shield size={12} /> Keeper leaning {keeperLean}
                             </div>
                         )}
-
                         <div className="sp-goal">
                             <div className="sp-net" />
-                            {/* Posts */}
                             <div className="sp-post sp-post-l" /><div className="sp-post sp-post-r" />
                             <div className="sp-crossbar" />
-
-                            {/* Zone grid */}
                             <div className="sp-zones">
                                 {ZONES.map(z => (
                                     <button key={z.id}
@@ -418,22 +456,15 @@ export default function ShootoutPage() {
                                     </button>
                                 ))}
                             </div>
-
-                            {/* Keeper body */}
                             <div className={`sp-keeper ${keeperCommitted && keeperDiveZone ? `sp-kp-dive-${keeperDiveZone}` : ''}`}>
                                 <div className="sp-kp-glow" />
-                                <Shield size={18} />
-                                <span>GK</span>
+                                <Shield size={18} /><span>GK</span>
                             </div>
-
-                            {/* Ball */}
                             {ballVisible && ballPos && (
                                 <div className="sp-ball" style={{ left: `${ballPos.x}%`, top: `${ballPos.y}%` }}>
                                     <div className="sp-ball-inner" />
                                 </div>
                             )}
-
-                            {/* Result banner inside goal */}
                             {banner && (
                                 <div className={`sp-banner sp-banner-${banner.type}`}>
                                     <span>{banner.text}</span>
@@ -441,8 +472,6 @@ export default function ShootoutPage() {
                                 </div>
                             )}
                         </div>
-
-                        {/* Pitch strip below goal */}
                         <div className="sp-pitch-strip">
                             <div className="sp-pbox" /><div className="sp-parc" /><div className="sp-pspot" />
                             <div className={`sp-kicker ${phase === 'shooting' ? 'sp-kicker-shoot' : ''}`}>
@@ -451,7 +480,6 @@ export default function ShootoutPage() {
                         </div>
                     </div>
 
-                    {/* ─── POWER BAR ─── */}
                     {phase === 'power' && (
                         <div className="sp-power-wrap">
                             <div className="sp-power-lbl">
@@ -474,15 +502,9 @@ export default function ShootoutPage() {
                         </div>
                     )}
 
-                    {/* Setup hint */}
-                    {phase === 'setup' && !isReady && (
-                        <div className="sp-hint"><Shield size={13} /> Pick all 5 shooters from your squad to begin</div>
-                    )}
-                    {phase === 'aim' && (
-                        <div className="sp-hint aim"><Target size={13} /> Click a zone in the goal above — power bar appears after</div>
-                    )}
+                    {phase === 'setup' && !isReady && <div className="sp-hint"><Shield size={13} /> Pick all 5 shooters from your squad to begin</div>}
+                    {phase === 'aim' && <div className="sp-hint aim"><Target size={13} /> Click a zone in the goal above — power bar appears after</div>}
 
-                    {/* DONE */}
                     {isDone && (
                         <div className="sp-done glass">
                             <Trophy size={44} className="sp-done-trophy" />
@@ -490,9 +512,9 @@ export default function ShootoutPage() {
                             <div className="sp-done-msg">
                                 {totalGoals >= 5 ? '🏆 PERFECT! LEGENDARY SHOOTOUT!'
                                     : totalGoals >= 4 ? '⭐ EXCELLENT — NEARLY PERFECT!'
-                                        : totalGoals >= 3 ? '✅ SOLID — TAKES NERVES OF STEEL'
+                                        : totalGoals >= 3 ? '✅ SOLID — NERVES OF STEEL'
                                             : totalGoals >= 2 ? '😤 DISAPPOINTING — KEEPER DOMINATED'
-                                                : '💥 EMBARRASSING — BACK TO TRAINING'}
+                                                : '💥 BACK TO TRAINING'}
                             </div>
                             <div className="sp-done-breakdown">
                                 {results.map((r, i) => (
@@ -509,7 +531,7 @@ export default function ShootoutPage() {
                     )}
                 </div>
 
-                {/* ─── RIGHT: SQUAD ─── */}
+                {/* RIGHT */}
                 <aside className="sp-squad glass">
                     <div className="sp-panel-hdr"><Crown size={14} /><span>SQUAD</span><span className="sp-cnt">{players.length}</span></div>
                     <div className="sp-squad-list">

@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Shield, Search, ChevronLeft, Check, Crosshair, ShieldCheck, Zap, X } from 'lucide-react';
 import '../../entry.css';
 
 import { GOALKEEPERS } from './data';
 
-export default function GoalkeeperSelectPage() {
+function GoalkeeperSelectPageInner() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('edit') === 'true';
@@ -441,5 +441,13 @@ export default function GoalkeeperSelectPage() {
                 }
             `}</style>
         </div>
+    );
+}
+
+export default function GoalkeeperSelectPage() {
+    return (
+        <Suspense fallback={<div style={{ minHeight: '100vh', background: '#02040a' }} />}>
+            <GoalkeeperSelectPageInner />
+        </Suspense>
     );
 }

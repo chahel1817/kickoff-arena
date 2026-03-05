@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Shield, Search, ChevronRight, ChevronLeft, Star, Check, X, ShieldCheck, Zap } from 'lucide-react';
 import { DEFENDERS } from './data';
 import '../../entry.css';
 
-export default function DefenderSelectPage() {
+function DefenderSelectPageInner() {
     const router = useRouter();
     const [selectedDefs, setSelectedDefs] = useState([]);
     const [formation, setFormation] = useState(null);
@@ -529,5 +529,13 @@ export default function DefenderSelectPage() {
                 }
             `}</style>
         </div>
+    );
+}
+
+export default function DefenderSelectPage() {
+    return (
+        <Suspense fallback={<div style={{ minHeight: '100vh', background: '#02040a' }} />}>
+            <DefenderSelectPageInner />
+        </Suspense>
     );
 }

@@ -3,13 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "next": "16.1.6",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "dev": "cd footballverse && npm run dev",
+    "build": "cd footballverse && npm run build",
+    "start": "cd footballverse && npm run start",
+    "lint": "cd footballverse && npm run lint"
   }
 }

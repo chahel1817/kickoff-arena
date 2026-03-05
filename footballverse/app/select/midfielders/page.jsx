@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Zap, Layers, ChevronRight, ChevronLeft, Star, Check, X, Shield, Activity } from 'lucide-react';
 import { MIDFIELDERS } from './data';
 import '../../entry.css';
 
-export default function MidfielderSelectPage() {
+function MidfielderSelectPageInner() {
     const router = useRouter();
     const [selectedMids, setSelectedMids] = useState([]);
     const [formation, setFormation] = useState(null);
@@ -540,5 +540,13 @@ export default function MidfielderSelectPage() {
                 }
             `}</style>
         </div>
+    );
+}
+
+export default function MidfielderSelectPage() {
+    return (
+        <Suspense fallback={<div style={{ minHeight: '100vh', background: '#02040a' }} />}>
+            <MidfielderSelectPageInner />
+        </Suspense>
     );
 }

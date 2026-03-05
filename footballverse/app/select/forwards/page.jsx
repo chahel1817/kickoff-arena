@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Zap, Target, ChevronRight, ChevronLeft, Star, Check, X, Shield, Activity, Flame, Trophy } from 'lucide-react';
 import { FORWARDS } from './data';
 import '../../entry.css';
 
-export default function ForwardSelectPage() {
+function ForwardSelectPageInner() {
     const router = useRouter();
     const [selectedFwds, setSelectedFwds] = useState([]);
     const [formation, setFormation] = useState(null);
@@ -495,5 +495,13 @@ export default function ForwardSelectPage() {
                 }
             `}</style>
         </div>
+    );
+}
+
+export default function ForwardSelectPage() {
+    return (
+        <Suspense fallback={<div style={{ minHeight: '100vh', background: '#02040a' }} />}>
+            <ForwardSelectPageInner />
+        </Suspense>
     );
 }

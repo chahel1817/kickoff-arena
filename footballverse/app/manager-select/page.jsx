@@ -1853,7 +1853,7 @@ export default function ManagerSelectPage() {
                     backdrop-filter: none;
                     display: flex;
                     justify-content: flex-end;
-                    pointer-events: none;
+                    pointer-events: auto;
                     overflow: hidden;
                 }
 
@@ -1868,7 +1868,7 @@ export default function ManagerSelectPage() {
                     animation: slideInRight 0.4s cubic-bezier(0.19, 1, 0.22, 1);
                     position: relative;
                     overflow: hidden;
-                    pointer-events: none;
+                    pointer-events: auto;
                     backdrop-filter: blur(30px);
                 }
 

@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Zap, Layers, ChevronRight, ChevronLeft, Star, Check, X, Shield, Activity } from 'lucide-react';
 import { MIDFIELDERS } from './data';
+import { usePlayerImageResolver } from '@/hooks/usePlayerImageResolver';
 import '../../entry.css';
 
 function MidfielderSelectPageInner() {
@@ -13,9 +14,18 @@ function MidfielderSelectPageInner() {
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [filterPos, setFilterPos] = useState('ALL');
     const [search, setSearch] = useState('');
-    const [brokenIds, setBrokenIds] = useState(new Set());
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('edit') === 'true';
+    const { getImageSrc, handleImageError } = usePlayerImageResolver(MIDFIELDERS);
+    const dedupedMidfielders = useMemo(() => {
+        const seen = new Set();
+        return MIDFIELDERS.filter((player) => {
+            const key = player.name.toLowerCase();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+    }, []);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -35,24 +45,11 @@ function MidfielderSelectPageInner() {
     const maxMid = formation?.midfielders || 3;
 
     const filtered = useMemo(() => {
-        let list = MIDFIELDERS.filter(m => !brokenIds.has(m.id));
+        let list = dedupedMidfielders;
         if (filterPos !== 'ALL') list = list.filter(m => m.position === filterPos);
         if (search) list = list.filter(m => m.name.toLowerCase().includes(search.toLowerCase()) || m.club.toLowerCase().includes(search.toLowerCase()));
         return list;
-    }, [filterPos, search, brokenIds]);
-
-    const handleImageError = (player) => {
-        setBrokenIds(prev => {
-            const next = new Set(prev);
-            next.add(player.id);
-            return next;
-        });
-        if (selectedMids.some(p => p.id === player.id)) {
-            const updated = selectedMids.filter(p => p.id !== player.id);
-            setSelectedMids(updated);
-            localStorage.setItem('midfielders', JSON.stringify(updated));
-        }
-    };
+    }, [filterPos, search, dedupedMidfielders]);
 
     const handleSelect = useCallback((player) => {
         setSelectedMids(prev => {
@@ -241,7 +238,7 @@ function MidfielderSelectPageInner() {
                                     </div>
                                     <div className="mf-photo-frame">
                                         <img
-                                            src={player.image}
+                                            src={getImageSrc(player)}
                                             alt={player.name}
                                             className="mf-photo"
                                             loading="lazy"

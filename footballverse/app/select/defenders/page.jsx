@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Shield, Search, ChevronRight, ChevronLeft, Star, Check, X, ShieldCheck, Zap } from 'lucide-react';
 import { DEFENDERS } from './data';
+import { usePlayerImageResolver } from '@/hooks/usePlayerImageResolver';
 import '../../entry.css';
 
 function DefenderSelectPageInner() {
@@ -15,9 +16,18 @@ function DefenderSelectPageInner() {
     const [search, setSearch] = useState('');
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const [isExiting, setIsExiting] = useState(false);
-    const [brokenIds, setBrokenIds] = useState(new Set());
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('edit') === 'true';
+    const { getImageSrc, handleImageError } = usePlayerImageResolver(DEFENDERS);
+    const dedupedDefenders = useMemo(() => {
+        const seen = new Set();
+        return DEFENDERS.filter((player) => {
+            const key = player.name.toLowerCase();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+    }, []);
 
     useEffect(() => {
         const f = localStorage.getItem('formation');
@@ -36,24 +46,11 @@ function DefenderSelectPageInner() {
     const maxDef = formation?.defenders || 4;
 
     const filtered = useMemo(() => {
-        let list = DEFENDERS.filter(d => !brokenIds.has(d.id));
+        let list = dedupedDefenders;
         if (filterPos !== 'ALL') list = list.filter(d => d.position === filterPos);
         if (search) list = list.filter(d => d.name.toLowerCase().includes(search.toLowerCase()) || d.club.toLowerCase().includes(search.toLowerCase()));
         return list;
-    }, [filterPos, search, brokenIds]);
-
-    const handleImageError = (player) => {
-        setBrokenIds(prev => {
-            const next = new Set(prev);
-            next.add(player.id);
-            return next;
-        });
-        if (selectedDefs.some(p => p.id === player.id)) {
-            const updated = selectedDefs.filter(p => p.id !== player.id);
-            setSelectedDefs(updated);
-            localStorage.setItem('defenders', JSON.stringify(updated));
-        }
-    };
+    }, [filterPos, search, dedupedDefenders]);
 
     const handleSelect = useCallback((player) => {
         setSelectedDefs(prev => {
@@ -261,7 +258,7 @@ function DefenderSelectPageInner() {
                                     </div>
                                     <div className="df-photo-frame">
                                         <img
-                                            src={player.image}
+                                            src={getImageSrc(player)}
                                             alt={player.name}
                                             className="df-photo"
                                             loading="lazy"

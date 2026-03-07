@@ -7,6 +7,20 @@ import '../../entry.css';
 
 import { GOALKEEPERS } from './data';
 
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const highlightName = (name, query) => {
+    const normalizedQuery = query.trim();
+    if (!normalizedQuery) return name;
+    const safe = escapeRegExp(normalizedQuery);
+    if (!safe) return name;
+
+    const regex = new RegExp(`(${safe})`, 'ig');
+    return name.split(regex).map((part, idx) => (
+        idx % 2 === 1 ? <span key={`${name}-${idx}`} className="gk-highlight">{part}</span> : part
+    ));
+};
+
 function GoalkeeperSelectPageInner() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -223,7 +237,7 @@ function GoalkeeperSelectPageInner() {
                                     </div>
                                     <div className="gk-card-info">
                                         <span className="gk-card-club">{gk.club.toUpperCase()}</span>
-                                        <h3 className="gk-card-name" dangerouslySetInnerHTML={{ __html: search ? gk.name.replace(new RegExp(`(${search})`, 'gi'), '<span class="gk-highlight">$1</span>') : gk.name }}></h3>
+                                        <h3 className="gk-card-name">{highlightName(gk.name, search)}</h3>
                                         <div className="gk-card-meta">
                                             <span>{gk.country}</span>
                                             <span className="gk-meta-dot">•</span>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Shield, Search, ChevronLeft, Check, Crosshair, ShieldCheck, Zap, X } from 'lucide-react';
 import '../../entry.css';
@@ -33,6 +33,8 @@ function GoalkeeperSelectPageInner() {
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const [isExiting, setIsExiting] = useState(false);
     const [brokenIds, setBrokenIds] = useState(new Set());
+    // Always-fresh ref so handleConfirm never reads a stale closure
+    const selectedGKRef = useRef(null);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -48,7 +50,11 @@ function GoalkeeperSelectPageInner() {
         if (storedTeam) setSelectedTeam(JSON.parse(storedTeam));
 
         const storedGK = localStorage.getItem('goalkeeper');
-        if (storedGK) setSelectedGK(JSON.parse(storedGK));
+        if (storedGK) {
+            const parsed = JSON.parse(storedGK);
+            setSelectedGK(parsed);
+            selectedGKRef.current = parsed;
+        }
     }, [router, isEditMode]);
 
     const sortedGKs = useMemo(() => {
@@ -83,26 +89,29 @@ function GoalkeeperSelectPageInner() {
         setSelectedGK(prev => {
             if (prev?.id === gk.id) {
                 localStorage.removeItem('goalkeeper');
+                selectedGKRef.current = null;
                 return null;
             } else {
                 localStorage.setItem('goalkeeper', JSON.stringify(gk));
+                selectedGKRef.current = gk;
                 return gk;
             }
         });
     }, []);
 
     const handleConfirm = useCallback(() => {
-        if (selectedGK) {
-            setIsExiting(true);
-            setTimeout(() => {
-                if (isEditMode) {
-                    router.push('/squad/review');
-                } else {
-                    router.push('/select/defenders');
-                }
-            }, 600);
-        }
-    }, [isEditMode, selectedGK, router]);
+        // Use the ref so we always have the latest value, not a stale closure
+        const current = selectedGKRef.current;
+        if (!current) return;
+        setIsExiting(true);
+        setTimeout(() => {
+            if (isEditMode) {
+                router.push('/squad/review');
+            } else {
+                router.push('/select/defenders');
+            }
+        }, 600);
+    }, [isEditMode, router]);
 
     return (
         <div className={`entry-page no-snap ${isExiting ? 'page-exit' : ''}`}>
@@ -231,7 +240,21 @@ function GoalkeeperSelectPageInner() {
                                         <span className="gk-ovr-value">{gk.rating}</span>
                                     </div>
                                     <div className="gk-photo-frame">
-                                        <img src={gk.image} alt={gk.name} className="gk-photo" loading="lazy" onError={() => handleImageError(gk)} />
+                                        {gk.image ? (
+                                            <img
+                                                src={gk.image}
+                                                alt={gk.name}
+                                                className="gk-photo"
+                                                loading="lazy"
+                                                onError={() => handleImageError(gk)}
+                                            />
+                                        ) : (
+                                            <div className="gk-photo-fallback">
+                                                <span className="gk-fallback-initials">
+                                                    {gk.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                                                </span>
+                                            </div>
+                                        )}
                                         <div className="gk-photo-vignette"></div>
                                         <div className="gk-card-glow"></div>
                                     </div>
@@ -383,6 +406,9 @@ function GoalkeeperSelectPageInner() {
                 .gk-photo-frame { height:300px; overflow:hidden; background:#080810; position:relative; }
                 .gk-photo { width:100%; height:100%; object-fit:cover; object-position:center top; transition:0.6s; filter:saturate(1.15) contrast(1.1); }
                 .gk-card:hover .gk-photo, .gk-card.kb-focus .gk-photo { transform:scale(1.1); filter:saturate(1.3) contrast(1.15); }
+                /* Fallback avatar for goalkeepers with no image */
+                .gk-photo-fallback { width:100%; height:100%; background:linear-gradient(160deg,rgba(30,22,5,1),rgba(10,8,2,1)); display:flex; align-items:center; justify-content:center; }
+                .gk-fallback-initials { font-size:5rem; font-weight:900; font-style:italic; letter-spacing:-0.05em; color:rgba(245,158,11,0.18); user-select:none; text-transform:uppercase; }
                 .gk-photo-vignette { position:absolute; bottom:0; left:0; right:0; height:8rem; background:linear-gradient(to top, rgba(10,10,15,1), transparent); }
                 .gk-card-glow { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: transparent; transition: 0.4s; }
                 .gk-card:hover .gk-card-glow, .gk-card.kb-focus .gk-card-glow { background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.4), transparent); box-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }

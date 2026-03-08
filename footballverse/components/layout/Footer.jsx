@@ -5,7 +5,7 @@ export default function Footer() {
         <footer className="footer">
             <div className="footer-content">
                 <div className="footer-about">
-                    <h2 className="footer-title">FOOTBALLVERSE</h2>
+                    <h2 className="footer-title">KICKOFF ARENA</h2>
                     <p className="footer-description">
                         The most immersive football management experience on the web.
                         Build your dream squad, manage tactics, and dominate the world stage.
@@ -33,7 +33,7 @@ export default function Footer() {
             </div>
 
             <div className="footer-bottom">
-                <p>© 2026 FootballVerse. All rights reserved.</p>
+                <p>© 2026 Kickoff Arena. All rights reserved.</p>
                 <span>v1.0.0-alpha</span>
             </div>
         </footer>

@@ -510,7 +510,7 @@ export default function FormationSelectPage() {
                                     <ChevronRight size={24} />
                                 </button>
                             </div>
-                            <p className="fm-footer-text">FootballVerse • Kickoff Arena • Season 2026/27</p>
+                            <p className="fm-footer-text">Kickoff Arena • Season 2026/27</p>
                         </div>
 
                     </div>

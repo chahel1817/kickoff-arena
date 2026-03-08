@@ -1,6 +1,6 @@
-# FootballVerse ⚽
+# Kickoff Arena ⚽
 
-Welcome to **FootballVerse**, the ultimate football management experience. Build your legacy from scratch by selecting your league, appointing a legendary manager, and assembling a world-class Starting XI.
+Welcome to **Kickoff Arena**, the ultimate football management experience. Build your legacy from scratch by selecting your league, appointing a legendary manager, and assembling a world-class Starting XI.
 
 ## 🚀 Getting Started
 
@@ -40,4 +40,4 @@ Welcome to **FootballVerse**, the ultimate football management experience. Build
 - **Lucide React** (for iconography)
 
 ---
-Built with ❤️ by the FootballVerse Team.
+Built with ❤️ by the Kickoff Arena Team.

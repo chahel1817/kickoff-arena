@@ -40,11 +40,11 @@ export default function WelcomeScreen() {
                         <h2 className="headline text-700 welcome-title">
                             Welcome <span className="player-name">{name}</span>
                         </h2>
-                        <h3 className="sub-headline text-600">to FootballVerse</h3>
+                        <h3 className="sub-headline text-600">to Kickoff Arena</h3>
                     </div>
 
                     <p className="text-400 welcome-description">
-                        Your professional career in FootballVerse begins now.
+                        Your professional career in Kickoff Arena begins now.
                         Prepare to navigate the complexities of club management,
                         lead transfers, and forge a path to glory.
                     </p>

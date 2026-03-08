@@ -24,7 +24,7 @@ export default function Navbar() {
                 <div className="navbar-logo">
                     <Trophy className="navbar-logo-icon" />
                 </div>
-                <span className="navbar-title">FOOTBALLVERSE</span>
+                <span className="navbar-title">KICKOFF ARENA</span>
             </Link>
 
             <div className="navbar-links">

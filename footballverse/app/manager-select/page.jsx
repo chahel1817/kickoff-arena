@@ -364,7 +364,7 @@ export default function ManagerSelectPage() {
                                 </button>
                             </div>
 
-                            <p className="final-footer-text">FootballVerse • Kickoff Arena • Season 2026/27</p>
+                            <p className="final-footer-text">Kickoff Arena • Season 2026/27</p>
                         </div>
 
                     </div>

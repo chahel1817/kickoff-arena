@@ -8,13 +8,15 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'kickoff-arena-dev-secret-change-in-prod';
 
 // Cookie options
+const isProd = process.env.NODE_ENV === 'production';
 const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax', // 'none' required for cross-domain cookies in prod
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     path: '/'
 };
+
 
 // Register
 router.post('/register', async (req, res) => {

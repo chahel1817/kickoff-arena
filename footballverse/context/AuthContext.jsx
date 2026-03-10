@@ -181,12 +181,22 @@ export function AuthProvider({ children }) {
 
 
     const login = useCallback(async (username, password) => {
-        const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const apiUrl = `${baseUrl}/auth/login`;
+        console.log('[Auth] Attempting login at:', apiUrl);
+
+        if (baseUrl && !baseUrl.endsWith('/api')) {
+            console.warn('[Auth] WARNING: NEXT_PUBLIC_API_URL does not end with "/api". This often causes 404 errors.');
+        }
+
+
+        const r = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
             credentials: 'include'
         });
+
 
         const contentType = r.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {

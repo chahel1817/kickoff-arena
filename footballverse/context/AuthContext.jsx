@@ -41,6 +41,11 @@ export function AuthProvider({ children }) {
                 return;
             }
 
+            const contentType = r.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error('Not JSON');
+            }
+
             const d = await r.json();
             if (d && !d.error) {
                 setUser(d);
@@ -54,10 +59,11 @@ export function AuthProvider({ children }) {
                 setUser(null);
             }
         } catch (e) {
-            console.warn('[Auth] No session found (Guest Mode)');
+            console.warn('[Auth] No session found or server error', e);
             setUser(null);
         }
     }, []);
+
 
 
     useEffect(() => { fetchMe(); }, [fetchMe]);
@@ -181,10 +187,19 @@ export function AuthProvider({ children }) {
             body: JSON.stringify({ username, password }),
             credentials: 'include'
         });
+
+        const contentType = r.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await r.text();
+            console.error('Non-JSON response:', text);
+            throw new Error('Server returned an invalid response. The API might be starting up or under maintenance.');
+        }
+
         const d = await r.json();
         if (!r.ok) throw new Error(d.error || 'Login failed');
         await fetchMe();
         return d;
+
     }, [fetchMe]);
 
     const register = useCallback(async (username, password) => {
@@ -194,10 +209,19 @@ export function AuthProvider({ children }) {
             body: JSON.stringify({ username, password }),
             credentials: 'include'
         });
+
+        const contentType = r.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await r.text();
+            console.error('Non-JSON response:', text);
+            throw new Error('Server returned an invalid response. The API might be starting up or under maintenance.');
+        }
+
         const d = await r.json();
         if (!r.ok) throw new Error(d.error || 'Registration failed');
         await fetchMe();
         return d;
+
     }, [fetchMe]);
 
     const logout = useCallback(async () => {

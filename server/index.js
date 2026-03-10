@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import User from './models/User.js';
+
 
 // Routes
 import authRoutes from './routes/auth.js';
@@ -33,11 +35,11 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/kickoff-a
         console.log('✅ Connected to Kickoff Arena Database');
         // One-time migration: Force reset budgets to 0 for the new economy overhaul
         try {
-            const User = mongoose.model('User');
             const result = await User.updateMany(
                 { budget: { $gt: 0 } },
                 { $set: { budget: 0 } }
             );
+
             if (result.modifiedCount > 0) {
                 console.log(`🧹 Economy Migration: Reset budget for ${result.modifiedCount} users to €0`);
             }

@@ -14,12 +14,20 @@ import {
     Star,
     Trophy,
     Target,
-    Crown
+    Zap,
+    Crown,
+    Link as LinkIcon
 } from 'lucide-react';
 import '../../entry.css';
+import { useAuth } from '@/context/AuthContext';
+import PlayerStatsModal from '@/components/modals/PlayerStatsModal';
+import { Info } from 'lucide-react';
+import leaguesData from '../../../data/leagues.json';
+
 
 export default function SquadReviewPage() {
     const router = useRouter();
+    const { user, saveSquad, isLoggedIn } = useAuth();
 
     const [formation, setFormation] = useState(null);
     const [selectedTeam, setSelectedTeam] = useState(null);
@@ -29,35 +37,47 @@ export default function SquadReviewPage() {
     const [midfielders, setMidfielders] = useState([]);
     const [forwards, setForwards] = useState([]);
     const [userCaptainId, setUserCaptainId] = useState(null);
+    const [viewingStats, setViewingStats] = useState(null);
 
     useEffect(() => {
-        const storedFormation = localStorage.getItem('formation');
-        const storedTeam = localStorage.getItem('selectedTeam');
-        const storedManager = localStorage.getItem('selectedManager');
-        const storedGK = localStorage.getItem('goalkeeper');
-        const storedDefs = localStorage.getItem('defenders');
-        const storedMids = localStorage.getItem('midfielders');
-        const storedFwds = localStorage.getItem('forwards');
-        const storedCap = localStorage.getItem('selectedCaptain');
+        window.scrollTo(0, 0);
+        // Sync with context/localStorage once on mount
+        const f = user?.formation || JSON.parse(localStorage.getItem('formation') || 'null');
+        const t = user?.selectedTeam || JSON.parse(localStorage.getItem('selectedTeam') || 'null');
+        const m = user?.selectedManager || JSON.parse(localStorage.getItem('selectedManager') || 'null');
+        const g = user?.goalkeeper || JSON.parse(localStorage.getItem('goalkeeper') || 'null');
+        const d = user?.defenders?.length ? user.defenders : JSON.parse(localStorage.getItem('defenders') || '[]');
+        const mi = user?.midfielders?.length ? user.midfielders : JSON.parse(localStorage.getItem('midfielders') || '[]');
+        const fo = user?.forwards?.length ? user.forwards : JSON.parse(localStorage.getItem('forwards') || '[]');
+        const c = user?.selectedCaptain || localStorage.getItem('selectedCaptain');
 
-        if (storedFormation) setFormation(JSON.parse(storedFormation));
-        if (storedTeam) setSelectedTeam(JSON.parse(storedTeam));
-        if (storedManager) setSelectedManager(JSON.parse(storedManager));
-        if (storedGK) setGk(JSON.parse(storedGK));
-        if (storedDefs) setDefenders(JSON.parse(storedDefs));
-        if (storedMids) setMidfielders(JSON.parse(storedMids));
-        if (storedFwds) setForwards(JSON.parse(storedFwds));
-        if (storedCap) setUserCaptainId(storedCap);
+        if (f) setFormation(f);
+        if (t) setSelectedTeam(t);
+        if (m) setSelectedManager(m);
+        if (g) setGk(g);
+        setDefenders(d);
+        setMidfielders(mi);
+        setForwards(fo);
+        if (c) setUserCaptainId(c);
 
-        if (!storedFormation) {
+        if (!f && !user && !user?.username) {
             router.push('/formation-select');
         }
-    }, [router]);
+    }, [user, router]);
 
-    const handleSetCaptain = (id) => {
+    const activeLeague = useMemo(() => {
+        if (!selectedTeam) return null;
+        return leaguesData.find(l => l.id === selectedTeam.league);
+    }, [selectedTeam]);
+
+    const handleSetCaptain = async (id) => {
         setUserCaptainId(id);
         localStorage.setItem('selectedCaptain', id);
+        if (isLoggedIn) {
+            await saveSquad({ selectedCaptain: id });
+        }
     };
+
 
     const pitchPositions = useMemo(() => {
         if (!formation) return [];
@@ -65,39 +85,51 @@ export default function SquadReviewPage() {
         const cleanName = formation.name.replace(/\s*\(.*?\)\s*/g, '');
         const parts = cleanName.split('-').map(Number);
 
+        // Sorting helpers to ensure players are in tactical order L -> R
+        const sortByPos = (list, orderMap) => {
+            return [...list].sort((a, b) => {
+                const aPos = a.position || '';
+                const bPos = b.position || '';
+                return (orderMap[aPos] || 3) - (orderMap[bPos] || 3);
+            });
+        };
+
+        const sortedDefs = sortByPos(defenders, { 'LB': 1, 'LWB': 1, 'CB': 3, 'RB': 5, 'RWB': 5 });
+        const sortedMids = sortByPos(midfielders, { 'LM': 1, 'LW': 1, 'CDM': 2, 'CM': 3, 'CAM': 4, 'RM': 5, 'RW': 5 });
+        const sortedFwds = sortByPos(forwards, { 'LW': 1, 'ST': 3, 'CF': 3, 'RW': 5 });
+
         // GK always present
         positions.push({ x: 50, y: 88, type: 'gk', player: gk });
 
         if (parts.length === 3) {
             const [defCount, midCount, fwdCount] = parts;
             const defSp = 80 / (defCount + 1);
-            for (let i = 0; i < defCount; i++) positions.push({ x: 10 + defSp * (i + 1), y: 70, type: 'def', player: defenders[i] });
+            for (let i = 0; i < defCount; i++) positions.push({ x: 10 + defSp * (i + 1), y: 70, type: 'def', player: sortedDefs[i] });
             const midSp = 80 / (midCount + 1);
-            for (let i = 0; i < midCount; i++) positions.push({ x: 10 + midSp * (i + 1), y: 44, type: 'mid', player: midfielders[i] });
+            for (let i = 0; i < midCount; i++) positions.push({ x: 10 + midSp * (i + 1), y: 44, type: 'mid', player: sortedMids[i] });
             const fwdSp = 80 / (fwdCount + 1);
-            for (let i = 0; i < fwdCount; i++) positions.push({ x: 10 + fwdSp * (i + 1), y: 18, type: 'fwd', player: forwards[i] });
+            for (let i = 0; i < fwdCount; i++) positions.push({ x: 10 + fwdSp * (i + 1), y: 18, type: 'fwd', player: sortedFwds[i] });
         } else if (parts.length === 4) {
             const [defCount, l1, l2, l3] = parts;
             const defSp = 80 / (defCount + 1);
-            for (let i = 0; i < defCount; i++) positions.push({ x: 10 + defSp * (i + 1), y: 72, type: 'def', player: defenders[i] });
+            for (let i = 0; i < defCount; i++) positions.push({ x: 10 + defSp * (i + 1), y: 72, type: 'def', player: sortedDefs[i] });
 
-            // Middle parts are usually midfielders unless it's the last one
             const midParts = [l1, l2];
             const midY = [54, 36];
             let mIdx = 0;
             for (let j = 0; j < 2; j++) {
                 const sp = 80 / (midParts[j] + 1);
                 for (let i = 0; i < midParts[j]; i++) {
-                    positions.push({ x: 10 + sp * (i + 1), y: midY[j], type: 'mid', player: midfielders[mIdx++] });
+                    positions.push({ x: 10 + sp * (i + 1), y: midY[j], type: 'mid', player: sortedMids[mIdx++] });
                 }
             }
 
             const fwdSp = 80 / (l3 + 1);
-            for (let i = 0; i < l3; i++) positions.push({ x: 10 + fwdSp * (i + 1), y: 18, type: 'fwd', player: forwards[i] });
+            for (let i = 0; i < l3; i++) positions.push({ x: 10 + fwdSp * (i + 1), y: 18, type: 'fwd', player: sortedFwds[i] });
         } else if (parts.length === 5) {
             const [defCount, l1, l2, l3, l4] = parts;
             const defSp = 80 / (defCount + 1);
-            for (let i = 0; i < defCount; i++) positions.push({ x: 10 + defSp * (i + 1), y: 74, type: 'def', player: defenders[i] });
+            for (let i = 0; i < defCount; i++) positions.push({ x: 10 + defSp * (i + 1), y: 74, type: 'def', player: sortedDefs[i] });
 
             const midParts = [l1, l2, l3];
             const midY = [58, 44, 30];
@@ -105,12 +137,12 @@ export default function SquadReviewPage() {
             for (let j = 0; j < 3; j++) {
                 const sp = 80 / (midParts[j] + 1);
                 for (let i = 0; i < midParts[j]; i++) {
-                    positions.push({ x: 10 + sp * (i + 1), y: midY[j], type: 'mid', player: midfielders[mIdx++] });
+                    positions.push({ x: 10 + sp * (i + 1), y: midY[j], type: 'mid', player: sortedMids[mIdx++] });
                 }
             }
 
             const fwdSp = 80 / (l4 + 1);
-            for (let i = 0; i < l4; i++) positions.push({ x: 10 + fwdSp * (i + 1), y: 16, type: 'fwd', player: forwards[i] });
+            for (let i = 0; i < l4; i++) positions.push({ x: 10 + fwdSp * (i + 1), y: 16, type: 'fwd', player: sortedFwds[i] });
         }
 
         return positions;
@@ -164,6 +196,32 @@ export default function SquadReviewPage() {
         return highest.player?.id;
     }, [pitchPositions, userCaptainId]);
 
+    const chemistryData = useMemo(() => {
+        const allPlayers = [gk, ...defenders, ...midfielders, ...forwards].filter(Boolean);
+        if (allPlayers.length === 0) return { score: 0, nationLinks: 0, clubLinks: 0 };
+
+        let nationScore = 0;
+        let clubScore = 0;
+        let leagueScore = 0;
+
+        const nations = {};
+        const clubs = {};
+        const leagues = {};
+
+        allPlayers.forEach(p => {
+            nations[p.country] = (nations[p.country] || 0) + 1;
+            clubs[p.club] = (clubs[p.club] || 0) + 1;
+            if (p.league) leagues[p.league] = (leagues[p.league] || 0) + 1;
+        });
+
+        Object.values(nations).forEach(count => { if (count > 1) nationScore += (count * 4); });
+        Object.values(clubs).forEach(count => { if (count > 1) clubScore += (count * 6); });
+        Object.values(leagues).forEach(count => { if (count > 1) leagueScore += (count * 3); });
+
+        const score = Math.min(100, nationScore + clubScore + leagueScore + (allPlayers.length * 2));
+        return { score, nationLinks: nationScore, clubLinks: clubScore };
+    }, [gk, defenders, midfielders, forwards]);
+
     return (
         <div className="entry-page no-snap">
             <div className="stadium-bg rev-stadium-bg"></div>
@@ -175,15 +233,27 @@ export default function SquadReviewPage() {
                     {/* 1. TOP CONTEXT BAR */}
                     <div className="rev-context-bar glass">
                         <div className="rev-ctx-item">
-                            <Layers className="rev-ctx-icon text-accent" size={18} />
+                            <div className="rev-ctx-icon">
+                                {activeLeague?.code ? (
+                                    <img
+                                        src={`https://flagcdn.com/w80/${activeLeague.code.toLowerCase().split('-')[0]}.png`}
+                                        alt={activeLeague.country}
+                                        className="ctx-flag-mini"
+                                    />
+                                ) : <Trophy size={18} className="text-amber-400" />}
+                            </div>
                             <div className="rev-ctx-text">
-                                <span className="rev-ctx-label">FORMATION</span>
-                                <span className="rev-ctx-val">{formation?.name || '4-3-3'}</span>
+                                <span className="rev-ctx-label">LEAGUE</span>
+                                <span className="rev-ctx-val">{activeLeague?.name || 'PREMIER LEAGUE'}</span>
                             </div>
                         </div>
                         <div className="rev-ctx-sep"></div>
                         <div className="rev-ctx-item">
-                            <Shield className="rev-ctx-icon text-primary" size={18} />
+                            <div className="rev-ctx-icon">
+                                {selectedTeam?.logo ? (
+                                    <img src={selectedTeam.logo} alt={selectedTeam.name} className="ctx-logo-mini" />
+                                ) : <Shield className="text-primary" size={18} />}
+                            </div>
                             <div className="rev-ctx-text">
                                 <span className="rev-ctx-label">TEAM</span>
                                 <span className="rev-ctx-val">{selectedTeam?.name || 'ARSENAL'}</span>
@@ -191,10 +261,22 @@ export default function SquadReviewPage() {
                         </div>
                         <div className="rev-ctx-sep"></div>
                         <div className="rev-ctx-item">
-                            <User className="rev-ctx-icon text-white" size={18} />
+                            <div className="rev-ctx-icon">
+                                {selectedManager?.image ? (
+                                    <img src={selectedManager.image} alt={selectedManager.name} className="ctx-mgr-mini shadow-sm" />
+                                ) : <User className="text-white" size={18} />}
+                            </div>
                             <div className="rev-ctx-text">
                                 <span className="rev-ctx-label">MANAGER</span>
                                 <span className="rev-ctx-val">{selectedManager?.name || 'PEP GUARDIOLA'}</span>
+                            </div>
+                        </div>
+                        <div className="rev-ctx-sep"></div>
+                        <div className="rev-ctx-item">
+                            <Zap className="rev-ctx-icon text-primary" size={18} />
+                            <div className="rev-ctx-text">
+                                <span className="rev-ctx-label">CHEMISTRY</span>
+                                <span className="rev-ctx-val text-primary">{chemistryData.score}/100</span>
                             </div>
                         </div>
                     </div>
@@ -249,6 +331,13 @@ export default function SquadReviewPage() {
                                                 <div className="captain-badge">
                                                     <span>C</span>
                                                 </div>
+                                            )}
+
+                                            {/* Info Trigger */}
+                                            {pos.player && (
+                                                <button className="pitch-info-btn" onClick={(e) => { e.stopPropagation(); setViewingStats(pos.player); }}>
+                                                    <Info size={10} />
+                                                </button>
                                             )}
 
                                             {pos.player?.image ? (
@@ -416,6 +505,13 @@ export default function SquadReviewPage() {
                 </main>
             </section>
 
+            {viewingStats && (
+                <PlayerStatsModal
+                    player={viewingStats}
+                    onClose={() => setViewingStats(null)}
+                />
+            )}
+
             <style jsx>{`
                 .rev-container {
                     min-height: 100vh;
@@ -428,6 +524,16 @@ export default function SquadReviewPage() {
                     from { opacity: 0; transform: translateY(30px); }
                     to { opacity: 1; transform: translateY(0); }
                 }
+
+                .pitch-info-btn {
+                    position: absolute; top: -2px; right: -2px; z-index: 15;
+                    width: 18px; height: 18px; border-radius: 50%;
+                    background: rgba(0, 0, 0, 0.8); color: white;
+                    display: flex; align-items: center; justify-content: center;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    cursor: pointer; transition: 0.2s;
+                }
+                .pitch-info-btn:hover { background: #3b82f6; border-color: #3b82f6; transform: scale(1.1); }
 
                 .rev-main { width: 100%; max-width: 1200px; display: flex; flex-direction: column; gap: 2.5rem; }
 

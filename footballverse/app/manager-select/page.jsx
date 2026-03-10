@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shield, ChevronLeft, ChevronRight, Star, Users, Globe, Trophy, Search, Cpu, Check, Scan, Layers, Zap, Info, Target, Brain, Sprout, BrickWall, Activity, Compass, TrendingUp } from 'lucide-react';
 import managersData from '../../data/managers.json';
+import { useAuth } from '@/context/AuthContext';
 import '../entry.css';
 
 export default function ManagerSelectPage() {
     const router = useRouter();
-    const [name, setName] = useState('');
+    const { user, isLoggedIn, isLoading, saveSquad } = useAuth();
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [selectedManager, setSelectedManager] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -29,8 +30,10 @@ export default function ManagerSelectPage() {
         .sort((a, b) => b.reputation - a.reputation);
 
     useEffect(() => {
-        const storedName = localStorage.getItem('userName');
-        if (storedName) setName(storedName);
+        if (!isLoading && !isLoggedIn) {
+            router.push('/');
+            return;
+        }
 
         const storedTeam = localStorage.getItem('selectedTeam');
         if (storedTeam) {
@@ -38,11 +41,14 @@ export default function ManagerSelectPage() {
         } else {
             router.push('/team-select');
         }
-    }, [router]);
+    }, [router, isLoggedIn, isLoading]);
+
+    const name = user?.displayName || user?.username || 'Manager';
 
     const handleManagerSelect = (manager) => {
         setSelectedManager(manager);
         localStorage.setItem('selectedManager', JSON.stringify(manager));
+        if (isLoggedIn) saveSquad({ selectedManager: manager });
         setIsIntelOpen(false);
 
         // Brief delay before showing phase complete overlay

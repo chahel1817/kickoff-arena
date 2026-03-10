@@ -3,6 +3,8 @@ import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shield, Zap, Target, Check, X, Trophy, RotateCcw, ChevronLeft, Crown, Play } from 'lucide-react';
 import './match.css';
+import { useAuth } from '@/context/AuthContext';
+
 
 const ZONES = [
     { id: 'tl', x: -1, y: -1 }, { id: 'tc', x: 0, y: -1 }, { id: 'tr', x: 1, y: -1 },
@@ -47,6 +49,8 @@ const CROWD_SAVES = ['🧤 NO WAY!', '👏 WHAT A SAVE!', '🛑 THE KEEPER!!!', 
 
 export default function ShootoutPage() {
     const router = useRouter();
+    const { saveMatchResult } = useAuth();
+
 
     const [squad, setSquad] = useState([]);
     const [shooters, setShooters] = useState([null, null, null, null, null]);
@@ -187,7 +191,7 @@ export default function ShootoutPage() {
         let keeperZone = ZONES[Math.floor(Math.random() * 9)].id;
         let comment = '';
         try {
-            const res = await fetch('/api/keeper', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/keeper`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -199,10 +203,12 @@ export default function ShootoutPage() {
                     keeperType: 'READER',
                     shotNumber: snapIndex + 1,
                 }),
+                credentials: 'include',
                 signal: AbortSignal.timeout(3500),
             });
             if (res.ok) { const d = await res.json(); keeperZone = d.keeperZone || keeperZone; comment = d.comment || ''; }
         } catch { /* silent — stays with random zone */ }
+
 
         setKeeperDiveZone(keeperZone);
         setAiComment(comment);
@@ -250,8 +256,26 @@ export default function ShootoutPage() {
                 setLockedPower(null);
                 const next = snapIndex + 1;
                 setShotIndex(next);
-                if (next >= 5) setPhase('done');
-                else { setPhase('aim'); startCountdown(); }
+                if (next >= 5) {
+                    setPhase('done');
+                    // ☁️ Save results to cloud
+                    const finalResults = [...results, newRes];
+                    const score = finalResults.filter(r => r.outcome === 'goal').length;
+                    saveMatchResult({
+                        score,
+                        total: 5,
+                        shooters: shooters.slice(0, 5),
+                        breakdown: finalResults.map(r => ({
+                            outcome: r.outcome,
+                            power: r.power,
+                            zone: r.zone,
+                        })),
+                    }).catch(() => { });
+                } else {
+                    setPhase('aim');
+                    startCountdown();
+                }
+
             }, 2200);
         }, 700);
     }, [shooters, shotIndex, startCountdown]);

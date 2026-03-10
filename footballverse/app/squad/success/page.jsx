@@ -8,9 +8,12 @@ import {
     Target, BarChart3, Globe, Users2
 } from 'lucide-react';
 import '../../entry.css';
+import { useAuth } from '@/context/AuthContext';
 
 export default function SquadSuccessPage() {
     const router = useRouter();
+    const { saveSquad, isLoggedIn } = useAuth();
+
     const [team, setTeam] = useState(null);
     const [manager, setManager] = useState(null);
     const [formation, setFormation] = useState(null);
@@ -31,15 +34,45 @@ export default function SquadSuccessPage() {
         const storedFwds = localStorage.getItem('forwards');
         const storedCap = localStorage.getItem('selectedCaptain');
 
-        if (storedTeam) setTeam(JSON.parse(storedTeam));
-        if (storedManager) setManager(JSON.parse(storedManager));
-        if (storedFormation) setFormation(JSON.parse(storedFormation));
-        if (storedGK) setGk(JSON.parse(storedGK));
-        if (storedDefs) setDefenders(JSON.parse(storedDefs));
-        if (storedMids) setMidfielders(JSON.parse(storedMids));
-        if (storedFwds) setForwards(JSON.parse(storedFwds));
+        const parsedTeam = storedTeam ? JSON.parse(storedTeam) : null;
+        const parsedManager = storedManager ? JSON.parse(storedManager) : null;
+        const parsedFormation = storedFormation ? JSON.parse(storedFormation) : null;
+        const parsedGK = storedGK ? JSON.parse(storedGK) : null;
+        const parsedDefs = storedDefs ? JSON.parse(storedDefs) : [];
+        const parsedMids = storedMids ? JSON.parse(storedMids) : [];
+        const parsedFwds = storedFwds ? JSON.parse(storedFwds) : [];
+
+        if (parsedTeam) setTeam(parsedTeam);
+        if (parsedManager) setManager(parsedManager);
+        if (parsedFormation) setFormation(parsedFormation);
+        if (parsedGK) setGk(parsedGK);
+        setDefenders(parsedDefs);
+        setMidfielders(parsedMids);
+        setForwards(parsedFwds);
         if (storedCap) setCaptainId(storedCap);
-    }, []);
+
+        // 🎊 Confetti burst
+        import('canvas-confetti').then(({ default: confetti }) => {
+            confetti({ particleCount: 180, spread: 120, origin: { x: 0.5, y: 0.55 }, colors: ['#00ff88', '#f59e0b', '#ffffff', '#3b82f6', '#ef4444'] });
+            setTimeout(() => confetti({ particleCount: 80, angle: 120, spread: 60, origin: { x: 0 } }), 400);
+            setTimeout(() => confetti({ particleCount: 80, angle: 60, spread: 60, origin: { x: 1 } }), 600);
+        }).catch(() => { });
+
+        // ☁️ Sync to backend if logged in
+        if (isLoggedIn) {
+            saveSquad({
+                selectedTeam: parsedTeam,
+                selectedManager: parsedManager,
+                formation: parsedFormation,
+                goalkeeper: parsedGK,
+                defenders: parsedDefs,
+                midfielders: parsedMids,
+                forwards: parsedFwds,
+                selectedCaptain: storedCap || null,
+            }).catch(() => { });
+        }
+    }, [isLoggedIn, saveSquad]);
+
 
     const stats = useMemo(() => {
         const allPlayers = [gk, ...defenders, ...midfielders, ...forwards].filter(Boolean);

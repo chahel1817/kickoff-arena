@@ -1,25 +1,37 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Trophy, Users, Target, Zap, Shield, TrendingUp, Globe, Star, ChevronDown, ArrowRight } from 'lucide-react';
+import { Trophy, Users, Target, Zap, Shield, TrendingUp, Globe, Star, ChevronDown, ArrowRight, LogIn } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 import './entry.css';
 
 export default function EntryPage() {
-    const [name, setName] = useState('');
     const router = useRouter();
+    const { user } = useAuth();
+    const [loading, setLoading] = useState(true);
 
-    const handleStart = (e) => {
-        e.preventDefault();
-        if (name.trim()) {
-            localStorage.setItem('userName', name.trim());
-            router.push('/welcome');
+    useEffect(() => {
+        // If user is logged in, redirect to dashboard
+        if (user !== undefined) {
+            setLoading(false);
+            if (user) {
+                router.push('/dashboard');
+            }
         }
-    };
+    }, [user, router]);
+
+    if (loading || user !== undefined && user !== null) {
+        return null; // Show nothing while redirecting
+    }
 
     const scrollToJoin = () => {
         const element = document.getElementById('join-section');
         element?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const handleAuthClick = () => {
+        router.push('/auth');
     };
 
     return (
@@ -66,25 +78,26 @@ export default function EntryPage() {
                         <div className="explore-line"></div>
                         <button
                             type="button"
-                            className="explore-btn"
+                            className="explore-btn-premium"
                             onClick={scrollToJoin}
-                            aria-label="Scroll down to explore and set up your account"
+                            aria-label="Initialize your management career"
                         >
+                            <span className="explore-btn-orbital"></span>
                             <span className="explore-btn-glow"></span>
-                            <span className="explore-btn-icon-left">⚽</span>
-                            <span className="explore-btn-label">Explore the Arena</span>
+                            <span className="explore-btn-label">LAUNCH CAREER</span>
                             <span className="explore-btn-arrow">
-                                <ChevronDown size={16} className="bounce-icon" />
+                                <ArrowRight size={18} className="pulse-icon" />
                             </span>
                         </button>
                         <div className="explore-line"></div>
+
                     </div>
                     <p className="explore-hint">Scroll to begin your managerial journey</p>
                 </div>
             </section>
 
             {/* FEATURES GRID SECTION */}
-            <section className="info-section">
+            <section id="features-section" className="info-section">
                 <div className="features-container">
                     <div className="section-header">
                         <span className="section-label text-600">Core Systems</span>
@@ -194,33 +207,25 @@ export default function EntryPage() {
                         <p className="init-desc">Enter your managerial identity to begin your journey across the world&apos;s most elite leagues.</p>
                     </div>
 
-                    <form onSubmit={handleStart} className="init-form">
-                        <div className="init-input-wrapper">
-                            <div className="input-glow-ring"></div>
-                            <label className="sr-only" htmlFor="manager-name">Manager name</label>
-                            <input
-                                id="manager-name"
-                                type="text"
-                                placeholder="Enter Your Manager Name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                autoComplete="name"
-                                required
-                                className="init-input text-600"
-                            />
+                    <form className="init-form">
+                        <div className="auth-cta-content">
+                            <h3 className="text-600" style={{ marginBottom: '1rem' }}>Ready to Manage?</h3>
+                            <p className="init-hint" style={{ marginBottom: '2rem' }}>
+                                Create your account to build your dream squad and compete across elite leagues worldwide.
+                            </p>
                         </div>
-                        <p className="init-hint">This identity will be used to track your legacy across all competitions.</p>
 
                         <button
-                            type="submit"
-                            className={`init-submit text-700 ${!name.trim() ? 'btn-disabled' : ''}`}
-                            disabled={!name.trim()}
+                            type="button"
+                            onClick={handleAuthClick}
+                            className="init-submit text-700"
+                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
                         >
-                            <span>START YOUR LEGACY</span>
-                            <ArrowRight size={18} />
+                            <LogIn size={18} />
+                            <span>Sign In / Register</span>
                         </button>
 
-                        <p className="init-enter-hint text-600">Press Enter to continue</p>
+                        <p className="init-enter-hint">Join thousands of managers competing worldwide</p>
                     </form>
 
                     {/* Trust Stats */}
@@ -255,9 +260,26 @@ export default function EntryPage() {
             </section>
 
             {/* Footer System Text */}
-            <div className="footer-text">
-                <p className="text-300">System v1.0 • Authorized Access • Kickoff Arena 2026</p>
+            <div className="footer-exploration">
+                <div className="exploration-divider"></div>
+                <button
+                    type="button"
+                    className="explore-btn-pillar"
+                    onClick={() => {
+                        const el = document.getElementById('features-section');
+                        el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                >
+                    <span className="pillar-halo"></span>
+                    <Trophy size={20} className="pillar-icon" />
+                    <span>EXPLORE THE ARENA</span>
+                    <ChevronDown size={20} />
+                </button>
+                <div className="footer-info">
+                    <p className="text-300">System v1.0 • Authorized Access • Kickoff Arena 2026</p>
+                </div>
             </div>
         </div>
     );
 }
+

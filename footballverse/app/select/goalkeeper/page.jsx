@@ -6,6 +6,11 @@ import { Shield, Search, ChevronLeft, Check, Crosshair, ShieldCheck, Zap, X } fr
 import '../../entry.css';
 
 import { GOALKEEPERS } from './data';
+import PlayerStatsModal from '@/components/modals/PlayerStatsModal';
+import { Info } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+
+
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -33,6 +38,8 @@ function GoalkeeperSelectPageInner() {
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const [isExiting, setIsExiting] = useState(false);
     const [brokenIds, setBrokenIds] = useState(new Set());
+    const [viewingStats, setViewingStats] = useState(null);
+
     // Always-fresh ref so handleConfirm never reads a stale closure
     const selectedGKRef = useRef(null);
 
@@ -85,19 +92,24 @@ function GoalkeeperSelectPageInner() {
         }
     };
 
+    const { saveSquad } = useAuth();
+
     const handleSelect = useCallback((gk) => {
         setSelectedGK(prev => {
             if (prev?.id === gk.id) {
                 localStorage.removeItem('goalkeeper');
+                saveSquad({ goalkeeper: null });
                 selectedGKRef.current = null;
                 return null;
             } else {
                 localStorage.setItem('goalkeeper', JSON.stringify(gk));
+                saveSquad({ goalkeeper: gk });
                 selectedGKRef.current = gk;
                 return gk;
             }
         });
-    }, []);
+    }, [saveSquad]);
+
 
     const handleConfirm = useCallback(() => {
         // Use the ref so we always have the latest value, not a stale closure
@@ -217,12 +229,18 @@ function GoalkeeperSelectPageInner() {
                             const rank = sortedGKs.findIndex(p => p.id === gk.id) + 1;
 
                             return (
-                                <button
+                                <div
                                     key={gk.id}
-                                    onClick={() => handleSelect(gk)}
                                     onMouseEnter={() => setFocusedIndex(index)}
                                     className={`gk-card glass ${isSelected ? 'selected' : ''} ${isFull ? 'dimmed' : ''} ${gk.tier === 'legend' ? 'legend-card' : ''} ${focusedIndex === index ? 'kb-focus' : ''}`}
                                 >
+                                    <div className="gk-card-click-area" onClick={() => handleSelect(gk)}></div>
+
+                                    {/* Stats Trigger */}
+                                    <div className="gk-stats-trigger" onClick={(e) => { e.stopPropagation(); setViewingStats(gk); }}>
+                                        <Info size={14} />
+                                    </div>
+
                                     <div className="gk-rank-badge">RANK #{rank}</div>
                                     <div className="gk-skill-badges">
                                         {gk.tags?.slice(0, 2).map(skill => (
@@ -242,7 +260,7 @@ function GoalkeeperSelectPageInner() {
                                     <div className="gk-photo-frame">
                                         {gk.image ? (
                                             <img
-                                                src={gk.image}
+                                                src={gk.image || null}
                                                 alt={gk.name}
                                                 className="gk-photo"
                                                 loading="lazy"
@@ -267,10 +285,15 @@ function GoalkeeperSelectPageInner() {
                                             <span className="gk-card-pos">GK</span>
                                         </div>
                                     </div>
-                                </button>
+                                </div>
                             );
                         })}
                     </div>
+
+                    {viewingStats && (
+                        <PlayerStatsModal player={viewingStats} onClose={() => setViewingStats(null)} />
+                    )}
+
 
                     {/* Bottom CTA */}
                     <div className={`gk-confirm-bar glass ${selectedGK ? 'visible' : ''}`}>
@@ -480,7 +503,7 @@ function GoalkeeperSelectPageInner() {
                     .gk-skill-badge { padding: 0.15rem 0.35rem; font-size: 0.35rem; gap: 0.2rem; border-radius: 3px; }
                 }
             `}</style>
-        </div>
+        </div >
     );
 }
 

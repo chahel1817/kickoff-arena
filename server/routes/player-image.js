@@ -1,18 +1,26 @@
-import { NextResponse } from 'next/server';
+import express from 'express';
+import fetch from 'node-fetch';
+
+const router = express.Router();
 
 const TSDB_SEARCH_URL = 'https://www.thesportsdb.com/api/v1/json/3/searchplayers.php';
-const FALLBACK_IMAGE = '/player-fallback.svg';
+const FALLBACK_IMAGE = 'https://via.placeholder.com/400x600?text=No+Player+Image';
 
 const normalize = (value = '') => value.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 const MANUAL_IMAGE_OVERRIDES = {
     pedri: 'https://upload.wikimedia.org/wikipedia/commons/1/13/Pedri.jpg',
     gavi: 'https://upload.wikimedia.org/wikipedia/commons/2/2d/Gavi_%28footballer%29.jpg',
+    mendes: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nuno_Mendes_PSG.jpg/640px-Nuno_Mendes_PSG.jpg',
+    nunomendes: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nuno_Mendes_PSG.jpg/640px-Nuno_Mendes_PSG.jpg',
+    nuno_mendes: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nuno_Mendes_PSG.jpg/640px-Nuno_Mendes_PSG.jpg',
+    vitinha: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Vitinha_PSG.jpg/640px-Vitinha_PSG.jpg',
 };
 
 const QUERY_OVERRIDES = {
     pedri: 'Pedro Gonzalez',
     gavi: 'Pablo Paez Gavira',
+    mendes: 'Nuno Mendes PSG',
 };
 
 const viaWeserv = (remoteUrl) => {
@@ -35,52 +43,35 @@ const pickImage = (player) => {
     return direct ? viaWeserv(direct) : null;
 };
 
-export async function GET(req) {
-    const { searchParams } = new URL(req.url);
-    const name = searchParams.get('name') || '';
-    const club = searchParams.get('club') || '';
-    const fallback = searchParams.get('fallback') || '';
+router.get('/', async (req, res) => {
+    const { name = '', club = '', fallback = '' } = req.query;
     const normalizedName = normalize(name);
 
     if (MANUAL_IMAGE_OVERRIDES[normalizedName]) {
-        return NextResponse.json(
-            { image: MANUAL_IMAGE_OVERRIDES[normalizedName], source: 'manual' },
-            { headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' } }
-        );
+        return res.json({ image: MANUAL_IMAGE_OVERRIDES[normalizedName], source: 'manual' });
     }
 
     if (!name.trim()) {
-        return NextResponse.json({ image: fallback || FALLBACK_IMAGE, source: 'fallback' }, {
-            headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' },
-        });
+        return res.json({ image: fallback || FALLBACK_IMAGE, source: 'fallback' });
     }
 
     try {
         const searchName = QUERY_OVERRIDES[normalizedName] || name;
         const url = `${TSDB_SEARCH_URL}?p=${encodeURIComponent(searchName)}`;
-        const res = await fetch(url, {
-            method: 'GET',
-            next: { revalidate: 60 * 60 * 24 * 7 },
-        });
-        if (!res.ok) throw new Error(`tsdb ${res.status}`);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`tsdb ${response.status}`);
 
-        const data = await res.json();
+        const data = await response.json();
         const best = pickBestPlayer(data?.player, club);
         const resolved = pickImage(best);
 
-        return NextResponse.json(
-            {
-                image: resolved || fallback || FALLBACK_IMAGE,
-                source: resolved ? 'api' : 'fallback',
-            },
-            {
-                headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' },
-            }
-        );
-    } catch {
-        return NextResponse.json(
-            { image: fallback || FALLBACK_IMAGE, source: 'fallback' },
-            { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } }
-        );
+        res.json({
+            image: resolved || fallback || FALLBACK_IMAGE,
+            source: resolved ? 'api' : 'fallback',
+        });
+    } catch (err) {
+        res.json({ image: fallback || FALLBACK_IMAGE, source: 'error' });
     }
-}
+});
+
+export default router;

@@ -115,6 +115,26 @@
     align-items: center;
     justify-content: center;
     color: rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+}
+
+.sum-flag {
+    width: 24px;
+    height: auto;
+    border-radius: 2px;
+}
+
+.sum-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 6px;
+}
+
+.sum-manager {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .card-body {

@@ -3,9 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cd footballverse && npm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd footballverse && npm run dev",
     "build": "cd footballverse && npm run build",
-    "start": "cd footballverse && npm run start",
+    "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
+    "start:server": "cd server && npm run start",
+    "start:client": "cd footballverse && npm run start",
     "lint": "cd footballverse && npm run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }

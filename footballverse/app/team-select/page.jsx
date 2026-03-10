@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shield, ChevronLeft, ChevronRight, Trophy, Star, Globe, Check } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 import '../entry.css';
 
 // Import data
@@ -11,13 +12,15 @@ import teamsData from '../../data/teams.json';
 
 export default function TeamSelectPage() {
     const router = useRouter();
-    const [name, setName] = useState('');
+    const { user, isLoggedIn, isLoading, saveSquad } = useAuth();
     const [selectedLeague, setSelectedLeague] = useState(null);
     const [selectedTeam, setSelectedTeam] = useState(null);
 
     useEffect(() => {
-        const storedName = localStorage.getItem('userName');
-        if (storedName) setName(storedName);
+        if (!isLoading && !isLoggedIn) {
+            router.push('/');
+            return;
+        }
 
         const storedLeagueId = localStorage.getItem('selectedLeague');
         if (storedLeagueId) {
@@ -27,7 +30,9 @@ export default function TeamSelectPage() {
             // Redirect to league selection if none found
             router.push('/league');
         }
-    }, [router]);
+    }, [router, isLoggedIn, isLoading]);
+
+    const name = user?.displayName || user?.username || 'Manager';
 
     const handleBack = () => {
         router.push('/league');
@@ -36,6 +41,7 @@ export default function TeamSelectPage() {
     const handleTeamSelect = (team) => {
         setSelectedTeam(team);
         localStorage.setItem('selectedTeam', JSON.stringify(team));
+        if (isLoggedIn) saveSquad({ selectedTeam: team });
 
         // Brief delay for feedback before moving to next step
         setTimeout(() => {

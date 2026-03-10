@@ -1,4 +1,6 @@
-import { NextResponse } from 'next/server';
+import express from 'express';
+
+const router = express.Router();
 
 const OR_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
@@ -8,7 +10,6 @@ const ZONE_LABELS = {
     bl: 'low-left', bc: 'low-centre', br: 'low-right',
 };
 
-// Rich commentary banks — varied per result type
 const SAVE_COMMENTS = [
     'The keeper reads it like a book!',
     'Instinct and class — no chance!',
@@ -61,7 +62,6 @@ function pickComment(savedIt, keeperZone, shotZone) {
     return GOAL_MISS_COMMENTS[Math.floor(Math.random() * GOAL_MISS_COMMENTS.length)];
 }
 
-// Smart weighted keeper zone selection
 function weightedKeeperZone(shotHistory, shooterRating, keeperType) {
     const zones = Object.keys(ZONE_LABELS);
     const freq = {};
@@ -81,7 +81,6 @@ function weightedKeeperZone(shotHistory, shooterRating, keeperType) {
     const ratingPenalty = Math.max(0, (shooterRating - 75) / 100);
     const totalWeight = weights.reduce((a, b) => a + b, 0);
 
-    // Random override — keeper sometimes just guesses
     if (Math.random() < 0.28 + ratingPenalty) {
         return zones[Math.floor(Math.random() * zones.length)];
     }
@@ -94,57 +93,34 @@ function weightedKeeperZone(shotHistory, shooterRating, keeperType) {
     return zones[Math.floor(Math.random() * zones.length)];
 }
 
-export async function POST(req) {
-    let body = {};
-    try {
-        body = await req.json();
-    } catch {
-        return NextResponse.json({ keeperZone: 'mc', comment: 'Dives to the centre!', source: 'error' });
-    }
-
+router.post('/', async (req, res) => {
     const {
         shooterName, shooterRating = 75, shooterPosition,
         shotZone, shotHistory = [], keeperType = 'READER',
         shotNumber = 1,
-    } = body;
+    } = req.body;
 
     const apiKey = process.env.OPENROUTER_API_KEY;
 
-    // ── No API key: use smart local logic ──
     if (!apiKey) {
         const keeperZone = weightedKeeperZone(shotHistory, shooterRating, keeperType);
         const savedIt = keeperZone === shotZone;
-        return NextResponse.json({
+        return res.json({
             keeperZone,
             comment: pickComment(savedIt, keeperZone, shotZone),
             source: 'local',
         });
     }
 
-    // ── Try OpenRouter ──
     try {
-        const systemPrompt = `You are an AI goalkeeper in a penalty shootout game.
-Respond ONLY with valid JSON: {"zone":"<zone_id>","comment":"<dramatic 1-line, max 10 words>"}
-Zone IDs: tl(top-left), tc(top-centre), tr(top-right), ml(mid-left), mc(centre), mr(mid-right), bl(low-left), bc(low-centre), br(low-right).
-Keeper type: ${keeperType}. Do NOT always dive correctly. Rating 85+ shooter scores ~75%. Average ~55%.`;
-
-        const userPrompt = `Shot ${shotNumber}/5. 
-Shooter: ${shooterName} (${shooterPosition}, OVR ${shooterRating}).
-Previous zones: [${shotHistory.map(z => ZONE_LABELS[z] || z).join(', ') || 'none'}].
-Current shot aimed: ${ZONE_LABELS[shotZone] || shotZone}.
-Pick a dive zone and write a dramatic commentary line.`;
-
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 3500);
+        const systemPrompt = `You are an AI goalkeeper in a penalty shootout game. Respond ONLY with valid JSON: {"zone":"<zone_id>","comment":"<dramatic 1-line, max 10 words>"} Zone IDs: tl, tc, tr, ml, mc, mr, bl, bc, br. Keeper type: ${keeperType}.`;
+        const userPrompt = `Shot ${shotNumber}/5. Shooter: ${shooterName} (${shooterPosition}, OVR ${shooterRating}). Aided zone: ${ZONE_LABELS[shotZone]}.`;
 
         const orRes = await fetch(OR_URL, {
             method: 'POST',
-            signal: controller.signal,
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
-                'HTTP-Referer': 'https://kickoff-arena.vercel.app',
-                'X-Title': 'Kickoff Arena',
             },
             body: JSON.stringify({
                 model: 'meta-llama/llama-3.1-8b-instruct:free',
@@ -153,12 +129,10 @@ Pick a dive zone and write a dramatic commentary line.`;
                     { role: 'user', content: userPrompt },
                 ],
                 max_tokens: 80,
-                temperature: 0.95,
             }),
         });
 
-        clearTimeout(timeout);
-        if (!orRes.ok) throw new Error(`OR ${orRes.status}`);
+        if (!orRes.ok) throw new Error('OpenRouter Error');
 
         const orData = await orRes.json();
         const raw = orData?.choices?.[0]?.message?.content?.trim() || '';
@@ -166,26 +140,21 @@ Pick a dive zone and write a dramatic commentary line.`;
         if (!match) throw new Error('no JSON');
 
         const parsed = JSON.parse(match[0]);
-        const keeperZone = parsed.zone && ZONE_LABELS[parsed.zone] !== undefined
-            ? parsed.zone
-            : weightedKeeperZone(shotHistory, shooterRating, keeperType);
-        const savedIt = keeperZone === shotZone;
+        const keeperZone = parsed.zone && ZONE_LABELS[parsed.zone] !== undefined ? parsed.zone : weightedKeeperZone(shotHistory, shooterRating, keeperType);
 
-        return NextResponse.json({
+        res.json({
             keeperZone,
-            comment: parsed.comment || pickComment(savedIt, keeperZone, shotZone),
+            comment: parsed.comment || pickComment(keeperZone === shotZone, keeperZone, shotZone),
             source: 'ai',
         });
-
     } catch (err) {
-        // Graceful fallback — never hardcode one comment
-        console.error('[keeper/api]', err.message);
         const keeperZone = weightedKeeperZone(shotHistory, shooterRating, keeperType);
-        const savedIt = keeperZone === shotZone;
-        return NextResponse.json({
+        res.json({
             keeperZone,
-            comment: pickComment(savedIt, keeperZone, shotZone),
+            comment: pickComment(keeperZone === shotZone, keeperZone, shotZone),
             source: 'fallback',
         });
     }
-}
+});
+
+export default router;

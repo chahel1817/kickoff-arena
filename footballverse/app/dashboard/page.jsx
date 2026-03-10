@@ -1,42 +1,57 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import { useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Zap, Trophy, Users, Shield, Layers, Play, ChevronRight, Activity, Star, Rocket } from 'lucide-react';
+import { Zap, Trophy, Users, Shield, Layers, Play, ChevronRight, Activity, Star, Rocket, Wallet, ArrowLeftRight } from 'lucide-react';
 import leagues from '../../data/leagues.json';
+import { useAuth } from '@/context/AuthContext';
 import './dashboard.css';
 
+function fmt(n) {
+    if (n >= 1_000_000) return `£${(n / 1_000_000).toFixed(0)}M`;
+    return `£${n}`;
+}
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.2
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1,
+        transition: { type: 'spring', stiffness: 100 }
+    }
+};
+
 export default function DashboardPage() {
-    const [name, setName] = useState('Manager');
-    const [leagueId, setLeagueId] = useState(null);
-    const [team, setTeam] = useState(null);
-    const [manager, setManager] = useState(null);
-    const [formation, setFormation] = useState(null);
-    const [gk, setGk] = useState(null);
-    const [defs, setDefs] = useState([]);
-    const [mids, setMids] = useState([]);
-    const [fwds, setFwds] = useState([]);
+    const router = useRouter();
+    const { user, budget, matchHistory, isLoggedIn, isLoading } = useAuth();
 
     useEffect(() => {
-        const storedName = localStorage.getItem('userName');
-        if (storedName) setName(storedName);
-        const storedLeague = localStorage.getItem('selectedLeague');
-        if (storedLeague) setLeagueId(storedLeague);
-        const storedTeam = localStorage.getItem('selectedTeam');
-        if (storedTeam) setTeam(JSON.parse(storedTeam));
-        const storedManager = localStorage.getItem('selectedManager');
-        if (storedManager) setManager(JSON.parse(storedManager));
-        const storedFormation = localStorage.getItem('formation');
-        if (storedFormation) setFormation(JSON.parse(storedFormation));
-        const storedGK = localStorage.getItem('goalkeeper');
-        if (storedGK) setGk(JSON.parse(storedGK));
-        const storedDefs = localStorage.getItem('defenders');
-        if (storedDefs) setDefs(JSON.parse(storedDefs));
-        const storedMids = localStorage.getItem('midfielders');
-        if (storedMids) setMids(JSON.parse(storedMids));
-        const storedFwds = localStorage.getItem('forwards');
-        if (storedFwds) setFwds(JSON.parse(storedFwds));
-    }, []);
+        if (!isLoading && !isLoggedIn) {
+            router.push('/');
+        }
+    }, [isLoggedIn, isLoading, router]);
+
+    const leagueId = user?.selectedLeague;
+    const team = user?.selectedTeam;
+    const manager = user?.selectedManager;
+    const formation = user?.formation;
+    const gk = user?.goalkeeper;
+    const defs = user?.defenders || [];
+    const mids = user?.midfielders || [];
+    const fwds = user?.forwards || [];
 
     const league = useMemo(() => {
         if (!leagueId) return null;
@@ -53,141 +68,271 @@ export default function DashboardPage() {
     }, [formation, gk, defs, mids, fwds]);
 
     const nextStep = useMemo(() => {
-        if (!leagueId) return { href: '/league', label: 'Choose League' };
-        if (!team) return { href: '/team-select', label: 'Select Club' };
-        if (!manager) return { href: '/manager-select', label: 'Assign Manager' };
-        if (!formation) return { href: '/formation-select', label: 'Pick Formation' };
-        if (!gk) return { href: '/select/goalkeeper', label: 'Select Goalkeeper' };
-        if (defs.length < needs.defNeed) return { href: '/select/defenders', label: 'Select Defenders' };
-        if (mids.length < needs.midNeed) return { href: '/select/midfielders', label: 'Select Midfielders' };
-        if (fwds.length < needs.fwdNeed) return { href: '/select/forwards', label: 'Select Forwards' };
-        return { href: '/summary', label: 'Review Summary' };
+        if (!leagueId) return { href: '/league', label: 'Choose League', icon: <Trophy /> };
+        if (!team) return { href: '/team-select', label: 'Select Club', icon: <Shield /> };
+        if (!manager) return { href: '/manager-select', label: 'Assign Manager', icon: <Users /> };
+        if (!formation) return { href: '/formation-select', label: 'Pick Formation', icon: <Layers /> };
+        if (!gk) return { href: '/select/goalkeeper', label: 'Select Goalkeeper', icon: <Activity /> };
+        if (defs.length < needs.defNeed) return { href: '/select/defenders', label: 'Select Defenders', icon: <Shield /> };
+        if (mids.length < needs.midNeed) return { href: '/select/midfielders', label: 'Select Midfielders', icon: <Zap /> };
+        if (fwds.length < needs.fwdNeed) return { href: '/select/forwards', label: 'Select Forwards', icon: <Rocket /> };
+        return { href: '/summary', label: 'Review Summary', icon: <Star /> };
     }, [leagueId, team, manager, formation, gk, defs, mids, fwds, needs]);
 
+    const chemistry = useMemo(() => {
+        const all = [gk, ...defs, ...mids, ...fwds].filter(Boolean);
+        if (all.length <= 1) return 0;
+        let score = 0;
+        const nations = {};
+        const clubs = {};
+        all.forEach(p => {
+            if (p.country) nations[p.country] = (nations[p.country] || 0) + 1;
+            if (p.club) clubs[p.club] = (clubs[p.club] || 0) + 1;
+        });
+        Object.values(nations).forEach(c => { if (c > 1) score += (c * 4); });
+        Object.values(clubs).forEach(c => { if (c > 1) score += (c * 6); });
+        return Math.min(100, score + (all.length * 3));
+    }, [gk, defs, mids, fwds]);
+
+    if (isLoading || !user) return null;
+
+    const name = user?.displayName || user?.userName || user?.username || 'Manager';
     const readiness = Math.min(100, Math.round((needs.totalHave / needs.totalNeed) * 100));
+    const ovr = user?.squadOvr || 0;
+    const winRate = matchHistory?.length ? Math.round((matchHistory.filter(m => m.score >= 3).length / matchHistory.length) * 100) : 0;
 
     return (
-        <div className="dashboard-container">
-            <div className="dash-hero">
-                <div className="hero-badge">
-                    <Activity size={14} className="text-primary" />
-                    <span>COMMAND CENTER ACTIVE</span>
-                </div>
-                <h1 className="dash-title">
-                    Welcome back, <span className="text-gradient">{name}</span>
-                </h1>
-                <p className="dash-subtitle">
-                    Orchestrate your campaign from here. Track squad readiness, tactical identity, and execute next critical maneuvers.
-                </p>
-            </div>
+        <div className="dashboard-root">
+            <div className="dash-stadium-bg" />
+            <div className="dash-grid-overlay" />
 
-            <div className="dashboard-layout">
-                {/* Main Control Panel */}
-                <div className="dash-main-section">
-                    <div className="section-header">
-                        <Trophy size={18} className="text-primary" />
-                        <h2>SQUAD CONFIGURATION</h2>
-                    </div>
-                    <div className="dash-grid-v2">
-                        <div className="dash-card-v2 glass">
-                            <div className="card-v2-icon"><Trophy size={20} /></div>
-                            <div className="card-v2-content">
-                                <h3>{league ? league.name : 'Choose League'}</h3>
-                                <p>{league ? league.country : 'Federation selection required.'}</p>
-                            </div>
-                        </div>
-                        <div className="dash-card-v2 glass">
-                            <div className="card-v2-icon"><Shield size={20} /></div>
-                            <div className="card-v2-content">
-                                <h3>{team?.name || 'Select Club'}</h3>
-                                <p>{team?.rating ? `Rating ${team.rating}` : 'Pick your crest.'}</p>
-                            </div>
-                        </div>
-                        <div className="dash-card-v2 glass">
-                            <div className="card-v2-icon"><Users size={20} /></div>
-                            <div className="card-v2-content">
-                                <h3>{manager?.name || 'Assign Manager'}</h3>
-                                <p>{manager?.style || 'Set philosophy.'}</p>
-                            </div>
-                        </div>
-                        <div className="dash-card-v2 glass">
-                            <div className="card-v2-icon"><Layers size={20} /></div>
-                            <div className="card-v2-content">
-                                <h3>{formation?.name || 'Pick Formation'}</h3>
-                                <p>{formation ? `${formation.name} System` : 'Pick tactical base.'}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="section-header mt-12">
-                        <Zap size={18} className="text-primary" />
-                        <h2>OPERATIONS</h2>
-                    </div>
-                    <div className="dash-cta-grid">
-                        <Link href={nextStep.href} className="cta-action-card glass">
-                            <div className="cta-icon-box"><Rocket size={24} /></div>
-                            <div className="cta-info">
-                                <span className="cta-label">PRIORITY ACTION</span>
-                                <h3>{nextStep.label}</h3>
-                            </div>
-                            <ChevronRight className="cta-arrow" />
-                        </Link>
-                        <Link href="/summary" className="cta-action-card glass">
-                            <div className="cta-icon-box"><Layers size={24} /></div>
-                            <div className="cta-info">
-                                <span className="cta-label">FULL REVIEW</span>
-                                <h3>Season Briefing</h3>
-                            </div>
-                            <ChevronRight className="cta-arrow" />
-                        </Link>
-                        <Link href="/match" className="cta-action-card glass highlight">
-                            <div className="cta-icon-box"><Play size={24} /></div>
-                            <div className="cta-info">
-                                <span className="cta-label">MATCH HUB</span>
-                                <h3>The Match Arena</h3>
-                            </div>
-                            <ChevronRight className="cta-arrow" />
-                        </Link>
-                    </div>
+            <motion.div
+                className="dashboard-container"
+                initial="hidden"
+                animate="visible"
+                variants={containerVariants}
+            >
+                <div className="dash-hero">
+                    <motion.div variants={itemVariants} className="hero-badge">
+                        <Activity size={14} className="text-primary" />
+                        <span>COMMAND CENTER ACTIVE • SEASON 24/25</span>
+                    </motion.div>
+                    <motion.h1 variants={itemVariants} className="dash-title">
+                        Welcome back, <span className="text-gradient">{name}</span>
+                    </motion.h1>
+                    <motion.p variants={itemVariants} className="dash-subtitle">
+                        Orchestrate your campaign from the technical area. Track readiness, manage assets, and execute match-day strategies.
+                    </motion.p>
                 </div>
 
-                {/* Status Sidebar */}
-                <div className="dash-sidebar">
-                    <div className="section-header">
-                        <Activity size={18} className="text-primary" />
-                        <h2>STATUS</h2>
+                <div className="dashboard-layout">
+                    {/* Main Control Panel */}
+                    <div className="dash-main-section">
+                        <motion.div variants={itemVariants} className="section-header">
+                            <Trophy size={18} className="text-primary" />
+                            <h2>SQUAD IDENTITY</h2>
+                        </motion.div>
+
+                        <motion.div variants={itemVariants} className="dash-grid-v2">
+                            <div className="dash-card-v2 glass">
+                                <div className="card-v2-icon">
+                                    {league?.code ? (
+                                        <img
+                                            src={`https://flagcdn.com/w160/${league.code.toLowerCase().split('-')[0]}.png`}
+                                            alt={league.country}
+                                            className="ctx-flag shadow-sm"
+                                        />
+                                    ) : <Trophy size={24} />}
+                                </div>
+                                <div className="card-v2-content">
+                                    <h3>{league ? league.name : 'Choose League'}</h3>
+                                    <p>{league ? league.country : 'Federation required'}</p>
+                                </div>
+                            </div>
+                            <div className="dash-card-v2 glass">
+                                <div className="card-v2-icon">
+                                    {team?.logo ? (
+                                        <img src={team.logo} alt={team.name} className="ctx-logo" />
+                                    ) : <Shield size={24} />}
+                                </div>
+                                <div className="card-v2-content">
+                                    <h3>{team?.name || 'Select Club'}</h3>
+                                    <p>{team?.rating ? `Rating: ${team.rating}` : 'Identity required'}</p>
+                                </div>
+                            </div>
+                            <div className="dash-card-v2 glass">
+                                <div className="card-v2-icon">
+                                    {manager?.image ? (
+                                        <img src={manager.image} alt={manager.name} className="ctx-manager" />
+                                    ) : <Users size={24} />}
+                                </div>
+                                <div className="card-v2-content">
+                                    <h3>{manager?.name || 'Assign Manager'}</h3>
+                                    <p>{manager?.style || 'Philosophy needed'}</p>
+                                </div>
+                            </div>
+                            <div className="dash-card-v2 glass">
+                                <div className="card-v2-icon"><Layers size={24} /></div>
+                                <div className="card-v2-content">
+                                    <h3>{formation?.name || 'Set Formation'}</h3>
+                                    <p>{formation ? `${formation.name} System` : 'Tactics required'}</p>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        <motion.div variants={itemVariants} className="section-header mt-12">
+                            <Zap size={18} className="text-primary" />
+                            <h2>OPERATIONS CENTER</h2>
+                        </motion.div>
+
+                        <motion.div variants={itemVariants} className="dash-cta-grid">
+                            <Link href={nextStep.href} className="cta-action-card highlight">
+                                <div className="cta-icon-box">{nextStep.icon}</div>
+                                <div className="cta-info">
+                                    <span className="cta-label">NEXT MANDATE</span>
+                                    <h3>{nextStep.label}</h3>
+                                </div>
+                                <ChevronRight className="cta-arrow" />
+                            </Link>
+                            <Link href="/match" className="cta-action-card highlight">
+                                <div className="cta-icon-box" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
+                                    <Play size={24} fill="currentColor" />
+                                </div>
+                                <div className="cta-info">
+                                    <span className="cta-label">LIVE ACTION</span>
+                                    <h3>Enter Match Arena</h3>
+                                </div>
+                                <ChevronRight className="cta-arrow" />
+                            </Link>
+                            <Link href="/transfer" className="cta-action-card">
+                                <div className="cta-icon-box" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
+                                    <ArrowLeftRight size={24} />
+                                </div>
+                                <div className="cta-info">
+                                    <span className="cta-label">RECRUITMENT</span>
+                                    <h3>Transfer Market</h3>
+                                </div>
+                                <ChevronRight className="cta-arrow" />
+                            </Link>
+                            <Link href="/matches" className="cta-action-card">
+                                <div className="cta-icon-box" style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>
+                                    <Activity size={24} />
+                                </div>
+                                <div className="cta-info">
+                                    <span className="cta-label">ANALYTICS</span>
+                                    <h3>Match History</h3>
+                                </div>
+                                <ChevronRight className="cta-arrow" />
+                            </Link>
+                        </motion.div>
                     </div>
 
-                    <div className="status-deck">
-                        <div className="progress-widget glass">
-                            <div className="widget-header">
-                                <span>SQUAD READINESS</span>
-                                <span className="highlight-text">{readiness}%</span>
-                            </div>
-                            <div className="widget-bar">
-                                <div className="bar-fill" style={{ width: `${readiness}%` }}></div>
-                            </div>
-                            <p className="widget-desc">{needs.totalHave} / {needs.totalNeed} Slots Filled</p>
+                    {/* Status Sidebar */}
+                    <motion.div variants={itemVariants} className="dash-sidebar">
+                        <div className="section-header">
+                            <Activity size={18} className="text-primary" />
+                            <h2>VITALS</h2>
                         </div>
 
-                        <div className="info-widget glass">
-                            <div className="widget-header">
-                                <span>TACTICAL IDENTITY</span>
+                        <div className="status-deck">
+                            <div className="progress-widget highlight">
+                                <div className="widget-header">
+                                    <span>SQUAD RATING</span>
+                                    <span className="highlight-text">{ovr || '--'}</span>
+                                </div>
+                                <div className="widget-bar">
+                                    <motion.div
+                                        className="bar-fill"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${ovr}%` }}
+                                        transition={{ duration: 1, delay: 0.5 }}
+                                        style={{ background: 'linear-gradient(90deg, #f59e0b, #fbbf24)' }}
+                                    ></motion.div>
+                                </div>
+                                <p className="widget-desc">Performance Potential</p>
                             </div>
-                            <h3 className="widget-val">{formation ? formation.name : 'PENDING'}</h3>
-                            <p className="widget-desc">System definitions active.</p>
-                        </div>
 
-                        <div className="info-widget glass">
-                            <div className="widget-header">
-                                <span>MOMENTUM</span>
+                            <div className="info-widget glass">
+                                <div className="widget-header">
+                                    <span>FINANCES</span>
+                                    <Wallet size={14} className="text-amber-500" />
+                                </div>
+                                <h3 className="widget-val text-amber-500">{fmt(budget)}</h3>
+                                <p className="widget-desc">Available for sign-on fees</p>
                             </div>
-                            <h3 className="widget-val text-primary">RISING</h3>
-                            <p className="widget-desc">Pre-season hype building.</p>
+
+                            <div className="progress-widget glass">
+                                <div className="widget-header">
+                                    <span>READINESS</span>
+                                    <span style={{ color: readiness === 100 ? '#00ff88' : 'white' }}>{readiness}%</span>
+                                </div>
+                                <div className="widget-bar">
+                                    <motion.div
+                                        className="bar-fill"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${readiness}%` }}
+                                        transition={{ duration: 1, delay: 0.7 }}
+                                    ></motion.div>
+                                </div>
+                                <p className="widget-desc">{needs.totalHave} / {needs.totalNeed} SQUAD FILLED</p>
+                            </div>
+
+                            <div className="progress-widget glass">
+                                <div className="widget-header">
+                                    <span>CHEMISTRY</span>
+                                    <span style={{ color: chemistry > 80 ? '#00ff88' : 'white' }}>{chemistry}%</span>
+                                </div>
+                                <div className="widget-bar">
+                                    <motion.div
+                                        className="bar-fill"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${chemistry}%` }}
+                                        transition={{ duration: 1, delay: 0.9 }}
+                                        style={{ background: 'linear-gradient(90deg, #a855f7, #ec4899)' }}
+                                    ></motion.div>
+                                </div>
+                                <p className="widget-desc">Tactical Cohesion</p>
+                            </div>
+
+                            <div className="info-widget glass">
+                                <div className="widget-header">
+                                    <span>PERFORMANCE</span>
+                                </div>
+                                <div className="dash-momentum-row">
+                                    <div className="momentum-stat">
+                                        <span className="mom-val">{matchHistory?.length || 0}</span>
+                                        <span className="mom-lab">PLD</span>
+                                    </div>
+                                    <div className="momentum-stat">
+                                        <span className="mom-val">{winRate}%</span>
+                                        <span className="mom-lab">WIN %</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
-            </div>
+
+                {/* Explore Arena Footer */}
+                <motion.div variants={itemVariants} className="dash-explore-footer">
+                    <Link href="/league" className="dash-explore-btn">
+                        <div className="explore-glow" />
+                        <Rocket size={32} />
+                        <span>ENTERING THE ARENA</span>
+                        <ChevronRight size={32} />
+                    </Link>
+                </motion.div>
+            </motion.div>
+
+            {!isLoggedIn && (
+                <div className="dash-auth-prompt glass">
+                    <Shield size={16} />
+                    <span>Using Guest Mode. <Link href="/auth">Sign in</Link> to sync your career to the cloud.</span>
+                </div>
+            )}
         </div>
     );
 }
+
+
+

@@ -159,3 +159,53 @@
         font-size: 0.95rem;
     }
 }
+
+/* Budget pill */
+.navbar-budget-pill {
+    height: 36px;
+    padding: 0 1rem;
+    border-radius: 50px;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #f59e0b;
+    font-size: 0.75rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.05em;
+}
+
+/* Login button */
+.navbar-login-btn {
+    height: 36px;
+    padding: 0 1.2rem;
+    border-radius: 50px;
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid rgba(0, 255, 136, 0.25);
+    color: #00ff88;
+    font-size: 0.75rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: all 0.3s;
+}
+
+.navbar-login-btn:hover {
+    background: rgba(0, 255, 136, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+}
+
+.navbar-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+}
+
+@media (max-width: 768px) {
+    .navbar-budget-pill {
+        display: none;
+    }
+}

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shield, ChevronRight, ChevronLeft, ChevronDown, Swords, Layers, Zap, Crosshair, Crown, Star, AlertTriangle, Target, Wind, ArrowLeftRight, FlaskConical, Gauge, Check, Users, Sparkles } from 'lucide-react';
 import formationsData from '../../data/formations.json';
+import { useAuth } from '@/context/AuthContext';
 import '../entry.css';
 
 const CATEGORY_META = {
@@ -21,6 +22,7 @@ const CATEGORIES = Object.keys(CATEGORY_META);
 
 export default function FormationSelectPage() {
     const router = useRouter();
+    const { user, isLoggedIn, isLoading, saveSquad } = useAuth();
     const [selectedFormation, setSelectedFormation] = useState(null);
     const [activeCategory, setActiveCategory] = useState('Balanced');
     const [selectedTeam, setSelectedTeam] = useState(null);
@@ -29,6 +31,11 @@ export default function FormationSelectPage() {
     const gridRef = useRef(null);
 
     useEffect(() => {
+        if (!isLoading && !isLoggedIn) {
+            router.push('/');
+            return;
+        }
+
         window.scrollTo(0, 0);
 
         const storedTeam = localStorage.getItem('selectedTeam');
@@ -45,16 +52,20 @@ export default function FormationSelectPage() {
         } else {
             router.push('/manager-select');
         }
-    }, [router]);
+    }, [router, isLoggedIn, isLoading]);
+
+    const name = user?.displayName || user?.username || 'Manager';
 
     const handleSelect = (formation) => {
         setSelectedFormation(formation);
-        localStorage.setItem('formation', JSON.stringify({
+        const f = {
             name: formation.name,
             defenders: formation.defenders,
             midfielders: formation.midfielders,
             forwards: formation.forwards,
-        }));
+        };
+        localStorage.setItem('formation', JSON.stringify(f));
+        if (isLoggedIn) saveSquad({ formation: f });
 
         // Clear previously selected players as the formation has changed
         localStorage.removeItem('goalkeeper');

@@ -63,7 +63,7 @@ export const usePlayerImageResolver = (players) => {
                 club: player.club || '',
                 fallback: player.image || '',
             });
-            const res = await fetch(`/api/player-image?${params.toString()}`, { method: 'GET' });
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/player-image?${params.toString()}`, { method: 'GET' });
             if (!res.ok) throw new Error(`resolver ${res.status}`);
             const data = await res.json();
             const nextUrl = data?.image || FALLBACK_IMAGE;

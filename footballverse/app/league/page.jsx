@@ -3,43 +3,49 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Trophy, ChevronRight, ChevronLeft, Globe, Check } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 import leaguesData from '../../data/leagues.json';
 import '../entry.css';
 
 export default function LeagueSelectionPage() {
     const router = useRouter();
-    const [name, setName] = useState('');
+    const { user, isLoggedIn, isLoading, saveSquad } = useAuth();
     const [selectedId, setSelectedId] = useState(null);
 
     useEffect(() => {
-        const storedName = localStorage.getItem('userName');
-        if (storedName) {
-            setName(storedName);
-        } else {
+        if (!isLoading && !isLoggedIn) {
             router.push('/');
             return;
         }
 
-        // Clear previous selections to ensure a fresh flow
-        localStorage.removeItem('selectedLeague');
-        localStorage.removeItem('selectedTeam');
-        localStorage.removeItem('selectedManager');
-        localStorage.removeItem('formation');
-        localStorage.removeItem('goalkeeper');
-        localStorage.removeItem('defenders');
-        localStorage.removeItem('midfielders');
-        localStorage.removeItem('forwards');
-    }, []);
+        // Clear previous selections to ensure a fresh flow for a new career
+        const resetCareer = () => {
+            localStorage.removeItem('selectedLeague');
+            localStorage.removeItem('selectedTeam');
+            localStorage.removeItem('selectedManager');
+            localStorage.removeItem('formation');
+            localStorage.removeItem('goalkeeper');
+            localStorage.removeItem('defenders');
+            localStorage.removeItem('midfielders');
+            localStorage.removeItem('forwards');
+        };
+        resetCareer();
+    }, [isLoggedIn, isLoading, router]);
 
     const handleLeagueSelect = (league) => {
         setSelectedId(league.id);
         localStorage.setItem('selectedLeague', league.id);
+        if (isLoggedIn) saveSquad({ selectedLeague: league.id });
 
         // Brief delay to show selection feedback
         setTimeout(() => {
             router.push('/team-select');
         }, 600);
     };
+
+    const name = user?.displayName || user?.username || 'Manager';
+
+    if (isLoading || !user) return null;
 
     return (
         <div className="entry-page no-snap">

@@ -6,6 +6,10 @@ import { Search, Zap, Layers, ChevronRight, ChevronLeft, Star, Check, X, Shield,
 import { MIDFIELDERS } from './data';
 import { usePlayerImageResolver } from '@/hooks/usePlayerImageResolver';
 import '../../entry.css';
+import { useAuth } from '@/context/AuthContext';
+import PlayerStatsModal from '@/components/modals/PlayerStatsModal';
+import { Info } from 'lucide-react';
+
 
 function MidfielderSelectPageInner() {
     const router = useRouter();
@@ -14,6 +18,8 @@ function MidfielderSelectPageInner() {
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [filterPos, setFilterPos] = useState('ALL');
     const [search, setSearch] = useState('');
+    const [viewingStats, setViewingStats] = useState(null);
+
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('edit') === 'true';
     const { getImageSrc, handleImageError } = usePlayerImageResolver(MIDFIELDERS);
@@ -51,6 +57,7 @@ function MidfielderSelectPageInner() {
         return list;
     }, [filterPos, search, dedupedMidfielders]);
 
+    const { saveSquad } = useAuth();
     const handleSelect = useCallback((player) => {
         setSelectedMids(prev => {
             const exists = prev.find(p => p.id === player.id);
@@ -61,9 +68,10 @@ function MidfielderSelectPageInner() {
                 next = [...prev, player];
             } else return prev;
             localStorage.setItem('midfielders', JSON.stringify(next));
+            if (saveSquad) saveSquad({ midfielders: next });
             return next;
         });
-    }, [maxMid]);
+    }, [maxMid, saveSquad]);
 
     const handleConfirm = useCallback(() => {
         if (selectedMids.length === maxMid) {
@@ -73,7 +81,7 @@ function MidfielderSelectPageInner() {
                 router.push('/select/forwards');
             }
         }
-    }, [isEditMode, selectedMids, maxMid, router]);
+    }, [isEditMode, selectedMids.length, maxMid, router]);
 
     const positions = ['ALL', 'CDM', 'CM', 'CAM'];
 
@@ -206,8 +214,15 @@ function MidfielderSelectPageInner() {
                             const isSelected = selectedMids.some(p => p.id === player.id);
                             const isFull = selectedMids.length >= maxMid && !isSelected;
                             return (
-                                <button key={player.id} onClick={() => handleSelect(player)}
+                                <div key={player.id}
                                     className={`mf-card glass ${isSelected ? 'selected' : ''} ${isFull ? 'dimmed' : ''} ${player.tier === 'legend' ? 'legend-card' : ''} badge-${player.position.toLowerCase()}-wrap`}>
+
+                                    <div className="gk-card-click-area" onClick={() => handleSelect(player)}></div>
+
+                                    <div className="gk-stats-trigger" onClick={(e) => { e.stopPropagation(); setViewingStats(player); }}>
+                                        <Info size={14} />
+                                    </div>
+
                                     {/* Role Badge */}
                                     <div className={`mf-role-badge badge-${player.position.toLowerCase()}`}>
                                         {player.position === 'CDM' && <Shield size={10} />}
@@ -215,6 +230,7 @@ function MidfielderSelectPageInner() {
                                         {player.position === 'CAM' && <Zap size={10} />}
                                         <span>{player.position}</span>
                                     </div>
+
 
                                     {/* Skill Qualities */}
                                     <div className="mf-skill-badges">
@@ -255,7 +271,8 @@ function MidfielderSelectPageInner() {
                                             <span className="mf-card-pos">{player.position}</span>
                                         </div>
                                     </div>
-                                </button>
+                                </div>
+
                             );
                         })}
                     </div>
@@ -303,6 +320,12 @@ function MidfielderSelectPageInner() {
                         </div>
                     )}
 
+                    {viewingStats && (
+                        <PlayerStatsModal
+                            player={viewingStats}
+                            onClose={() => setViewingStats(null)}
+                        />
+                    )}
                 </main>
             </section>
 
@@ -424,7 +447,8 @@ function MidfielderSelectPageInner() {
                 .mf-card.badge-cm-wrap { border-left: 4px solid #a855f7 !important; }
                 .mf-card.badge-cam-wrap { border-left: 4px solid #d8b4fe !important; }
                 
-                .mf-card.dimmed { opacity:.25; filter:grayscale(.6); pointer-events:none; }
+                .mf-card.dimmed { opacity:.25; filter:grayscale(.6); }
+
                 .mf-card.legend-card { border-color:rgba(245,158,11,.25); background:linear-gradient(165deg,rgba(30,25,10,.9),rgba(10,10,15,.85)); }
                 .mf-card.legend-card:hover { border-color:rgba(245,158,11,.5); }
 

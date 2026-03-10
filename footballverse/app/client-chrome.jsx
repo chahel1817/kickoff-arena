@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { AuthProvider } from '@/context/AuthContext';
 
 const ONBOARDING_PATHS = new Set([
     '/',
@@ -17,6 +18,7 @@ const ONBOARDING_PATHS = new Set([
     '/select/forwards',
     '/squad/review',
     '/summary',
+    '/auth',
 ]);
 
 export default function ClientChrome({ children }) {
@@ -24,10 +26,10 @@ export default function ClientChrome({ children }) {
     const isOnboarding = ONBOARDING_PATHS.has(pathname);
 
     return (
-        <>
+        <AuthProvider>
             {!isOnboarding && <Navbar />}
             <main>{children}</main>
             {!isOnboarding && <Footer />}
-        </>
+        </AuthProvider>
     );
 }

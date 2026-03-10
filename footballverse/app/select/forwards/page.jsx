@@ -6,6 +6,10 @@ import { Search, Zap, ChevronLeft, Check, X, Target, Activity } from 'lucide-rea
 import { FORWARDS } from './data';
 import { usePlayerImageResolver } from '@/hooks/usePlayerImageResolver';
 import '../../entry.css';
+import { useAuth } from '@/context/AuthContext';
+import PlayerStatsModal from '@/components/modals/PlayerStatsModal';
+import { Info } from 'lucide-react';
+
 
 function ForwardSelectPageInner() {
     const router = useRouter();
@@ -13,6 +17,8 @@ function ForwardSelectPageInner() {
     const [formation, setFormation] = useState(null);
     const [filterPos, setFilterPos] = useState('ALL');
     const [search, setSearch] = useState('');
+    const [viewingStats, setViewingStats] = useState(null);
+
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('edit') === 'true';
     const { getImageSrc, handleImageError } = usePlayerImageResolver(FORWARDS);
@@ -48,6 +54,7 @@ function ForwardSelectPageInner() {
         return list;
     }, [filterPos, search, dedupedForwards]);
 
+    const { saveSquad } = useAuth();
     const handleSelect = useCallback((player) => {
         setSelectedFwds(prev => {
             const exists = prev.find(p => p.id === player.id);
@@ -58,9 +65,11 @@ function ForwardSelectPageInner() {
                 next = [...prev, player];
             } else return prev;
             localStorage.setItem('forwards', JSON.stringify(next));
+            if (saveSquad) saveSquad({ forwards: next });
             return next;
         });
-    }, [maxFwd]);
+    }, [maxFwd, saveSquad]);
+
 
     const handleConfirm = useCallback(() => {
         if (selectedFwds.length === maxFwd) {
@@ -210,8 +219,15 @@ function ForwardSelectPageInner() {
                             const isSelected = selectedFwds.some(p => p.id === player.id);
                             const isFull = selectedFwds.length >= maxFwd && !isSelected;
                             return (
-                                <button key={player.id} onClick={() => handleSelect(player)}
+                                <div key={player.id}
                                     className={`mf-card glass ${isSelected ? 'selected' : ''} ${isFull ? 'dimmed' : ''} ${player.tier === 'legend' ? 'legend-card' : ''} badge-${player.position.toLowerCase()}-wrap`}>
+
+                                    <div className="gk-card-click-area" onClick={() => handleSelect(player)}></div>
+
+                                    <div className="gk-stats-trigger" onClick={(e) => { e.stopPropagation(); setViewingStats(player); }}>
+                                        <Info size={14} />
+                                    </div>
+
                                     {/* Role Badge */}
                                     <div className={`mf-role-badge badge-${player.position.toLowerCase()}`}>
                                         {player.position === 'ST' && <Target size={10} />}
@@ -259,7 +275,7 @@ function ForwardSelectPageInner() {
                                             <span className="mf-card-pos">{player.position}</span>
                                         </div>
                                     </div>
-                                </button>
+                                </div>
                             );
                         })}
                     </div>
@@ -307,8 +323,16 @@ function ForwardSelectPageInner() {
                         </div>
                     )}
 
+                    {viewingStats && (
+                        <PlayerStatsModal
+                            player={viewingStats}
+                            onClose={() => setViewingStats(null)}
+                        />
+                    )}
+
                 </main>
             </section>
+
 
             <style jsx>{`
                 .mf-page { min-height:100vh; display:flex; justify-content:center; padding:3rem 1rem; animation:mfFadeIn .6s ease-out; }
@@ -428,7 +452,8 @@ function ForwardSelectPageInner() {
                 .mf-card.badge-lw-wrap { border-left: 4px solid #f87171 !important; }
                 .mf-card.badge-rw-wrap { border-left: 4px solid #fb7185 !important; }
                 
-                .mf-card.dimmed { opacity:.25; filter:grayscale(.6); pointer-events:none; }
+                .mf-card.dimmed { opacity:.25; filter:grayscale(.6); }
+
                 .mf-card.legend-card { border-color:rgba(245,158,11,.25); background:linear-gradient(165deg,rgba(30,25,10,.9),rgba(10,10,15,.85)); }
                 .mf-card.legend-card:hover { border-color:rgba(245,158,11,.5); }
 
@@ -540,7 +565,7 @@ function ForwardSelectPageInner() {
                     .mf-skill-badge :global(svg) { width: 6px; height: 6px; }
                 }
             `}</style>
-        </div>
+        </div >
     );
 }
 

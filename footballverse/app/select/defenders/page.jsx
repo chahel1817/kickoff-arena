@@ -6,6 +6,11 @@ import { Shield, Search, ChevronRight, ChevronLeft, Star, Check, X, ShieldCheck,
 import { DEFENDERS } from './data';
 import { usePlayerImageResolver } from '@/hooks/usePlayerImageResolver';
 import '../../entry.css';
+import PlayerStatsModal from '@/components/modals/PlayerStatsModal';
+import { Info } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+
+
 
 function DefenderSelectPageInner() {
     const router = useRouter();
@@ -16,6 +21,8 @@ function DefenderSelectPageInner() {
     const [search, setSearch] = useState('');
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const [isExiting, setIsExiting] = useState(false);
+    const [viewingStats, setViewingStats] = useState(null);
+
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('edit') === 'true';
     const { getImageSrc, handleImageError } = usePlayerImageResolver(DEFENDERS);
@@ -52,6 +59,8 @@ function DefenderSelectPageInner() {
         return list;
     }, [filterPos, search, dedupedDefenders]);
 
+    const { saveSquad } = useAuth();
+
     const handleSelect = useCallback((player) => {
         setSelectedDefs(prev => {
             const exists = prev.find(p => p.id === player.id);
@@ -62,9 +71,11 @@ function DefenderSelectPageInner() {
                 next = [...prev, player];
             } else return prev;
             localStorage.setItem('defenders', JSON.stringify(next));
+            saveSquad({ defenders: next });
             return next;
         });
-    }, [maxDef]);
+    }, [maxDef, saveSquad]);
+
 
     // Keyboard Support
     useEffect(() => {
@@ -235,6 +246,12 @@ function DefenderSelectPageInner() {
                                         <span>{player.position}</span>
                                     </div>
 
+                                    {/* Stats Trigger */}
+                                    <div className="df-stats-trigger" onClick={(e) => { e.stopPropagation(); setViewingStats(player); }}>
+                                        <Info size={14} />
+                                    </div>
+
+
                                     {/* Removed top legend badge to clear head area */}
 
                                     {isSelected && (
@@ -258,7 +275,7 @@ function DefenderSelectPageInner() {
                                     </div>
                                     <div className="df-photo-frame">
                                         <img
-                                            src={getImageSrc(player)}
+                                            src={getImageSrc(player) || null}
                                             alt={player.name}
                                             className="df-photo"
                                             loading="lazy"
@@ -280,6 +297,7 @@ function DefenderSelectPageInner() {
                             );
                         })}
                     </div>
+
 
                     {/* Confirm Bar */}
                     <div className={`df-confirm-bar glass ${selectedDefs.length === maxDef ? 'visible' : ''}`}>
@@ -325,8 +343,12 @@ function DefenderSelectPageInner() {
                         </div>
                     )}
 
+                    {viewingStats && (
+                        <PlayerStatsModal player={viewingStats} onClose={() => setViewingStats(null)} />
+                    )}
                 </main>
             </section>
+
 
             <style jsx>{`
                 .df-page { min-height:100vh; display:flex; justify-content:center; padding:3rem 1rem; animation:dfFadeIn .6s ease-out; }
@@ -406,7 +428,10 @@ function DefenderSelectPageInner() {
 
                 /* Card */
                 .df-card { position:relative; text-align:left; border-radius:24px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:rgba(10,10,15,.7); cursor:pointer; transition:all .4s cubic-bezier(.23,1,.32,1); }
+                .df-stats-trigger { position: absolute; top: 1rem; right: 1rem; z-index: 100; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+                .df-stats-trigger:hover { background: #3b82f6; border-color: #3b82f6; transform: scale(1.1); }
                 .df-card:hover, .df-card.kb-focus { transform:translateY(-10px); border-color:rgba(59,130,246,.4); box-shadow:0 25px 60px -15px rgba(0,0,0,.7), 0 0 25px rgba(59,130,246,.1); }
+
                 .df-card.selected { border-color:#10b981; border-width:2px; box-shadow:0 0 40px rgba(16,185,129,.15); transform:translateY(-10px) scale(1.03); }
                 .df-card-cb { border-left: 4px solid #3b82f6 !important; }
                 .df-card-fb { border-left: 4px solid #14b8a6 !important; }
@@ -525,7 +550,7 @@ function DefenderSelectPageInner() {
                     .df-skill-badge :global(svg) { width: 6px; height: 6px; }
                 }
             `}</style>
-        </div>
+        </div >
     );
 }
 

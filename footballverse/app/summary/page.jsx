@@ -90,7 +90,15 @@ export default function SummaryPage() {
                     <div className="identity-grid">
                         <div className="identity-card glass shadow-primary">
                             <div className="card-accent" style={{ background: 'var(--primary)' }}></div>
-                            <div className="card-icon"><Trophy size={20} /></div>
+                            <div className="card-icon">
+                                {league?.code ? (
+                                    <img
+                                        src={`https://flagcdn.com/w160/${league.code.toLowerCase().split('-')[0]}.png`}
+                                        alt={league.country}
+                                        className="sum-flag"
+                                    />
+                                ) : <Trophy size={20} />}
+                            </div>
                             <div className="card-body">
                                 <span className="card-label">FEDERATION</span>
                                 <h3>{league ? league.name : 'PENDING'}</h3>
@@ -101,7 +109,11 @@ export default function SummaryPage() {
 
                         <div className="identity-card glass shadow-blue">
                             <div className="card-accent" style={{ background: '#3b82f6' }}></div>
-                            <div className="card-icon"><Shield size={20} /></div>
+                            <div className="card-icon">
+                                {team?.logo ? (
+                                    <img src={team.logo} alt={team.name} className="sum-logo" />
+                                ) : <Shield size={20} />}
+                            </div>
                             <div className="card-body">
                                 <span className="card-label">CLUB CREST</span>
                                 <h3>{team?.name || 'PENDING'}</h3>
@@ -112,7 +124,11 @@ export default function SummaryPage() {
 
                         <div className="identity-card glass shadow-purple">
                             <div className="card-accent" style={{ background: '#a855f7' }}></div>
-                            <div className="card-icon"><Users size={20} /></div>
+                            <div className="card-icon">
+                                {manager?.image ? (
+                                    <img src={manager.image} alt={manager.name} className="sum-manager" />
+                                ) : <Users size={20} />}
+                            </div>
                             <div className="card-body">
                                 <span className="card-label">TECHNICAL LEAD</span>
                                 <h3>{manager?.name || 'PENDING'}</h3>

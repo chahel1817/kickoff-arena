@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Database
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/kickoff-arena')
+mongoose.connect(process.env.MONGODB_URI || '')
     .then(async () => {
         console.log('✅ Connected to Kickoff Arena Database');
         // One-time migration: Force reset budgets to 0 for the new economy overhaul

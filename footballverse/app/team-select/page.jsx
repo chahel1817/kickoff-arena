@@ -115,7 +115,7 @@ export default function TeamSelectPage() {
         <div className="entry-page no-snap">
             {/* Immersive Locker Room Background */}
             <div className="locker-room-bg"></div>
-            <div className="overlay-gradient" style={{ background: 'radial-gradient(circle at center, transparent 20%, rgba(2, 4, 10, 0.75) 100%)' }}></div>
+            <div className="overlay-gradient" style={{ background: 'radial-gradient(circle at center, transparent 12%, rgba(2, 4, 10, 0.88) 100%), linear-gradient(to bottom, rgba(2, 4, 10, 0.22), rgba(2, 4, 10, 0.75))' }}></div>
 
             <section className="team-select-container">
                 <main className="selection-view" style={{ maxWidth: '1200px', width: '95%' }}>
@@ -270,7 +270,7 @@ export default function TeamSelectPage() {
                     background-image: url('/bright_locker_room.png');
                     background-size: cover;
                     background-position: center;
-                    filter: brightness(0.85) contrast(1.05);
+                    filter: brightness(0.62) contrast(1.12) saturate(0.95);
                     z-index: 0;
                     animation: subtleRoomZoom 30s ease-in-out infinite alternate;
                 }
@@ -440,7 +440,7 @@ export default function TeamSelectPage() {
                 }
 
                 .subtitle-premium {
-                    color: rgba(255, 255, 255, 0.45);
+                    color: rgba(255, 255, 255, 0.8);
                     font-size: 1.25rem;
                     max-width: 700px;
                     margin: 0 auto;

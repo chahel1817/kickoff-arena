@@ -7,6 +7,7 @@ import { GOALKEEPERS } from '../select/goalkeeper/data';
 import { DEFENDERS } from '../select/defenders/data';
 import { MIDFIELDERS } from '../select/midfielders/data';
 import { FORWARDS } from '../select/forwards/data';
+import { getSafePlayerImage } from '@/lib/playerImage';
 
 // Lazy-import mid and fwd data pools
 const ALL_POOLS = {
@@ -53,8 +54,7 @@ export default function TransferMarketPage() {
     const squadIds = useMemo(() => new Set(squadSlots.map(p => p?.id)), [squadSlots]);
     const pool = useMemo(() => {
         const base = ALL_POOLS[tab] || [];
-        // Filter for players with images to keep UI premium
-        return base.filter(p => p.image && !squadIds.has(p.id));
+        return base.filter(p => !squadIds.has(p.id));
     }, [tab, squadIds]);
 
     const filtered = useMemo(() => {
@@ -155,7 +155,7 @@ export default function TransferMarketPage() {
                                 onClick={() => setPlayerOut(prev => prev?.id === p.id ? null : p)}
                             >
                                 <div className="tm-sq-av" style={{ borderColor: posColor(p.position) }}>
-                                    {p.image ? <img src={p.image} alt="" /> : <span>{p.name[0]}</span>}
+                                    <img src={getSafePlayerImage(p, { proxify: true })} alt={p.name} />
                                 </div>
                                 <div className="tm-sq-info">
                                     <span className="tm-sq-name">{p.name}</span>
@@ -205,7 +205,7 @@ export default function TransferMarketPage() {
                                 disabled={!playerOut}
                             >
                                 <div className="tm-sq-av" style={{ borderColor: posColor(p.position) }}>
-                                    {p.image ? <img src={p.image} alt="" /> : <span>{p.name[0]}</span>}
+                                    <img src={getSafePlayerImage(p, { proxify: true })} alt={p.name} />
                                 </div>
                                 <div className="tm-sq-info">
                                     <span className="tm-sq-name">{p.name}</span>
@@ -240,7 +240,7 @@ export default function TransferMarketPage() {
                                     <span>{t.playerIn?.name}</span>
                                     <span className="tm-hist-ovr">{t.playerIn?.rating}</span>
                                 </div>
-                                <span className="tm-hist-fee">{fmt(t.playerIn?.fee || TRANSFER_FEE)}</span>
+                                <span className="tm-hist-fee">{fmt(t.fee || calculatePlayerValue(t.playerIn?.rating || 75))}</span>
                             </div>
                         ))}
                     </div>
@@ -253,18 +253,18 @@ export default function TransferMarketPage() {
                     <div className="tm-modal glass">
                         <h3 className="tm-modal-title">Confirm Transfer</h3>
                         <div className="tm-modal-deal">
-                            <div className="tm-modal-player out">
-                                <div className="tm-modal-av">
-                                    {playerOut.image ? <img src={playerOut.image} alt="" /> : <span>{playerOut.name[0]}</span>}
-                                </div>
+                                <div className="tm-modal-player out">
+                                    <div className="tm-modal-av">
+                                    <img src={getSafePlayerImage(playerOut, { proxify: true })} alt={playerOut.name} />
+                                    </div>
                                 <span className="tm-modal-name">{playerOut.name}</span>
                                 <span className="tm-modal-badge out">SOLD</span>
                             </div>
                             <div className="tm-modal-fee">{fmt(signingFee)}</div>
-                            <div className="tm-modal-player in">
-                                <div className="tm-modal-av">
-                                    {playerIn.image ? <img src={playerIn.image} alt="" /> : <span>{playerIn.name[0]}</span>}
-                                </div>
+                                <div className="tm-modal-player in">
+                                    <div className="tm-modal-av">
+                                    <img src={getSafePlayerImage(playerIn, { proxify: true })} alt={playerIn.name} />
+                                    </div>
                                 <span className="tm-modal-name">{playerIn.name}</span>
                                 <span className="tm-modal-badge in">SIGNED</span>
                             </div>

@@ -7,11 +7,13 @@ import Link from 'next/link';
 import { Zap, Trophy, Users, Shield, Layers, Play, ChevronRight, Activity, Star, Rocket, Wallet, ArrowLeftRight } from 'lucide-react';
 import leagues from '../../data/leagues.json';
 import { useAuth } from '@/context/AuthContext';
+import { getSafePlayerImage } from '@/lib/playerImage';
+import { computeSquadChemistry } from '@/lib/squadChemistry';
 import './dashboard.css';
 
 function fmt(n) {
-    if (n >= 1_000_000) return `£${(n / 1_000_000).toFixed(0)}M`;
-    return `£${n}`;
+    if (n >= 1_000_000) return `\u00A3${(n / 1_000_000).toFixed(0)}M`;
+    return `\u00A3${n}`;
 }
 
 const containerVariants = {
@@ -38,6 +40,42 @@ export default function DashboardPage() {
     const router = useRouter();
     const { user, budget, matchHistory, isLoggedIn, isLoading } = useAuth();
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [localSnapshot, setLocalSnapshot] = useState({});
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+
+        const parse = (key, fallback = null) => {
+            try {
+                const value = localStorage.getItem(key);
+                return value ? JSON.parse(value) : fallback;
+            } catch {
+                return fallback;
+            }
+        };
+
+        const syncSnapshot = () => {
+            setLocalSnapshot({
+                selectedLeague: localStorage.getItem('selectedLeague'),
+                selectedTeam: parse('selectedTeam'),
+                selectedManager: parse('selectedManager'),
+                formation: parse('formation'),
+                goalkeeper: parse('goalkeeper'),
+                defenders: parse('defenders', []),
+                midfielders: parse('midfielders', []),
+                forwards: parse('forwards', []),
+            });
+        };
+
+        syncSnapshot();
+        window.addEventListener('storage', syncSnapshot);
+        window.addEventListener('squad:updated', syncSnapshot);
+
+        return () => {
+            window.removeEventListener('storage', syncSnapshot);
+            window.removeEventListener('squad:updated', syncSnapshot);
+        };
+    }, []);
 
     useEffect(() => {
         if (!isLoading && !isLoggedIn) {
@@ -45,14 +83,14 @@ export default function DashboardPage() {
         }
     }, [isLoggedIn, isLoading, router]);
 
-    const leagueId = user?.selectedLeague;
-    const team = user?.selectedTeam;
-    const manager = user?.selectedManager;
-    const formation = user?.formation;
-    const gk = user?.goalkeeper;
-    const defs = user?.defenders || [];
-    const mids = user?.midfielders || [];
-    const fwds = user?.forwards || [];
+    const leagueId = user?.selectedLeague || localSnapshot?.selectedLeague;
+    const team = user?.selectedTeam || localSnapshot?.selectedTeam;
+    const manager = user?.selectedManager || localSnapshot?.selectedManager;
+    const formation = user?.formation || localSnapshot?.formation;
+    const gk = user?.goalkeeper || localSnapshot?.goalkeeper;
+    const defs = user?.defenders?.length ? user.defenders : (localSnapshot?.defenders || []);
+    const mids = user?.midfielders?.length ? user.midfielders : (localSnapshot?.midfielders || []);
+    const fwds = user?.forwards?.length ? user.forwards : (localSnapshot?.forwards || []);
 
     const league = useMemo(() => {
         if (!leagueId) return null;
@@ -81,19 +119,14 @@ export default function DashboardPage() {
     }, [leagueId, team, manager, formation, gk, defs, mids, fwds, needs]);
 
     const chemistry = useMemo(() => {
-        const all = [gk, ...defs, ...mids, ...fwds].filter(Boolean);
-        if (all.length <= 1) return 0;
-        let score = 0;
-        const nations = {};
-        const clubs = {};
-        all.forEach(p => {
-            if (p.country) nations[p.country] = (nations[p.country] || 0) + 1;
-            if (p.club) clubs[p.club] = (clubs[p.club] || 0) + 1;
-        });
-        Object.values(nations).forEach(c => { if (c > 1) score += (c * 4); });
-        Object.values(clubs).forEach(c => { if (c > 1) score += (c * 6); });
-        return Math.min(100, score + (all.length * 3));
-    }, [gk, defs, mids, fwds]);
+        return computeSquadChemistry({
+            formation,
+            gk,
+            defenders: defs,
+            midfielders: mids,
+            forwards: fwds,
+        }).score;
+    }, [formation, gk, defs, mids, fwds]);
 
     if (isLoading || !user) return null;
 
@@ -178,7 +211,7 @@ export default function DashboardPage() {
                             <div className="dash-card-v2 glass">
                                 <div className="card-v2-icon">
                                     {manager?.image ? (
-                                        <img src={manager.image} alt={manager.name} className="ctx-manager" />
+                                        <img src={getSafePlayerImage(manager, { proxify: true })} alt={manager.name} className="ctx-manager" />
                                     ) : <Users size={24} />}
                                 </div>
                                 <div className="card-v2-content">
@@ -360,6 +393,7 @@ export default function DashboardPage() {
         </div>
     );
 }
+
 
 
 

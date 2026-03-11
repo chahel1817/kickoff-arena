@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Shield, Save, RotateCcw, Layers, Check, Info } from 'lucide-react';
 import PlayerStatsModal from '@/components/modals/PlayerStatsModal';
+import { getSafePlayerImage } from '@/lib/playerImage';
 
 const POS_COLORS = {
     gk: '#f59e0b',
@@ -178,8 +179,8 @@ export default function TacticsBoardPage() {
                             onPointerDown={e => onPointerDown(e, pos.id)}
                         >
                             <div className="tb-player-avatar">
-                                {pos.player?.image ? (
-                                    <img src={pos.player.image} alt="" />
+                                {pos.player ? (
+                                    <img src={getSafePlayerImage(pos.player, { proxify: true })} alt={pos.player.name} />
                                 ) : (
                                     <span>{pos.player?.name?.charAt(0) || '?'}</span>
                                 )}

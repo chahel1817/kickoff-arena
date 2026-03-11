@@ -11,6 +11,9 @@ const normalize = (value = '') => value.toLowerCase().replace(/[^a-z0-9]/g, '');
 const MANUAL_IMAGE_OVERRIDES = {
     pedri: 'https://upload.wikimedia.org/wikipedia/commons/1/13/Pedri.jpg',
     gavi: 'https://upload.wikimedia.org/wikipedia/commons/2/2d/Gavi_%28footballer%29.jpg',
+    deligt: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/Matthijs_de_Ligt_2024.jpg',
+    matthijsdeligt: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/Matthijs_de_Ligt_2024.jpg',
+    matthijsdelight: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/Matthijs_de_Ligt_2024.jpg',
     mendes: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nuno_Mendes_PSG.jpg/640px-Nuno_Mendes_PSG.jpg',
     nunomendes: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nuno_Mendes_PSG.jpg/640px-Nuno_Mendes_PSG.jpg',
     nuno_mendes: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nuno_Mendes_PSG.jpg/640px-Nuno_Mendes_PSG.jpg',
@@ -20,6 +23,8 @@ const MANUAL_IMAGE_OVERRIDES = {
 const QUERY_OVERRIDES = {
     pedri: 'Pedro Gonzalez',
     gavi: 'Pablo Paez Gavira',
+    deligt: 'Matthijs de Ligt',
+    matthijsdeligt: 'Matthijs de Ligt',
     mendes: 'Nuno Mendes PSG',
 };
 

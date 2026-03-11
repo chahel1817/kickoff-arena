@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Shield, ChevronLeft, ChevronRight, Star, Users, Globe, Trophy, Search, Cpu, Check, Scan, Layers, Zap, Info, Target, Brain, Sprout, BrickWall, Activity, Compass, TrendingUp } from 'lucide-react';
 import managersData from '../../data/managers.json';
 import { useAuth } from '@/context/AuthContext';
+import { getSafePlayerImage } from '@/lib/playerImage';
 import '../entry.css';
 
 export default function ManagerSelectPage() {
@@ -203,7 +204,7 @@ export default function ManagerSelectPage() {
         <div className="entry-page no-snap">
             {/* Tactical Chalkboard Background */}
             <div className="tactical-board-bg"></div>
-            <div className="overlay-gradient" style={{ background: 'radial-gradient(circle at center, rgba(0, 255, 136, 0.15), transparent 70%)' }}></div>
+            <div className="overlay-gradient" style={{ background: 'radial-gradient(circle at center, rgba(0, 255, 136, 0.1), transparent 52%), linear-gradient(to bottom, rgba(2, 4, 10, 0.28), rgba(2, 4, 10, 0.82))' }}></div>
 
             {/* Success Overlay - Full Page Scrollable */}
             {showSuccess && (
@@ -286,7 +287,7 @@ export default function ManagerSelectPage() {
                                             <div className="showcase-glow" style={{ background: 'var(--primary)' }}></div>
                                             <div className="showcase-ring"></div>
                                             {selectedManager?.image && (
-                                                <img src={selectedManager.image} alt="" className="showcase-img" />
+                                                <img src={getSafePlayerImage(selectedManager, { proxify: true })} alt="" className="showcase-img" />
                                             )}
                                         </div>
                                     </div>
@@ -471,7 +472,7 @@ export default function ManagerSelectPage() {
                                         <div className="portrait-halo"></div>
                                         <div className="portrait-inner" data-initials={manager.name.split(' ').map(n => n[0]).join('')}>
                                             <img
-                                                src={manager.image}
+                                                src={getSafePlayerImage(manager, { proxify: true })}
                                                 alt={manager.name}
                                                 className="manager-avatar-img"
                                                 onError={(e) => {
@@ -597,7 +598,7 @@ export default function ManagerSelectPage() {
                     background-size: cover;
                     background-position: center;
                     background-repeat: no-repeat;
-                    filter: brightness(0.4) contrast(1.1) saturate(0.9) blur(3px);
+                    filter: brightness(0.28) contrast(1.2) saturate(0.85) blur(2px);
                     z-index: 0;
                     opacity: 0.95;
                 }
@@ -1034,7 +1035,7 @@ export default function ManagerSelectPage() {
                 }
 
                 .subtitle-premium {
-                    color: rgba(255, 255, 255, 0.65);
+                    color: rgba(255, 255, 255, 0.8);
                     font-size: 1.25rem;
                     max-width: 700px;
                     margin: 0 auto;

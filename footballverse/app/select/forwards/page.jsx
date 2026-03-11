@@ -18,6 +18,7 @@ function ForwardSelectPageInner() {
     const [filterPos, setFilterPos] = useState('ALL');
     const [search, setSearch] = useState('');
     const [viewingStats, setViewingStats] = useState(null);
+    const [isExiting, setIsExiting] = useState(false);
 
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('edit') === 'true';
@@ -56,30 +57,27 @@ function ForwardSelectPageInner() {
 
     const { saveSquad } = useAuth();
     const handleSelect = useCallback((player) => {
-        setSelectedFwds(prev => {
-            const exists = prev.find(p => p.id === player.id);
-            let next;
-            if (exists) {
-                next = prev.filter(p => p.id !== player.id);
-            } else if (prev.length < maxFwd) {
-                next = [...prev, player];
-            } else return prev;
-            localStorage.setItem('forwards', JSON.stringify(next));
-            if (saveSquad) saveSquad({ forwards: next });
-            return next;
-        });
-    }, [maxFwd, saveSquad]);
+        const exists = selectedFwds.find(p => p.id === player.id);
+        let next;
+        if (exists) {
+            next = selectedFwds.filter(p => p.id !== player.id);
+        } else if (selectedFwds.length < maxFwd) {
+            next = [...selectedFwds, player];
+        } else return;
+        setSelectedFwds(next);
+        localStorage.setItem('forwards', JSON.stringify(next));
+        if (saveSquad) saveSquad({ forwards: next });
+    }, [maxFwd, saveSquad, selectedFwds]);
 
 
     const handleConfirm = useCallback(() => {
         if (selectedFwds.length === maxFwd) {
-            if (isEditMode) {
+            setIsExiting(true);
+            setTimeout(() => {
                 router.push('/squad/review');
-            } else {
-                router.push('/squad/review');
-            }
+            }, 350);
         }
-    }, [isEditMode, selectedFwds, maxFwd, router]);
+    }, [selectedFwds, maxFwd, router]);
 
     const positions = ['ALL', 'ST', 'LW', 'RW'];
     const accent = '#ef4444';
@@ -95,7 +93,7 @@ function ForwardSelectPageInner() {
             <div className="stadium-bg mf-stadium-bg"></div>
             <div className="overlay-gradient"></div>
 
-            <section className="mf-page">
+            <section className={`mf-page entry-transition-enter ${isExiting ? 'entry-transition-exit' : ''}`}>
                 <main className="mf-main">
 
                     {/* Context Bar */}
@@ -280,58 +278,57 @@ function ForwardSelectPageInner() {
                         })}
                     </div>
 
-                    {/* Confirm Bar */}
-                    <div className={`mf-confirm-bar glass ${selectedFwds.length === maxFwd ? 'visible' : ''}`}>
-                        <div className="mf-bar-content">
-                            <div className="mf-bar-info">
-                                <span className="mf-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'ATTACK CORE'}</span>
-                                <h3 className="mf-bar-name">
-                                    {selectedFwds.length} / {maxFwd} SELECTED
-                                </h3>
-                                <div className="mf-bar-list">
-                                    {selectedFwds.map((m, i) => (
-                                        <span key={m.id} className="mf-bar-player-name">
-                                            {m.name}{i < selectedFwds.length - 1 ? ', ' : ''}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                            <button
-                                onClick={handleConfirm}
-                                className={`mf-proceed-btn ${selectedFwds.length === maxFwd ? 'active' : ''}`}
-                                disabled={selectedFwds.length !== maxFwd}
-                            >
-                                <span>{isEditMode ? 'CONFIRM CHANGES' : 'LOCK FORWARDS'}</span>
-                                <Zap size={22} className="mf-btn-icon" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {!isEditMode && (
-                        <div className="mf-progress-footer">
-                            <div className="mf-progress-steps">
-                                {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
-                                    <div key={s} style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div className={`mf-step ${i === 3 ? 'active' : ''} ${i < 3 ? 'completed' : ''}`}>
-                                            <div className="mf-step-circle">{i < 3 ? <Check size={12} /> : i + 1}</div>
-                                            <span>{s}</span>
-                                        </div>
-                                        {i < 4 && <div className="mf-step-line"></div>}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
                     {viewingStats && (
                         <PlayerStatsModal
                             player={viewingStats}
                             onClose={() => setViewingStats(null)}
                         />
                     )}
-
                 </main>
             </section>
+
+            {/* Confirm Bar - Moved outside animated section for viewport safety */}
+            <div className={`mf-confirm-bar glass ${selectedFwds.length === maxFwd ? 'visible' : ''}`}>
+                <div className="mf-bar-content">
+                    <div className="mf-bar-info">
+                        <span className="mf-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'ATTACK CORE'}</span>
+                        <h3 className="mf-bar-name">
+                            {selectedFwds.length} / {maxFwd} SELECTED
+                        </h3>
+                        <div className="mf-bar-list">
+                            {selectedFwds.map((m, i) => (
+                                <span key={m.id} className="mf-bar-player-name">
+                                    {m.name}{i < selectedFwds.length - 1 ? ', ' : ''}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleConfirm}
+                        className={`mf-proceed-btn ${selectedFwds.length === maxFwd ? 'active' : ''}`}
+                        disabled={selectedFwds.length !== maxFwd}
+                    >
+                        <span>{isEditMode ? 'CONFIRM CHANGES' : 'LOCK FORWARDS'}</span>
+                        <Zap size={22} className="mf-btn-icon" />
+                    </button>
+                </div>
+            </div>
+
+            {!isEditMode && (
+                <div className="mf-progress-footer">
+                    <div className="mf-progress-steps">
+                        {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
+                            <div key={s} style={{ display: 'flex', alignItems: 'center' }}>
+                                <div className={`mf-step ${i === 3 ? 'active' : ''} ${i < 3 ? 'completed' : ''}`}>
+                                    <div className="mf-step-circle">{i < 3 ? <Check size={12} /> : i + 1}</div>
+                                    <span>{s}</span>
+                                </div>
+                                {i < 4 && <div className="mf-step-line"></div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
 
             <style jsx>{`

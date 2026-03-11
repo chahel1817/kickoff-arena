@@ -123,7 +123,7 @@ router.patch('/profile', protect, async (req, res) => {
             if (key in body) update[key] = body[key];
         }
 
-        const user = await User.findByIdAndUpdate(req.user.id, { $set: update }, { new: true }).select('-password');
+        const user = await User.findByIdAndUpdate(req.user.id, { $set: update }, { returnDocument: 'after' }).select('-password');
         res.json(user);
     } catch (err) {
         res.status(500).json({ error: err.message });

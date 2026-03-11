@@ -2,6 +2,8 @@
 
 import { X, Star, Zap, Shield, Target, Activity, Move, Share2 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { getSafePlayerImage } from '@/lib/playerImage';
+import { getPlayerDisplayStats } from '@/lib/playerStats';
 
 export default function PlayerStatsModal({ player, onClose }) {
     const scrollRef = useRef(null);
@@ -14,20 +16,13 @@ export default function PlayerStatsModal({ player, onClose }) {
 
     if (!player) return null;
 
-    const isFwd = ['ST', 'LW', 'RW', 'CF'].some(p => player.position?.includes(p));
-    const isMid = ['CM', 'CAM', 'CDM', 'LM', 'RM'].some(p => player.position?.includes(p));
-    const isDef = ['CB', 'LB', 'RB', 'LWB', 'RWB'].some(p => player.position?.includes(p));
-    const isGk = player.position === 'GK';
+    const upperPos = String(player.position || '').toUpperCase();
+    const isFwd = ['ST', 'LW', 'RW', 'CF'].some(p => upperPos.includes(p));
+    const isMid = ['CM', 'CAM', 'CDM', 'LM', 'RM'].some(p => upperPos.includes(p));
+    const isDef = ['CB', 'LB', 'RB', 'LWB', 'RWB'].some(p => upperPos.includes(p));
+    const isGk = upperPos === 'GK';
 
-    // Role-aware Derived stats
-    const stats = player.stats || {
-        pace: Math.min(99, player.rating + (isFwd ? 8 : isDef ? -5 : 0) + Math.floor(Math.random() * 6)),
-        shooting: Math.min(99, player.rating + (isFwd ? 10 : isDef ? -20 : -5) + Math.floor(Math.random() * 6)),
-        passing: Math.min(99, player.rating + (isMid ? 8 : isDef ? -5 : 0) + Math.floor(Math.random() * 6)),
-        dribbling: Math.min(99, player.rating + (isFwd || isMid ? 7 : -10) + Math.floor(Math.random() * 6)),
-        defending: Math.min(99, isGk ? 15 : player.rating + (isDef ? 10 : -35) + Math.floor(Math.random() * 6)),
-        physical: Math.min(99, player.rating + (isDef || isGk ? 5 : -5) + Math.floor(Math.random() * 6)),
-    };
+    const stats = getPlayerDisplayStats(player);
 
     const posColor = (p = '') => {
         const u = p.toUpperCase();
@@ -44,7 +39,7 @@ export default function PlayerStatsModal({ player, onClose }) {
 
                 <div className="psm-header">
                     <div className="psm-photo-wrap" style={{ borderColor: posColor(player.position) }}>
-                        <img src={player.image || '/players/placeholder.png'} alt={player.name} className="psm-photo" />
+                        <img src={getSafePlayerImage(player, { proxify: true })} alt={player.name} className="psm-photo" />
                         <div className="psm-rating-badge" style={{ background: posColor(player.position) }}>{player.rating}</div>
                     </div>
                     <div className="psm-info">

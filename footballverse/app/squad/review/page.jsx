@@ -23,6 +23,9 @@ import { useAuth } from '@/context/AuthContext';
 import PlayerStatsModal from '@/components/modals/PlayerStatsModal';
 import { Info } from 'lucide-react';
 import leaguesData from '../../../data/leagues.json';
+import { usePlayerImageResolver } from '@/hooks/usePlayerImageResolver';
+import { getSafePlayerImage } from '@/lib/playerImage';
+import { computeSquadChemistry } from '@/lib/squadChemistry';
 
 
 export default function SquadReviewPage() {
@@ -197,30 +200,17 @@ export default function SquadReviewPage() {
     }, [pitchPositions, userCaptainId]);
 
     const chemistryData = useMemo(() => {
-        const allPlayers = [gk, ...defenders, ...midfielders, ...forwards].filter(Boolean);
-        if (allPlayers.length === 0) return { score: 0, nationLinks: 0, clubLinks: 0 };
-
-        let nationScore = 0;
-        let clubScore = 0;
-        let leagueScore = 0;
-
-        const nations = {};
-        const clubs = {};
-        const leagues = {};
-
-        allPlayers.forEach(p => {
-            nations[p.country] = (nations[p.country] || 0) + 1;
-            clubs[p.club] = (clubs[p.club] || 0) + 1;
-            if (p.league) leagues[p.league] = (leagues[p.league] || 0) + 1;
+        return computeSquadChemistry({
+            formation,
+            gk,
+            defenders,
+            midfielders,
+            forwards,
         });
+    }, [formation, gk, defenders, midfielders, forwards]);
 
-        Object.values(nations).forEach(count => { if (count > 1) nationScore += (count * 4); });
-        Object.values(clubs).forEach(count => { if (count > 1) clubScore += (count * 6); });
-        Object.values(leagues).forEach(count => { if (count > 1) leagueScore += (count * 3); });
-
-        const score = Math.min(100, nationScore + clubScore + leagueScore + (allPlayers.length * 2));
-        return { score, nationLinks: nationScore, clubLinks: clubScore };
-    }, [gk, defenders, midfielders, forwards]);
+    const allPlayers = useMemo(() => [gk, ...defenders, ...midfielders, ...forwards].filter(Boolean), [gk, defenders, midfielders, forwards]);
+    const { getImageSrc, handleImageError } = usePlayerImageResolver(allPlayers);
 
     return (
         <div className="entry-page no-snap">
@@ -263,7 +253,7 @@ export default function SquadReviewPage() {
                         <div className="rev-ctx-item">
                             <div className="rev-ctx-icon">
                                 {selectedManager?.image ? (
-                                    <img src={selectedManager.image} alt={selectedManager.name} className="ctx-mgr-mini shadow-sm" />
+                                    <img src={getSafePlayerImage(selectedManager, { proxify: true })} alt={selectedManager.name} className="ctx-mgr-mini shadow-sm" />
                                 ) : <User className="text-white" size={18} />}
                             </div>
                             <div className="rev-ctx-text">
@@ -340,8 +330,14 @@ export default function SquadReviewPage() {
                                                 </button>
                                             )}
 
-                                            {pos.player?.image ? (
-                                                <img src={pos.player.image} alt="" className="player-avatar-img" />
+                                            {pos.player ? (
+                                                <img
+                                                    src={getImageSrc(pos.player)}
+                                                    alt={pos.player.name}
+                                                    className="player-avatar-img"
+                                                    loading="lazy"
+                                                    onError={() => handleImageError(pos.player)}
+                                                />
                                             ) : (
                                                 <div className="player-avatar-placeholder">
                                                     {pos.player?.name?.charAt(0) || '?'}
@@ -376,7 +372,13 @@ export default function SquadReviewPage() {
                                             className={`rev-player-item current ${captain === gk.id ? 'is-cap' : ''}`}
                                             onClick={() => handleSetCaptain(gk.id)}
                                         >
-                                            <img src={gk.image} alt="" className="rev-p-img" />
+                                            <img
+                                                src={getImageSrc(gk)}
+                                                alt={gk.name}
+                                                className="rev-p-img"
+                                                loading="lazy"
+                                                onError={() => handleImageError(gk)}
+                                            />
                                             <div className="rev-p-info">
                                                 <span className="rev-p-name">{gk.name} {captain === gk.id && <span className="cap-tag">(C)</span>}</span>
                                                 <span className="rev-p-meta">{gk.club} • Rating {gk.rating}</span>
@@ -404,7 +406,13 @@ export default function SquadReviewPage() {
                                             className={`rev-player-item ${captain === p.id ? 'is-cap' : ''}`}
                                             onClick={() => handleSetCaptain(p.id)}
                                         >
-                                            <img src={p.image} alt="" className="rev-p-img" />
+                                            <img
+                                                src={getImageSrc(p)}
+                                                alt={p.name}
+                                                className="rev-p-img"
+                                                loading="lazy"
+                                                onError={() => handleImageError(p)}
+                                            />
                                             <div className="rev-p-info">
                                                 <span className="rev-p-name">{p.name} {captain === p.id && <span className="cap-tag">(C)</span>}</span>
                                                 <span className="rev-p-meta">{p.position} • {p.club}</span>
@@ -431,7 +439,13 @@ export default function SquadReviewPage() {
                                             className={`rev-player-item ${captain === p.id ? 'is-cap' : ''}`}
                                             onClick={() => handleSetCaptain(p.id)}
                                         >
-                                            <img src={p.image} alt="" className="rev-p-img" />
+                                            <img
+                                                src={getImageSrc(p)}
+                                                alt={p.name}
+                                                className="rev-p-img"
+                                                loading="lazy"
+                                                onError={() => handleImageError(p)}
+                                            />
                                             <div className="rev-p-info">
                                                 <span className="rev-p-name">{p.name} {captain === p.id && <span className="cap-tag">(C)</span>}</span>
                                                 <span className="rev-p-meta">{p.position} • {p.club}</span>
@@ -458,7 +472,13 @@ export default function SquadReviewPage() {
                                             className={`rev-player-item ${captain === p.id ? 'is-cap' : ''}`}
                                             onClick={() => handleSetCaptain(p.id)}
                                         >
-                                            <img src={p.image} alt="" className="rev-p-img" />
+                                            <img
+                                                src={getImageSrc(p)}
+                                                alt={p.name}
+                                                className="rev-p-img"
+                                                loading="lazy"
+                                                onError={() => handleImageError(p)}
+                                            />
                                             <div className="rev-p-info">
                                                 <span className="rev-p-name">{p.name} {captain === p.id && <span className="cap-tag">(C)</span>}</span>
                                                 <span className="rev-p-meta">{p.position} • {p.club}</span>

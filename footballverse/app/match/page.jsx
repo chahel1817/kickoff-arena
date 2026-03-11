@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Shield, Zap, Target, Check, X, Trophy, RotateCcw, ChevronLeft, Crown, Play } from 'lucide-react';
 import './match.css';
 import { useAuth } from '@/context/AuthContext';
+import { getSafePlayerImage } from '@/lib/playerImage';
 
 
 const ZONES = [
@@ -110,7 +111,7 @@ export default function ShootoutPage() {
 
     const players = useMemo(() => squad.map((p, i) => ({
         id: p.id || `p${i}`, name: p.name || 'Player',
-        rating: p.rating || 75, position: p.position || 'MF', image: p.image || null,
+        rating: p.rating || 75, position: p.position || 'MF', image: getSafePlayerImage(p, { proxify: true }),
     })), [squad]);
 
     const isReady = shooters.every(Boolean);

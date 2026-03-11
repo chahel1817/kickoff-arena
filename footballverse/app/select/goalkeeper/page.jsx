@@ -95,20 +95,20 @@ function GoalkeeperSelectPageInner() {
     const { saveSquad } = useAuth();
 
     const handleSelect = useCallback((gk) => {
-        setSelectedGK(prev => {
-            if (prev?.id === gk.id) {
-                localStorage.removeItem('goalkeeper');
-                saveSquad({ goalkeeper: null });
-                selectedGKRef.current = null;
-                return null;
-            } else {
-                localStorage.setItem('goalkeeper', JSON.stringify(gk));
-                saveSquad({ goalkeeper: gk });
-                selectedGKRef.current = gk;
-                return gk;
-            }
-        });
-    }, [saveSquad]);
+        const isSelected = selectedGK?.id === gk.id;
+
+        if (isSelected) {
+            setSelectedGK(null);
+            localStorage.removeItem('goalkeeper');
+            if (saveSquad) saveSquad({ goalkeeper: null });
+            selectedGKRef.current = null;
+        } else {
+            setSelectedGK(gk);
+            localStorage.setItem('goalkeeper', JSON.stringify(gk));
+            if (saveSquad) saveSquad({ goalkeeper: gk });
+            selectedGKRef.current = gk;
+        }
+    }, [saveSquad, selectedGK]);
 
 
     const handleConfirm = useCallback(() => {
@@ -126,11 +126,11 @@ function GoalkeeperSelectPageInner() {
     }, [isEditMode, router]);
 
     return (
-        <div className={`entry-page no-snap ${isExiting ? 'page-exit' : ''}`}>
+        <div className="entry-page no-snap">
             <div className="stadium-bg gk-stadium-bg"></div>
             <div className="overlay-gradient"></div>
 
-            <section className="gk-page">
+            <section className={`gk-page ${isExiting ? 'page-exit' : ''} entry-transition-enter`}>
                 <main className="gk-main">
 
                     {/* Context Bar */}
@@ -293,48 +293,47 @@ function GoalkeeperSelectPageInner() {
                     {viewingStats && (
                         <PlayerStatsModal player={viewingStats} onClose={() => setViewingStats(null)} />
                     )}
-
-
-                    {/* Bottom CTA */}
-                    <div className={`gk-confirm-bar glass ${selectedGK ? 'visible' : ''}`}>
-                        <div className="gk-bar-content">
-                            <div className="gk-bar-info">
-                                <span className="gk-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'GOALKEEPER LOCKED'}</span>
-                                <h3 className="gk-bar-name">{selectedGK?.name}</h3>
-                                <div className="gk-bar-meta-row">
-                                    <span>{selectedGK?.club}</span>
-                                    <span className="gk-bar-sep">•</span>
-                                    <span>{selectedGK?.country}</span>
-                                    <span className="gk-bar-sep">•</span>
-                                    <span className="gk-bar-ovr-lock">OVR {selectedGK?.rating}</span>
-                                </div>
-                            </div>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <button onClick={handleConfirm} className="gk-proceed-btn">
-                                    <span>{isEditMode ? 'CONFIRM CHANGES' : 'LOCK IN GOALKEEPER'}</span>
-                                    <ShieldCheck size={22} className="gk-btn-icon" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {!isEditMode && (
-                        <div className="gk-progress-footer">
-                            <div className="gk-progress-steps">
-                                {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
-                                    <div key={s} style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div className={`gk-step ${i === 0 ? 'active' : ''}`}>
-                                            <div className={`gk-step-circle ${i === 0 ? 'active' : ''}`}>{i + 1}</div>
-                                            <span>{s}</span>
-                                        </div>
-                                        {i < 4 && <div className="gk-step-line"></div>}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </main>
             </section>
+
+            {/* Bottom CTA - Moved outside animated section for viewport safety */}
+            <div className={`gk-confirm-bar glass ${selectedGK ? 'visible' : ''}`}>
+                <div className="gk-bar-content">
+                    <div className="gk-bar-info">
+                        <span className="gk-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'GOALKEEPER LOCKED'}</span>
+                        <h3 className="gk-bar-name">{selectedGK?.name}</h3>
+                        <div className="gk-bar-meta-row">
+                            <span>{selectedGK?.club}</span>
+                            <span className="gk-bar-sep">•</span>
+                            <span>{selectedGK?.country}</span>
+                            <span className="gk-bar-sep">•</span>
+                            <span className="gk-bar-ovr-lock">OVR {selectedGK?.rating}</span>
+                        </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <button onClick={handleConfirm} className="gk-proceed-btn">
+                            <span>{isEditMode ? 'CONFIRM CHANGES' : 'LOCK IN GOALKEEPER'}</span>
+                            <ShieldCheck size={22} className="gk-btn-icon" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {!isEditMode && (
+                <div className="gk-progress-footer">
+                    <div className="gk-progress-steps">
+                        {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
+                            <div key={s} style={{ display: 'flex', alignItems: 'center' }}>
+                                <div className={`gk-step ${i === 0 ? 'active' : ''}`}>
+                                    <div className={`gk-step-circle ${i === 0 ? 'active' : ''}`}>{i + 1}</div>
+                                    <span>{s}</span>
+                                </div>
+                                {i < 4 && <div className="gk-step-line"></div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <style jsx>{`
                 .gk-page { min-height:100vh; display:flex; justify-content:center; padding:3rem 1rem; animation:gkFadeIn .6s ease-out; }

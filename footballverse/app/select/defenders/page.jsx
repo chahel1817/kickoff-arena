@@ -62,19 +62,17 @@ function DefenderSelectPageInner() {
     const { saveSquad } = useAuth();
 
     const handleSelect = useCallback((player) => {
-        setSelectedDefs(prev => {
-            const exists = prev.find(p => p.id === player.id);
-            let next;
-            if (exists) {
-                next = prev.filter(p => p.id !== player.id);
-            } else if (prev.length < maxDef) {
-                next = [...prev, player];
-            } else return prev;
-            localStorage.setItem('defenders', JSON.stringify(next));
-            saveSquad({ defenders: next });
-            return next;
-        });
-    }, [maxDef, saveSquad]);
+        const exists = selectedDefs.find(p => p.id === player.id);
+        let next;
+        if (exists) {
+            next = selectedDefs.filter(p => p.id !== player.id);
+        } else if (selectedDefs.length < maxDef) {
+            next = [...selectedDefs, player];
+        } else return;
+        setSelectedDefs(next);
+        localStorage.setItem('defenders', JSON.stringify(next));
+        if (saveSquad) saveSquad({ defenders: next });
+    }, [maxDef, saveSquad, selectedDefs]);
 
 
     // Keyboard Support
@@ -116,11 +114,11 @@ function DefenderSelectPageInner() {
     const positions = ['ALL', 'CB', 'LB', 'RB'];
 
     return (
-        <div className={`entry-page no-snap ${isExiting ? 'page-exit' : ''}`}>
+        <div className="entry-page no-snap">
             <div className="stadium-bg df-stadium-bg"></div>
             <div className="overlay-gradient"></div>
 
-            <section className="df-page">
+            <section className={`df-page entry-transition-enter ${isExiting ? 'page-exit' : ''}`}>
                 <main className="df-main">
 
                     {/* Context Bar */}
@@ -299,55 +297,55 @@ function DefenderSelectPageInner() {
                     </div>
 
 
-                    {/* Confirm Bar */}
-                    <div className={`df-confirm-bar glass ${selectedDefs.length === maxDef ? 'visible' : ''}`}>
-                        <div className="df-bar-content">
-                            <div className="df-bar-info">
-                                <span className="df-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'DEFENSIVE LINE'}</span>
-                                <h3 className="df-bar-name">
-                                    {selectedDefs.length} / {maxDef} SELECTED
-                                </h3>
-                                <div className="df-bar-list">
-                                    {selectedDefs.map((d, i) => (
-                                        <span key={d.id} className="df-bar-player-name">
-                                            {d.name}{i < selectedDefs.length - 1 ? ', ' : ''}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                            <button
-                                onClick={handleConfirm}
-                                className={`df-proceed-btn ${selectedDefs.length === maxDef ? 'active' : ''}`}
-                                disabled={selectedDefs.length !== maxDef}
-                            >
-                                <span>{isEditMode ? 'CONFIRM CHANGES' : 'LOCK DEFENDERS'}</span>
-                                <ShieldCheck size={22} className="df-btn-icon" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Progress */}
-                    {!isEditMode && (
-                        <div className="df-progress-footer">
-                            <div className="df-progress-steps">
-                                {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
-                                    <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <div className={`df-step ${i === 1 ? 'active' : ''} ${i < 1 ? 'completed' : ''}`}>
-                                            <div className="df-step-circle">{i < 1 ? <Check size={12} /> : i + 1}</div>
-                                            <span>{s}</span>
-                                        </div>
-                                        {i < 4 && <div className="df-step-line"></div>}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
                     {viewingStats && (
                         <PlayerStatsModal player={viewingStats} onClose={() => setViewingStats(null)} />
                     )}
                 </main>
             </section>
+
+            {/* Confirm Bar - Moved outside animated section for viewport safety */}
+            <div className={`df-confirm-bar glass ${selectedDefs.length === maxDef ? 'visible' : ''}`}>
+                <div className="df-bar-content">
+                    <div className="df-bar-info">
+                        <span className="df-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'DEFENSIVE LINE'}</span>
+                        <h3 className="df-bar-name">
+                            {selectedDefs.length} / {maxDef} SELECTED
+                        </h3>
+                        <div className="df-bar-list">
+                            {selectedDefs.map((d, i) => (
+                                <span key={d.id} className="df-bar-player-name">
+                                    {d.name}{i < selectedDefs.length - 1 ? ', ' : ''}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleConfirm}
+                        className={`df-proceed-btn ${selectedDefs.length === maxDef ? 'active' : ''}`}
+                        disabled={selectedDefs.length !== maxDef}
+                    >
+                        <span>{isEditMode ? 'CONFIRM CHANGES' : 'LOCK DEFENDERS'}</span>
+                        <ShieldCheck size={22} className="df-btn-icon" />
+                    </button>
+                </div>
+            </div>
+
+            {/* Progress */}
+            {!isEditMode && (
+                <div className="df-progress-footer">
+                    <div className="df-progress-steps">
+                        {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
+                            <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <div className={`df-step ${i === 1 ? 'active' : ''} ${i < 1 ? 'completed' : ''}`}>
+                                    <div className="df-step-circle">{i < 1 ? <Check size={12} /> : i + 1}</div>
+                                    <span>{s}</span>
+                                </div>
+                                {i < 4 && <div className="df-step-line"></div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
 
             <style jsx>{`

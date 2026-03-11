@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Trophy, Shield, Users, Layers, ChevronRight, Sparkles, Activity, LayoutDashboard, Check } from 'lucide-react';
 import leagues from '../../data/leagues.json';
+import { getSafePlayerImage } from '@/lib/playerImage';
 import './summary.css';
 
 export default function SummaryPage() {
@@ -124,9 +125,9 @@ export default function SummaryPage() {
 
                         <div className="identity-card glass shadow-purple">
                             <div className="card-accent" style={{ background: '#a855f7' }}></div>
-                            <div className="card-icon">
+                                <div className="card-icon">
                                 {manager?.image ? (
-                                    <img src={manager.image} alt={manager.name} className="sum-manager" />
+                                    <img src={getSafePlayerImage(manager, { proxify: true })} alt={manager.name} className="sum-manager" />
                                 ) : <Users size={20} />}
                             </div>
                             <div className="card-body">

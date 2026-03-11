@@ -44,7 +44,7 @@ router.patch('/', protect, async (req, res) => {
         const user = await User.findByIdAndUpdate(
             req.user.id,
             { $set: update },
-            { new: true, lean: true }
+            { returnDocument: 'after', lean: true }
         );
 
         if (!user) return res.status(404).json({ error: 'User not found' });

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -19,6 +19,7 @@ function MidfielderSelectPageInner() {
     const [filterPos, setFilterPos] = useState('ALL');
     const [search, setSearch] = useState('');
     const [viewingStats, setViewingStats] = useState(null);
+    const [isExiting, setIsExiting] = useState(false);
 
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('edit') === 'true';
@@ -59,38 +60,41 @@ function MidfielderSelectPageInner() {
 
     const { saveSquad } = useAuth();
     const handleSelect = useCallback((player) => {
-        setSelectedMids(prev => {
-            const exists = prev.find(p => p.id === player.id);
-            let next;
-            if (exists) {
-                next = prev.filter(p => p.id !== player.id);
-            } else if (prev.length < maxMid) {
-                next = [...prev, player];
-            } else return prev;
-            localStorage.setItem('midfielders', JSON.stringify(next));
-            if (saveSquad) saveSquad({ midfielders: next });
-            return next;
-        });
-    }, [maxMid, saveSquad]);
+        const exists = selectedMids.find(p => p.id === player.id);
+        let next;
+        if (exists) {
+            next = selectedMids.filter(p => p.id !== player.id);
+        } else if (selectedMids.length < maxMid) {
+            next = [...selectedMids, player];
+        } else return;
+
+        setSelectedMids(next);
+        localStorage.setItem('midfielders', JSON.stringify(next));
+        if (saveSquad) saveSquad({ midfielders: next });
+    }, [selectedMids, maxMid, saveSquad]);
 
     const handleConfirm = useCallback(() => {
         if (selectedMids.length === maxMid) {
-            if (isEditMode) {
-                router.push('/squad/review');
-            } else {
-                router.push('/select/forwards');
-            }
+            setIsExiting(true);
+            setTimeout(() => {
+                if (isEditMode) {
+                    router.push('/squad/review');
+                } else {
+                    router.push('/select/forwards');
+                }
+            }, 350);
         }
     }, [isEditMode, selectedMids.length, maxMid, router]);
 
     const positions = ['ALL', 'CDM', 'CM', 'CAM'];
+    const remainingToProceed = Math.max(0, maxMid - selectedMids.length);
 
     return (
         <div className="entry-page no-snap">
             <div className="stadium-bg mf-stadium-bg"></div>
             <div className="overlay-gradient"></div>
 
-            <section className="mf-page">
+            <section className={`mf-page entry-transition-enter ${isExiting ? 'entry-transition-exit' : ''}`}>
                 <main className="mf-main">
 
                     {/* Context Bar */}
@@ -277,49 +281,6 @@ function MidfielderSelectPageInner() {
                         })}
                     </div>
 
-                    {/* Confirm Bar */}
-                    <div className={`mf-confirm-bar glass ${selectedMids.length === maxMid ? 'visible' : ''}`}>
-                        <div className="mf-bar-content">
-                            <div className="mf-bar-info">
-                                <span className="mf-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'CORE ENGINE'}</span>
-                                <h3 className="mf-bar-name">
-                                    {selectedMids.length} / {maxMid} SELECTED
-                                </h3>
-                                <div className="mf-bar-list">
-                                    {selectedMids.map((m, i) => (
-                                        <span key={m.id} className="mf-bar-player-name">
-                                            {m.name}{i < selectedMids.length - 1 ? ', ' : ''}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                            <button
-                                onClick={handleConfirm}
-                                className={`mf-proceed-btn ${selectedMids.length === maxMid ? 'active' : ''}`}
-                                disabled={selectedMids.length !== maxMid}
-                            >
-                                <span>{isEditMode ? 'CONFIRM CHANGES' : 'LOCK MIDFIELD'}</span>
-                                <Zap size={22} className="mf-btn-icon" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {!isEditMode && (
-                        <div className="mf-progress-footer">
-                            <div className="mf-progress-steps">
-                                {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
-                                    <div key={s} style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div className={`mf-step ${i === 2 ? 'active' : ''} ${i < 2 ? 'completed' : ''}`}>
-                                            <div className="mf-step-circle">{i < 2 ? <Check size={12} /> : i + 1}</div>
-                                            <span>{s}</span>
-                                        </div>
-                                        {i < 4 && <div className="mf-step-line"></div>}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
                     {viewingStats && (
                         <PlayerStatsModal
                             player={viewingStats}
@@ -328,6 +289,53 @@ function MidfielderSelectPageInner() {
                     )}
                 </main>
             </section>
+
+            {/* Confirm Bar - Moved outside animated section to stay fixed to viewport correctly */}
+            <div className={`mf-confirm-bar glass ${selectedMids.length === maxMid ? 'visible' : ''}`}>
+                <div className="mf-bar-content">
+                    <div className="mf-bar-info">
+                        <span className="mf-bar-tag">{isEditMode ? 'CHANGES PENDING' : 'CORE ENGINE'}</span>
+                        <h3 className="mf-bar-name">
+                            {selectedMids.length} / {maxMid} SELECTED
+                        </h3>
+                        <div className="mf-bar-list">
+                            {selectedMids.map((m, i) => (
+                                <span key={m.id} className="mf-bar-player-name">
+                                    {m.name}{i < selectedMids.length - 1 ? ', ' : ''}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleConfirm}
+                        className={`mf-proceed-btn ${selectedMids.length === maxMid ? 'active' : ''}`}
+                        disabled={selectedMids.length !== maxMid}
+                    >
+                        <span>
+                            {selectedMids.length === maxMid
+                                ? (isEditMode ? 'CONFIRM CHANGES' : 'LOCK MIDFIELD')
+                                : `SELECT ${remainingToProceed} MORE`}
+                        </span>
+                        <Zap size={22} className="mf-btn-icon" />
+                    </button>
+                </div>
+            </div>
+
+            {!isEditMode && (
+                <div className="mf-progress-footer">
+                    <div className="mf-progress-steps">
+                        {['GK', 'DEF', 'MID', 'FWD', 'DONE'].map((s, i) => (
+                            <div key={s} style={{ display: 'flex', alignItems: 'center' }}>
+                                <div className={`mf-step ${i === 2 ? 'active' : ''} ${i < 2 ? 'completed' : ''}`}>
+                                    <div className="mf-step-circle">{i < 2 ? <Check size={12} /> : i + 1}</div>
+                                    <span>{s}</span>
+                                </div>
+                                {i < 4 && <div className="mf-step-line"></div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <style jsx>{`
                 .mf-page { min-height:100vh; display:flex; justify-content:center; padding:3rem 1rem; animation:mfFadeIn .6s ease-out; }

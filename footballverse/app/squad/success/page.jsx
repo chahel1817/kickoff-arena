@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     Trophy, Zap, ChevronRight, Activity,
@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import '../../entry.css';
 import { useAuth } from '@/context/AuthContext';
+import { getSafePlayerImage } from '@/lib/playerImage';
+import { computeSquadChemistry } from '@/lib/squadChemistry';
 
 export default function SquadSuccessPage() {
     const router = useRouter();
@@ -22,25 +24,30 @@ export default function SquadSuccessPage() {
     const [midfielders, setMidfielders] = useState([]);
     const [forwards, setForwards] = useState([]);
     const [captainId, setCaptainId] = useState(null);
+    const [squadSnapshot, setSquadSnapshot] = useState(null);
+    const hasSyncedRef = useRef(false);
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        const storedTeam = localStorage.getItem('selectedTeam');
-        const storedManager = localStorage.getItem('selectedManager');
-        const storedFormation = localStorage.getItem('formation');
-        const storedGK = localStorage.getItem('goalkeeper');
-        const storedDefs = localStorage.getItem('defenders');
-        const storedMids = localStorage.getItem('midfielders');
-        const storedFwds = localStorage.getItem('forwards');
-        const storedCap = localStorage.getItem('selectedCaptain');
+        if (typeof window === 'undefined') return;
 
-        const parsedTeam = storedTeam ? JSON.parse(storedTeam) : null;
-        const parsedManager = storedManager ? JSON.parse(storedManager) : null;
-        const parsedFormation = storedFormation ? JSON.parse(storedFormation) : null;
-        const parsedGK = storedGK ? JSON.parse(storedGK) : null;
-        const parsedDefs = storedDefs ? JSON.parse(storedDefs) : [];
-        const parsedMids = storedMids ? JSON.parse(storedMids) : [];
-        const parsedFwds = storedFwds ? JSON.parse(storedFwds) : [];
+        const parse = (key, fallback) => {
+            try {
+                const raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : fallback;
+            } catch {
+                return fallback;
+            }
+        };
+
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        const parsedTeam = parse('selectedTeam', null);
+        const parsedManager = parse('selectedManager', null);
+        const parsedFormation = parse('formation', null);
+        const parsedGK = parse('goalkeeper', null);
+        const parsedDefs = parse('defenders', []);
+        const parsedMids = parse('midfielders', []);
+        const parsedFwds = parse('forwards', []);
+        const storedCap = localStorage.getItem('selectedCaptain');
 
         if (parsedTeam) setTeam(parsedTeam);
         if (parsedManager) setManager(parsedManager);
@@ -51,36 +58,46 @@ export default function SquadSuccessPage() {
         setForwards(parsedFwds);
         if (storedCap) setCaptainId(storedCap);
 
-        // 🎊 Confetti burst
+        setSquadSnapshot({
+            selectedTeam: parsedTeam,
+            selectedManager: parsedManager,
+            formation: parsedFormation,
+            goalkeeper: parsedGK,
+            defenders: parsedDefs,
+            midfielders: parsedMids,
+            forwards: parsedFwds,
+            selectedCaptain: storedCap || null,
+        });
+
         import('canvas-confetti').then(({ default: confetti }) => {
             confetti({ particleCount: 180, spread: 120, origin: { x: 0.5, y: 0.55 }, colors: ['#00ff88', '#f59e0b', '#ffffff', '#3b82f6', '#ef4444'] });
             setTimeout(() => confetti({ particleCount: 80, angle: 120, spread: 60, origin: { x: 0 } }), 400);
             setTimeout(() => confetti({ particleCount: 80, angle: 60, spread: 60, origin: { x: 1 } }), 600);
         }).catch(() => { });
+    }, []);
 
-        // ☁️ Sync to backend if logged in
-        if (isLoggedIn) {
-            saveSquad({
-                selectedTeam: parsedTeam,
-                selectedManager: parsedManager,
-                formation: parsedFormation,
-                goalkeeper: parsedGK,
-                defenders: parsedDefs,
-                midfielders: parsedMids,
-                forwards: parsedFwds,
-                selectedCaptain: storedCap || null,
-            }).catch(() => { });
-        }
-    }, [isLoggedIn, saveSquad]);
+    useEffect(() => {
+        if (!isLoggedIn || !squadSnapshot || hasSyncedRef.current) return;
+        hasSyncedRef.current = true;
+        saveSquad(squadSnapshot).catch(() => {
+            hasSyncedRef.current = false;
+        });
+    }, [isLoggedIn, saveSquad, squadSnapshot]);
 
 
     const stats = useMemo(() => {
         const allPlayers = [gk, ...defenders, ...midfielders, ...forwards].filter(Boolean);
         if (allPlayers.length === 0) return { avg: 0, chem: 0 };
         const avg = Math.round(allPlayers.reduce((acc, p) => acc + p.rating, 0) / allPlayers.length);
-        const chem = Math.min(100, (allPlayers.length / 11) * 100);
+        const chem = computeSquadChemistry({
+            formation,
+            gk,
+            defenders,
+            midfielders,
+            forwards,
+        }).score;
         return { avg, chem };
-    }, [gk, defenders, midfielders, forwards]);
+    }, [formation, gk, defenders, midfielders, forwards]);
 
     const pitchPositions = useMemo(() => {
         if (!formation) return [];
@@ -180,8 +197,8 @@ export default function SquadSuccessPage() {
                                     >
                                         <div className="p-avatar-box">
                                             <div className="p-avatar-glow"></div>
-                                            {pos.player?.image ? (
-                                                <img src={pos.player.image} alt="" className="p-avatar-img" />
+                                            {pos.player ? (
+                                                <img src={getSafePlayerImage(pos.player, { proxify: true })} alt={pos.player.name} className="p-avatar-img" />
                                             ) : (
                                                 <div className="p-avatar-placeholder">?</div>
                                             )}
@@ -400,7 +417,7 @@ export default function SquadSuccessPage() {
                     overflow: visible;
                 }
                 .pitch-canvas-wrapper::before {
-                    content: '';
+                    content: ';
                     position: absolute;
                     inset: 0; border-radius: 40px;
                     background: radial-gradient(circle at 10% 10%, rgba(0,255,136,0.1), transparent 45%),
@@ -624,3 +641,5 @@ export default function SquadSuccessPage() {
         </div>
     );
 }
+
+

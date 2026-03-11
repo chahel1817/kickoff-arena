@@ -21,6 +21,10 @@ export function AuthProvider({ children }) {
     const [teams, setTeams] = useState(() => lsGet('teams') ?? []);
     const [activeTeam, setActiveTeam] = useState(() => lsGet('activeTeam') ?? null);
 
+    const emitSquadUpdate = useCallback((patch) => {
+        if (typeof window === 'undefined') return;
+        window.dispatchEvent(new CustomEvent('squad:updated', { detail: patch }));
+    }, []);
 
     // Migration: Reset 50M legacy budget to 0
     useEffect(() => {
@@ -94,6 +98,8 @@ export function AuthProvider({ children }) {
             if (typeof v === 'string') localStorage.setItem(k, v);
             else lsSet(k, v);
         }
+        emitSquadUpdate(patch);
+        setUser((prev) => (prev && typeof prev === 'object' ? { ...prev, ...patch } : prev));
 
         if (!user) return; // Stop here if anonymous
 
@@ -107,7 +113,7 @@ export function AuthProvider({ children }) {
         } catch (e) {
             console.warn('[saveSquad] sync failed', e);
         }
-    }, [user]);
+    }, [user, emitSquadUpdate]);
 
 
     const saveMatchResult = useCallback(async (result) => {

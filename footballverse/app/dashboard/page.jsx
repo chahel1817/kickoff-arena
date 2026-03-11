@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useMemo, useEffect, useState} from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Zap, Trophy, Users, Shield, Layers, Play, ChevronRight, Activity, Star, Rocket, Wallet, ArrowLeftRight } from 'lucide-react';
@@ -209,7 +209,17 @@ export default function DashboardPage() {
                                 </div>
                                 <ChevronRight className="cta-arrow" />
                             </Link>
-                            <Link href="/match" className="cta-action-card highlight">
+                            <div
+                                onClick={() => {
+                                    if (readiness < 100) {
+                                        alert("Make the team first and complete all necessary alignments before entering the Match Arena.");
+                                    } else {
+                                        router.push('/match');
+                                    }
+                                }}
+                                className="cta-action-card highlight"
+                                style={{ cursor: 'pointer' }}
+                            >
                                 <div className="cta-icon-box" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
                                     <Play size={24} fill="currentColor" />
                                 </div>
@@ -218,7 +228,7 @@ export default function DashboardPage() {
                                     <h3>Enter Match Arena</h3>
                                 </div>
                                 <ChevronRight className="cta-arrow" />
-                            </Link>
+                            </div>
                             <Link href="/transfer" className="cta-action-card">
                                 <div className="cta-icon-box" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
                                     <ArrowLeftRight size={24} />

@@ -97,9 +97,16 @@ export default function ShootoutPage() {
         const gk = JSON.parse(localStorage.getItem('goalkeeper') || 'null');
         const list = [...fwds, ...mids, ...defs];
         if (gk) list.push(gk);
-        setSquad(list.length ? list : FALLBACK_PLAYERS);
+
+        if (list.length < 11) {
+            alert("Make the team first and complete all necessary alignments before entering the Match Arena.");
+            router.push('/dashboard');
+            return;
+        }
+
+        setSquad(list);
         window.scrollTo(0, 0);
-    }, []);
+    }, [router]);
 
     const players = useMemo(() => squad.map((p, i) => ({
         id: p.id || `p${i}`, name: p.name || 'Player',

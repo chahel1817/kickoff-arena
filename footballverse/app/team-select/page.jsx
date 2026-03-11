@@ -113,8 +113,9 @@ export default function TeamSelectPage() {
 
     return (
         <div className="entry-page no-snap">
-            <div className="stadium-bg" style={{ filter: 'brightness(0.08) grayscale(0.8)' }}></div>
-            <div className="overlay-gradient"></div>
+            {/* Immersive Locker Room Background */}
+            <div className="locker-room-bg"></div>
+            <div className="overlay-gradient" style={{ background: 'radial-gradient(circle at center, transparent 20%, rgba(2, 4, 10, 0.75) 100%)' }}></div>
 
             <section className="team-select-container">
                 <main className="selection-view" style={{ maxWidth: '1200px', width: '95%' }}>
@@ -262,6 +263,23 @@ export default function TeamSelectPage() {
             </section>
 
             <style jsx>{`
+                /* ─── LOCKER ROOM BACKGROUND ─── */
+                .locker-room-bg {
+                    position: fixed;
+                    inset: 0;
+                    background-image: url('/bright_locker_room.png');
+                    background-size: cover;
+                    background-position: center;
+                    filter: brightness(0.85) contrast(1.05);
+                    z-index: 0;
+                    animation: subtleRoomZoom 30s ease-in-out infinite alternate;
+                }
+
+                @keyframes subtleRoomZoom {
+                    0% { transform: scale(1); }
+                    100% { transform: scale(1.06) translate(1%, 1%); }
+                }
+
                 .team-select-container {
                     min-height: 100vh;
                     display: flex;
@@ -597,20 +615,24 @@ export default function TeamSelectPage() {
                     flex-direction: column;
                     align-items: center;
                     padding: 2.5rem 2rem;
-                    background: rgba(255, 255, 255, 0.02);
-                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    background: rgba(10, 15, 25, 0.55);
+                    backdrop-filter: blur(16px);
+                    -webkit-backdrop-filter: blur(16px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
                     border-radius: 32px;
                     transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
                     cursor: pointer;
                     overflow: hidden;
                     text-align: center;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
                 }
 
                 .team-card-premium:hover {
-                    background: rgba(255, 255, 255, 0.05);
+                    background: rgba(15, 20, 30, 0.75);
                     border-color: var(--team-accent);
                     transform: translateY(-8px);
-                    box-shadow: 0 15px 40px -10px color-mix(in srgb, var(--team-accent) 40%, transparent);
+                    box-shadow: 0 20px 40px -10px color-mix(in srgb, var(--team-accent) 40%, transparent), 
+                                0 0 20px color-mix(in srgb, var(--team-accent) 15%, transparent);
                 }
 
                 .teams-grid-refined.has-selection .team-card-premium:not(.selected) {

@@ -7,7 +7,6 @@ import { AuthProvider } from '@/context/AuthContext';
 
 const ONBOARDING_PATHS = new Set([
     '/',
-    '/welcome',
     '/league',
     '/team-select',
     '/manager-select',

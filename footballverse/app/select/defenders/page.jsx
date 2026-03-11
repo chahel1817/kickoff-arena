@@ -514,8 +514,13 @@ function DefenderSelectPageInner() {
                 .df-step-circle.done { background:#10b981; border-color:#10b981; color:black; }
                 .df-step-line { width:30px; height:1px; background:rgba(255,255,255,.06); margin-bottom:1rem; }
 
+                .df-stadium-bg { 
+                    background-image: url('/defend.jpg') !important;
+                    background-position: center;
+                    filter: brightness(0.35) contrast(1.15) saturate(1.2) !important;
+                }
+
                 /* Responsive */
-                .df-stadium-bg { filter: brightness(0.25) saturate(1.1) contrast(1.1); }
                 @media(max-width:1200px) {
                     .df-grid { grid-template-columns:repeat(3, 1fr); }
                 }

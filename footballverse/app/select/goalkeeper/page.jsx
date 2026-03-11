@@ -341,6 +341,13 @@ function GoalkeeperSelectPageInner() {
                 @keyframes gkFadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
                 .page-exit { animation: gkPageExit 0.6s forwards ease-in; pointer-events: none; }
                 @keyframes gkPageExit { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-20px)} }
+                
+                .gk-stadium-bg {
+                    background-image: url('/goalkeeper.jpg') !important;
+                    background-position: center 20%;
+                    filter: brightness(0.35) contrast(1.15) saturate(1.2) !important;
+                }
+
                 .gk-main { max-width:1400px; width:96%; }
 
                 /* Context Bar */

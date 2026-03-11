@@ -49,8 +49,57 @@ export default function LeagueSelectionPage() {
 
     return (
         <div className="entry-page no-snap">
-            <div className="stadium-bg" style={{ filter: 'brightness(0.12) saturate(0.8)' }}></div>
-            <div className="overlay-gradient"></div>
+            {/* World Map Background */}
+            <div className="world-bg"></div>
+            <div className="overlay-gradient" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(2, 4, 10, 0.95) 100%)' }}></div>
+
+            {/* Geographical Map Nodes Overlay */}
+            <div className="map-nodes-container">
+                {/* Europe Hub */}
+                <div className="map-node eu-node" style={{ top: '35%', left: '48%' }}>
+                    <div className="node-pulse"></div>
+                    <span className="node-label">ENG</span>
+                </div>
+                <div className="map-node eu-node" style={{ top: '40%', left: '46%' }}>
+                    <div className="node-pulse" style={{ animationDelay: '0.4s' }}></div>
+                    <span className="node-label" style={{ transform: 'translate(-50%, 15px)' }}>ESP</span>
+                </div>
+                <div className="map-node eu-node" style={{ top: '36%', left: '51%' }}>
+                    <div className="node-pulse" style={{ animationDelay: '0.8s' }}></div>
+                    <span className="node-label" style={{ transform: 'translate(10px, -50%)' }}>GER</span>
+                </div>
+                <div className="map-node eu-node" style={{ top: '42%', left: '52%' }}>
+                    <div className="node-pulse" style={{ animationDelay: '0.6s' }}></div>
+                    <span className="node-label">ITA</span>
+                </div>
+                <div className="map-node eu-node" style={{ top: '38%', left: '49%' }}>
+                    <div className="node-pulse" style={{ animationDelay: '1.2s' }}></div>
+                    <span className="node-label" style={{ transform: 'translate(-120%, -50%)' }}>FRA</span>
+                </div>
+
+                {/* Americas Hubs */}
+                <div className="map-node" style={{ top: '45%', left: '22%' }}>
+                    <div className="node-pulse" style={{ animationDelay: '1.5s' }}></div>
+                    <span className="node-label">USA</span>
+                </div>
+                <div className="map-node" style={{ top: '65%', left: '32%' }}>
+                    <div className="node-pulse" style={{ animationDelay: '2s' }}></div>
+                    <span className="node-label">BRA</span>
+                </div>
+                <div className="map-node" style={{ top: '62%', left: '28%' }}>
+                    <div className="node-pulse" style={{ animationDelay: '1.8s' }}></div>
+                    <span className="node-label" style={{ transform: 'translate(-120%, -50%)' }}>ARG</span>
+                </div>
+
+                <svg className="map-connections" width="100%" height="100%">
+                    <line x1="22%" y1="45%" x2="48%" y2="35%" className="glow-line" />
+                    <line x1="32%" y1="65%" x2="46%" y2="40%" className="glow-line" />
+                    <line x1="28%" y1="62%" x2="46%" y2="40%" className="glow-line" />
+                    <line x1="51%" y1="36%" x2="52%" y2="42%" className="glow-line" style={{ animationDuration: '30s' }} />
+                    <line x1="48%" y1="35%" x2="51%" y2="36%" className="glow-line" />
+                    <line x1="46%" y1="40%" x2="49%" y2="38%" className="glow-line" style={{ animationDuration: '15s' }} />
+                </svg>
+            </div>
 
             <section className="league-selection-container">
                 <main className="selection-view" style={{ maxWidth: '1200px', width: '95%' }}>
@@ -58,9 +107,9 @@ export default function LeagueSelectionPage() {
                     {/* Header Nav */}
                     <div className="premium-nav-bar glass">
                         <div className="nav-left-group">
-                            <button onClick={() => router.push('/welcome')} className="nav-back-btn-extreme">
+                            <button onClick={() => router.push('/dashboard')} className="nav-back-btn-extreme">
                                 <ChevronLeft size={20} />
-                                <span>RETURN TO WELCOME</span>
+                                <span>RETURN TO DASHBOARD</span>
                             </button>
                         </div>
 
@@ -166,6 +215,92 @@ export default function LeagueSelectionPage() {
             </section>
 
             <style jsx>{`
+                /* ─── WORLD MAP BACKGROUND ─── */
+                .world-bg {
+                    position: fixed;
+                    inset: 0;
+                    background-image: url('/clean_football_world_map.png');
+                    background-size: cover;
+                    background-position: center;
+                    filter: brightness(0.65) saturate(1.2) contrast(1.1);
+                    z-index: 0;
+                    animation: subtlePan 30s ease-in-out infinite alternate;
+                }
+
+                @keyframes subtlePan {
+                    0% { transform: scale(1.02) translate(0, 0); }
+                    100% { transform: scale(1.05) translate(-1%, 2%); }
+                }
+
+                /* ─── GLOWING MAP NODES ─── */
+                .map-nodes-container {
+                    position: fixed;
+                    inset: 0;
+                    z-index: 1;
+                    pointer-events: none;
+                    opacity: 0.8;
+                }
+
+                .map-node {
+                    position: absolute;
+                    width: 8px;
+                    height: 8px;
+                    background: #00ff88;
+                    border-radius: 50%;
+                    box-shadow: 0 0 15px #00ff88, 0 0 30px #00ff88;
+                    transform: translate(-50%, -50%);
+                }
+
+                .node-pulse {
+                    position: absolute;
+                    inset: -12px;
+                    border-radius: 50%;
+                    border: 1px solid rgba(0, 255, 136, 0.6);
+                    animation: pulseRing 3s linear infinite;
+                }
+
+                .map-node:nth-child(2) .node-pulse { animation-delay: 0.5s; }
+                .map-node:nth-child(3) .node-pulse { animation-delay: 1s; }
+                .map-node:nth-child(4) .node-pulse { animation-delay: 1.5s; }
+                .map-node:nth-child(5) .node-pulse { animation-delay: 2s; }
+                .map-node:nth-child(6) .node-pulse { animation-delay: 2.5s; }
+
+                @keyframes pulseRing {
+                    0% { transform: scale(0.5); opacity: 1; }
+                    100% { transform: scale(2.5); opacity: 0; }
+                }
+
+                .map-connections {
+                    position: absolute;
+                    inset: 0;
+                }
+
+                .glow-line {
+                    stroke: rgba(0, 255, 136, 0.3);
+                    stroke-width: 1.5;
+                    stroke-dasharray: 4 8;
+                    animation: dashScroll 20s linear infinite;
+                    filter: drop-shadow(0 0 5px rgba(0, 255, 136, 0.5));
+                }
+
+                @keyframes dashScroll {
+                    from { stroke-dashoffset: 1000; }
+                    to { stroke-dashoffset: 0; }
+                }
+
+                .node-label {
+                    position: absolute;
+                    top: -24px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    font-size: 0.75rem;
+                    font-weight: 900;
+                    letter-spacing: 0.1em;
+                    color: rgba(255, 255, 255, 0.95);
+                    text-shadow: 0 0 10px rgba(0, 255, 136, 0.8), 0 0 4px #000;
+                    pointer-events: none;
+                }
+
                 .league-selection-container {
                     min-height: 100vh;
                     display: flex;
@@ -184,21 +319,23 @@ export default function LeagueSelectionPage() {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 1.5rem 3rem;
+                    padding: 1.25rem 2rem;
                     position: sticky;
-                    top: 0;
+                    top: 1rem;
                     z-index: 2000;
-                    border-bottom: 1px solid rgba(255,255,255,0.08);
+                    border: 1px solid rgba(255, 255, 255, 0.08); /* changed from border-bottom to full border */
                     margin-bottom: 3rem;
-                    background: rgba(10, 10, 15, 0.4);
+                    background: rgba(10, 15, 25, 0.65);
                     backdrop-filter: blur(20px);
                     border-radius: 20px;
                 }
 
                 .nav-left-group {
+                    flex: 1;
                     display: flex;
                     align-items: center;
                     gap: 1.5rem;
+                    justify-content: flex-start;
                 }
 
                 .nav-back-btn-extreme {
@@ -227,6 +364,7 @@ export default function LeagueSelectionPage() {
                 .center-identity {
                     display: flex;
                     align-items: center;
+                    justify-content: center;
                     gap: 1.25rem;
                     background: rgba(255, 255, 255, 0.03);
                     padding: 0.6rem 1.5rem;
@@ -266,6 +404,7 @@ export default function LeagueSelectionPage() {
                 }
 
                 .phase-indicator {
+                    flex: 1;
                     display: flex;
                     flex-direction: column;
                     align-items: flex-end;
@@ -335,8 +474,10 @@ export default function LeagueSelectionPage() {
                 .leagues-grid-refined {
                     display: grid;
                     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-                    gap: 1rem;
+                    gap: 1.5rem;
                     width: 100%;
+                    max-width: 1100px;
+                    margin: 0 auto;
                 }
 
                 /* ─── CARD ─── */
@@ -344,10 +485,12 @@ export default function LeagueSelectionPage() {
                     display: flex;
                     align-items: center;
                     gap: 1.25rem;
-                    background: rgba(255, 255, 255, 0.025);
-                    border: 1px solid rgba(255, 255, 255, 0.07);
+                    background: rgba(10, 15, 25, 0.65);
+                    backdrop-filter: blur(16px);
+                    -webkit-backdrop-filter: blur(16px);
+                    border: 1px solid rgba(255, 255, 255, 0.12);
                     border-radius: 20px;
-                    padding: 1.1rem 1.4rem;
+                    padding: 1.25rem 1.5rem;
                     cursor: pointer;
                     width: 100%;
                     text-align: left;
@@ -357,11 +500,11 @@ export default function LeagueSelectionPage() {
                 }
 
                 .league-card-aligned:hover {
-                    background: rgba(255, 255, 255, 0.06);
+                    background: rgba(15, 20, 30, 0.85);
                     border-color: var(--league-accent, var(--primary));
                     transform: translateY(-4px);
-                    box-shadow: 0 12px 30px -10px color-mix(in srgb, var(--league-accent, var(--primary)) 25%, transparent),
-                                0 0 20px color-mix(in srgb, var(--league-accent, var(--primary)) 10%, transparent);
+                    box-shadow: 0 12px 30px -10px color-mix(in srgb, var(--league-accent, var(--primary)) 40%, transparent),
+                                0 0 25px color-mix(in srgb, var(--league-accent, var(--primary)) 15%, transparent);
                 }
 
                 .coming-soon-card {

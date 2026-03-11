@@ -136,7 +136,8 @@ export default function FormationSelectPage() {
 
     return (
         <div className="entry-page no-snap">
-            <div className="stadium-bg" style={{ filter: 'brightness(0.06) grayscale(0.8)' }}></div>
+            {/* Top-Down Pitch Background */}
+            <div className="pitch-bg"></div>
             <div className="overlay-gradient"></div>
 
             <section className="formation-select-container">
@@ -539,6 +540,18 @@ export default function FormationSelectPage() {
                 @keyframes containerFadeIn {
                     from { opacity: 0; transform: translateY(20px); }
                     to { opacity: 1; transform: translateY(0); }
+                }
+
+                /* Background Image */
+                .pitch-bg {
+                    position: fixed;
+                    inset: 0;
+                    background-image: url('/top_down_pitch_bg.png');
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    filter: blur(4px) brightness(0.35);
+                    z-index: 0;
                 }
 
                 /* Nav Bar */

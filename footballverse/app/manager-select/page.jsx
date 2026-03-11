@@ -201,8 +201,9 @@ export default function ManagerSelectPage() {
 
     return (
         <div className="entry-page no-snap">
-            <div className="stadium-bg" style={{ filter: 'brightness(0.08) grayscale(0.8)' }}></div>
-            <div className="overlay-gradient"></div>
+            {/* Tactical Chalkboard Background */}
+            <div className="tactical-board-bg"></div>
+            <div className="overlay-gradient" style={{ background: 'radial-gradient(circle at center, rgba(0, 255, 136, 0.15), transparent 70%)' }}></div>
 
             {/* Success Overlay - Full Page Scrollable */}
             {showSuccess && (
@@ -453,7 +454,7 @@ export default function ManagerSelectPage() {
                         <div className="search-instruction-row">
                             <div className="search-instruction">
                                 <Info size={14} className="text-primary" />
-                                <span>Hover <span className="text-primary" style={{ fontWeight: 800, textTransform: 'uppercase' }}>Tactical Intel</span> to view the detailed tactical dossier.</span>
+                                <span>Hover <span className="text-primary" style={{ fontWeight: 800, textTransform: 'uppercase' }}>Tactical Intel</span> to know Stability & Risk, or <span className="text-primary" style={{ fontWeight: 800, textTransform: 'uppercase' }}>Click</span> to view the detailed tactical dossier.</span>
                             </div>
                         </div>
 
@@ -513,18 +514,54 @@ export default function ManagerSelectPage() {
                                                     <div className="intel-trigger-wrapper">
                                                         <div
                                                             className="intel-button-glow"
-                                                            onMouseEnter={() => { if (!isMobile) { setIntelManager(manager); setIsIntelOpen(true); } }}
-                                                            onMouseLeave={() => { if (!isMobile) setIsIntelOpen(false); }}
                                                             onClick={(e) => {
-                                                                if (isMobile) {
-                                                                    e.stopPropagation();
-                                                                    setIntelManager(manager);
-                                                                    setIsIntelOpen(true);
-                                                                }
+                                                                e.stopPropagation();
+                                                                setIntelManager(manager);
+                                                                setIsIntelOpen(true);
                                                             }}
                                                         >
                                                             <Cpu size={12} className="text-primary" />
                                                             <span>TACTICAL INTEL</span>
+                                                        </div>
+
+                                                        {/* Native Desktop Hover Tooltip */}
+                                                        <div className="intelligence-hub-panel" onClick={(e) => e.stopPropagation()}>
+                                                            <div className="hub-scanline"></div>
+                                                            <div className="hub-header">
+                                                                <div className="hub-header-main">
+                                                                    <Zap size={14} className="text-primary hub-icon-anim" />
+                                                                    <div className="hub-identity-group">
+                                                                        <span className="hub-title">TACTICAL DOSSIER</span>
+                                                                        <span className="hub-subtitle">{manager.style}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="hub-status-bar">
+                                                                    <div className="status-dot"></div><span>SYNCED</span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="hub-traits-list">
+                                                                {(() => {
+                                                                    const metrics = calculateTacticalMetrics(manager);
+                                                                    return (
+                                                                        <>
+                                                                            <div className="hub-trait-row">
+                                                                                <div className="hub-trait-icon-box"><Shield size={14} /></div>
+                                                                                <span className="hub-trait-name">Stability: {metrics.stability}%</span>
+                                                                            </div>
+                                                                            <div className="hub-trait-row">
+                                                                                <div className="hub-trait-icon-box"><Zap size={14} /></div>
+                                                                                <span className="hub-trait-name">Risk: {metrics.risk}%</span>
+                                                                            </div>
+                                                                        </>
+                                                                    );
+                                                                })()}
+                                                            </div>
+
+                                                            <div className="hub-footer">
+                                                                <Shield size={10} />
+                                                                <span>CLICK FOR FULL REPORT</span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -552,6 +589,19 @@ export default function ManagerSelectPage() {
             </section>
 
             <style jsx>{`
+                /* ─── TACTICAL BOARD BACKGROUND ─── */
+                .tactical-board-bg {
+                    position: fixed;
+                    inset: 0;
+                    background-image: url('/real_madrid_chalkboard.png');
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    filter: brightness(0.4) contrast(1.1) saturate(0.9) blur(3px);
+                    z-index: 0;
+                    opacity: 0.95;
+                }
+
                 /* Overlay - Full Page Scrollable */
                 .phase-complete-overlay {
                     position: fixed;
@@ -980,14 +1030,16 @@ export default function ManagerSelectPage() {
                     font-size: 3.8rem;
                     margin-bottom: 0.75rem;
                     letter-spacing: -0.02em;
+                    text-shadow: 0 0 20px rgba(0,0,0,0.8);
                 }
 
                 .subtitle-premium {
-                    color: rgba(255, 255, 255, 0.45);
+                    color: rgba(255, 255, 255, 0.65);
                     font-size: 1.25rem;
                     max-width: 700px;
                     margin: 0 auto;
                     line-height: 1.6;
+                    text-shadow: 0 0 15px rgba(0,0,0,0.9);
                 }
 
                 .title-ornament { 

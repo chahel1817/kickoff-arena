@@ -72,18 +72,45 @@
     text-decoration: none;
     padding: 0.5rem 1rem;
     border-radius: 10px;
+    border-bottom: 2px solid transparent;
     transition: all 0.3s ease;
     letter-spacing: 0.02em;
 }
 
 .navbar-link:hover {
-    color: var(--primary);
-    background: rgba(0, 255, 136, 0.05);
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.navbar-link.active {
+    color: #00ff9c;
+    border-bottom: 2px solid #00ff9c;
+    background: linear-gradient(to top, rgba(0, 255, 156, 0.1), transparent);
+    text-shadow: 0 0 10px rgba(0, 255, 156, 0.5);
 }
 
 .navbar-icon {
     width: 15px;
     height: 15px;
+    transition: transform 0.3s ease;
+}
+
+.navbar-link:hover .navbar-icon {
+    animation: iconPulse 1s infinite alternate;
+}
+
+@keyframes iconPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .navbar-user {

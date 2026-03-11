@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Zap, Trophy, Users, Shield, Layers, Play, ChevronRight, Activity, Star, Rocket, Wallet, ArrowLeftRight } from 'lucide-react';
@@ -37,6 +37,7 @@ const itemVariants = {
 export default function DashboardPage() {
     const router = useRouter();
     const { user, budget, matchHistory, isLoggedIn, isLoading } = useAuth();
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
     useEffect(() => {
         if (!isLoading && !isLoggedIn) {
@@ -99,11 +100,25 @@ export default function DashboardPage() {
     const name = user?.displayName || user?.userName || user?.username || 'Manager';
     const readiness = Math.min(100, Math.round((needs.totalHave / needs.totalNeed) * 100));
     const ovr = user?.squadOvr || 0;
+    const attOvr = ovr ? Math.min(99, ovr + 2) : 0;
+    const midOvr = ovr ? Math.max(0, ovr - 1) : 0;
+    const defOvr = ovr ? Math.min(99, ovr + 1) : 0;
     const winRate = matchHistory?.length ? Math.round((matchHistory.filter(m => m.score >= 3).length / matchHistory.length) * 100) : 0;
 
+    const handleMouseMove = (e) => {
+        if (typeof window !== 'undefined') {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            setMousePos({ x, y });
+        }
+    };
+
     return (
-        <div className="dashboard-root">
-            <div className="dash-stadium-bg" />
+        <div className="dashboard-root" onMouseMove={handleMouseMove}>
+            <div
+                className="dash-stadium-bg parallax-bg"
+                style={{ transform: `scale(1.06) translate(${mousePos.x}px, ${mousePos.y}px)` }}
+            />
             <div className="dash-grid-overlay" />
 
             <motion.div
@@ -235,29 +250,31 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="status-deck">
-                            <div className="progress-widget highlight">
+                            <div className="progress-widget highlight fifa-rating-card">
                                 <div className="widget-header">
                                     <span>SQUAD RATING</span>
-                                    <span className="highlight-text">{ovr || '--'}</span>
                                 </div>
-                                <div className="widget-bar">
-                                    <motion.div
-                                        className="bar-fill"
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${ovr}%` }}
-                                        transition={{ duration: 1, delay: 0.5 }}
-                                        style={{ background: 'linear-gradient(90deg, #f59e0b, #fbbf24)' }}
-                                    ></motion.div>
+
+                                <div className="fifa-rating-layout">
+                                    <div className="fifa-ovr text-gradient">{ovr || '--'}</div>
+                                    <div className="fifa-label">Overall</div>
+
+                                    <div className="fifa-sub-stats">
+                                        <div className="sub-stat"><span>Attack</span> <strong>{attOvr || '--'}</strong></div>
+                                        <div className="sub-stat"><span>Midfield</span> <strong>{midOvr || '--'}</strong></div>
+                                        <div className="sub-stat"><span>Defense</span> <strong>{defOvr || '--'}</strong></div>
+                                    </div>
                                 </div>
-                                <p className="widget-desc">Performance Potential</p>
                             </div>
 
                             <div className="info-widget glass">
                                 <div className="widget-header">
                                     <span>FINANCES</span>
-                                    <Wallet size={14} className="text-amber-500" />
+                                    <Wallet size={14} className={budget < 5000000 ? 'text-red-500' : 'text-primary'} />
                                 </div>
-                                <h3 className="widget-val text-amber-500">{fmt(budget)}</h3>
+                                <h3 className={`widget-val ${budget < 5000000 ? 'text-red-500' : 'text-primary'}`}>
+                                    {fmt(budget)}
+                                </h3>
                                 <p className="widget-desc">Available for sign-on fees</p>
                             </div>
 

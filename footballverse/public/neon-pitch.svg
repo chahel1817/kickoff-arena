@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650">
+    <defs>
+        <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="blur1" />
+            <feGaussianBlur stdDeviation="15" result="blur2" />
+            <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <style>
+            .line {
+                fill: none;
+                stroke: #ffffff;
+                stroke-width: 6;
+                filter: url(#neonGlow);
+            }
+            .spot {
+                fill: #ffffff;
+                filter: url(#neonGlow);
+            }
+        </style>
+    </defs>
+    <!-- Outer boundary -->
+    <rect class="line" x="50" y="50" width="900" height="550" rx="4" />
+    
+    <!-- Halfway line -->
+    <line class="line" x1="500" y1="50" x2="500" y2="600" />
+    
+    <!-- Center circle -->
+    <circle class="line" cx="500" cy="325" r="80" />
+    <circle class="spot" cx="500" cy="325" r="6" />
+    
+    <!-- Left Penalty box -->
+    <rect class="line" x="50" y="145" width="140" height="360" />
+    
+    <!-- Left Goal box -->
+    <rect class="line" x="50" y="240" width="45" height="170" />
+    
+    <!-- Left Penalty arc -->
+    <path class="line" d="M 190 262 A 78 78 0 0 1 190 388" />
+    
+    <!-- Left Penalty spot -->
+    <circle class="spot" cx="140" cy="325" r="5" />
+
+    <!-- Right Penalty box -->
+    <rect class="line" x="810" y="145" width="140" height="360" />
+    
+    <!-- Right Goal box -->
+    <rect class="line" x="905" y="240" width="45" height="170" />
+    
+    <!-- Right Penalty arc -->
+    <path class="line" d="M 810 262 A 78 78 0 0 0 810 388" />
+    
+    <!-- Right Penalty spot -->
+    <circle class="spot" cx="860" cy="325" r="5" />
+
+    <!-- Corners (arcs over the lines) -->
+    <path class="line" d="M 70 50 A 20 20 0 0 0 50 70" />
+    <path class="line" d="M 930 50 A 20 20 0 0 1 950 70" />
+    <path class="line" d="M 950 580 A 20 20 0 0 1 930 600" />
+    <path class="line" d="M 50 580 A 20 20 0 0 0 70 600" />
+</svg>

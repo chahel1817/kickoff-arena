@@ -19,23 +19,44 @@
     inset: 0;
     z-index: 0;
     background:
-        radial-gradient(ellipse 150% 100% at 50% 10%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
-        radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 30%),
-        linear-gradient(to bottom, #050b10 0%, #08121a 100%);
+        linear-gradient(to bottom, rgba(5, 11, 16, 0.4) 0%, rgba(5, 11, 16, 0.95) 100%),
+        radial-gradient(ellipse at center, transparent 0%, rgba(5, 11, 16, 0.7) 100%),
+        url('/tunnel-bg.png') no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed;
+    filter: contrast(1.15) brightness(0.9) saturate(1.1) blur(4px);
+    transform: scale(1.05);
+    animation: gentlePan 40s ease-in-out infinite alternate;
     pointer-events: none;
+}
+
+@keyframes gentlePan {
+    0% {
+        transform: scale(1.02) translate(0, 0);
+    }
+
+    100% {
+        transform: scale(1.06) translate(-1%, 2%);
+    }
 }
 
 .dash-grid-overlay {
     position: fixed;
     inset: 0;
     z-index: 1;
-    background-image:
-        linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
-    background-size: 80px 80px;
-    mask-image: radial-gradient(circle at center, black 0%, transparent 80%);
+    opacity: 0.05;
     pointer-events: none;
+
+    /* Subtle Tactical Grid Pattern */
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+    background-size: 60px 60px;
+    background-position: center;
+
+    /* Focus the tactical grid in the center and fade out towards edges */
+    mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 80%);
 }
 
 .dash-hero {
@@ -132,16 +153,16 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), transparent);
+    background: linear-gradient(135deg, rgba(0, 255, 156, 0.1), transparent);
     opacity: 0;
     transition: 0.5s;
 }
 
 .dash-card-v2:hover {
     background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(0, 255, 136, 0.3);
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 255, 136, 0.1);
+    border: 1.5px solid #00ff9c;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 0 20px rgba(0, 255, 156, 0.4);
 }
 
 .dash-card-v2:hover::before {
@@ -164,9 +185,11 @@
 }
 
 .dash-card-v2:hover .card-v2-icon {
-    transform: rotate(5deg) scale(1.1);
-    border-color: rgba(0, 255, 136, 0.5);
-    background: rgba(0, 255, 136, 0.1);
+    transform: scale(1.1);
+    border-color: #00ff9c;
+    background: rgba(0, 255, 156, 0.15);
+    color: #00ff9c;
+    box-shadow: 0 0 15px rgba(0, 255, 156, 0.4);
 }
 
 .ctx-flag {
@@ -221,24 +244,67 @@
     text-decoration: none;
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     position: relative;
+    overflow: hidden;
+    /* Required for sweeping light */
+}
+
+/* Insane UI Effect #1: Dynamic Hover Light Sweep */
+.cta-action-card::before {
+    content: '';
+    position: absolute;
+    inset: -100% -100%;
+    /* Large area to sweep comfortably */
+    background: linear-gradient(120deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.25) 50%,
+            transparent 70%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+    z-index: 0;
+}
+
+/* Base content needs to sit above the sweep */
+.cta-action-card>* {
+    position: relative;
+    z-index: 1;
 }
 
 .cta-action-card:hover {
     background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.15);
-    transform: translateX(12px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    border-color: #ffffff;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow:
+        0 0 12px rgba(255, 255, 255, 0.35),
+        0 0 40px rgba(255, 255, 255, 0.15);
+}
+
+.cta-action-card:hover::before {
+    opacity: 1;
+    animation: sweep 2.5s infinite linear;
+}
+
+@keyframes sweep {
+    0% {
+        transform: translateX(-50%);
+    }
+
+    100% {
+        transform: translateX(50%);
+    }
 }
 
 .cta-action-card.highlight {
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), transparent);
-    border-color: rgba(0, 255, 136, 0.2);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .cta-action-card.highlight:hover {
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.02));
-    border-color: var(--primary);
-    box-shadow: 0 20px 40px rgba(0, 255, 136, 0.15);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+    border-color: #ffffff;
+    box-shadow:
+        0 0 15px rgba(255, 255, 255, 0.45),
+        0 0 45px rgba(255, 255, 255, 0.2);
 }
 
 .cta-icon-box {
@@ -256,8 +322,10 @@
 
 .cta-action-card:hover .cta-icon-box {
     transform: scale(1.1);
-    background: rgba(0, 255, 136, 0.1);
-    color: white;
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
 }
 
 .cta-info h3 {
@@ -274,7 +342,7 @@
 }
 
 .cta-action-card:hover .cta-arrow {
-    color: var(--primary);
+    color: #ffffff;
     transform: translateX(8px);
 }
 
@@ -297,13 +365,14 @@
 
 .progress-widget:hover,
 .info-widget:hover {
-    border-color: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid #00ff9c;
     transform: translateY(-4px);
+    box-shadow: 0 0 20px rgba(0, 255, 156, 0.4);
 }
 
 .progress-widget.highlight {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(10, 15, 25, 0.7));
-    border-color: rgba(245, 158, 11, 0.2);
+    background: linear-gradient(135deg, rgba(0, 255, 156, 0.05), rgba(10, 15, 25, 0.7));
+    border-color: rgba(0, 255, 156, 0.2);
 }
 
 .widget-header span {
@@ -497,4 +566,75 @@
     color: var(--primary);
     font-weight: 800;
     text-decoration: underline;
+}
+
+/* CSS for FIFA Style Rating Card */
+.fifa-rating-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.fifa-rating-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 0.25rem;
+}
+
+.fifa-ovr {
+    font-size: 4.5rem;
+    font-weight: 1000;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(0, 255, 156, 0.4);
+}
+
+.fifa-label {
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 1.5rem;
+}
+
+.fifa-sub-stats {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.06);
+}
+
+.sub-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sub-stat span {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.sub-stat strong {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: white;
+}
+
+.text-red-500 {
+    color: #ef4444 !important;
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.parallax-bg {
+    transition: transform 0.1s ease-out;
 }

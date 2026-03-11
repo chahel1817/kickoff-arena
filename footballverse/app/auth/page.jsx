@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Shield, Zap, User, Lock, Eye, EyeOff, Trophy, Star, CheckCircle, XCircle } from 'lucide-react';
+import { Zap, User, Lock, Eye, EyeOff, CheckCircle, XCircle, Shield, UserCircle, Check, PlayCircle, Trophy, AlertTriangle } from 'lucide-react';
 
 export default function AuthPage() {
     const router = useRouter();
@@ -82,16 +82,11 @@ export default function AuthPage() {
             <div className="auth-lights-effect"></div>
             <div className="auth-overlay-darken"></div>
 
-            {/* Floating badges */}
-            <div className="auth-float-badge auth-fb-1"><Trophy size={16} />LEGEND MODE</div>
-            <div className="auth-float-badge auth-fb-2"><Star size={14} />CLOUD SAVE</div>
-            <div className="auth-float-badge auth-fb-3"><Shield size={14} />SECURE</div>
-
             <div className="auth-card">
                 <div className="auth-brand">
                     <div className="auth-logo"><Shield size={28} /></div>
                     <h1 className="auth-brand-name">KICKOFF <span>ARENA</span></h1>
-                    <p className="auth-brand-sub">{mode === 'login' ? 'Welcome back, Manager' : 'Start your managerial career'}</p>
+                    <p className="auth-brand-sub">{mode === 'login' ? 'Your legacy continues.' : 'Ready for matchday decisions?'}</p>
                 </div>
 
                 {/* Mode switcher */}
@@ -104,6 +99,17 @@ export default function AuthPage() {
                     </button>
                     <div className="auth-tab-indicator" style={{ transform: `translateX(${mode === 'login' ? '0%' : '100%'})` }} />
                 </div>
+
+                {/* Manager Avatar Preview */}
+                {username.length > 0 && (
+                    <div className="auth-avatar-preview">
+                        <UserCircle size={36} className="avatar-icon" />
+                        <div className="avatar-text">
+                            <span className="avatar-title">Manager Profile</span>
+                            <strong className="avatar-username">{username}</strong>
+                        </div>
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="auth-form">
                     {/* Username */}
@@ -145,33 +151,10 @@ export default function AuthPage() {
                         </div>
 
                         {/* Password Requirements - Only show in register mode */}
-                        {mode === 'register' && password.length > 0 && (
-                            <div className="auth-password-requirements">
-                                <div className={`req-item ${passwordValidation.hasMinLength ? 'met' : 'unmet'}`}>
-                                    {passwordValidation.hasMinLength ? <CheckCircle size={14} /> : <XCircle size={14} />}
-                                    <span>Characters: <strong>{passwordValidation.passwordLength}/6</strong></span>
-                                </div>
-                                <div className={`req-item ${passwordValidation.hasNumber ? 'met' : 'unmet'}`}>
-                                    {passwordValidation.hasNumber ? <CheckCircle size={14} /> : <XCircle size={14} />}
-                                    <span>Numbers: <strong>{passwordValidation.numberCount}</strong> {passwordValidation.hasNumber ? '✓' : 'needed'}</span>
-                                </div>
-                                <div className={`req-item ${passwordValidation.hasSpecialChar ? 'met' : 'unmet'}`}>
-                                    {passwordValidation.hasSpecialChar ? <CheckCircle size={14} /> : <XCircle size={14} />}
-                                    <span>Special chars: <strong>{passwordValidation.specialCharCount}</strong> {passwordValidation.hasSpecialChar ? '✓' : 'needed'}</span>
-                                </div>
-
-                                {/* Strength Indicator */}
-                                <div className="req-strength-bar">
-                                    <div className="strength-bar-fill" style={{
-                                        width: `${(passwordValidation.strength / 3) * 100}%`,
-                                        backgroundColor: passwordValidation.strength === 3 ? '#86efac' : (passwordValidation.strength === 2 ? '#fbbf24' : '#f87171')
-                                    }}></div>
-                                </div>
-                                <div className="req-strength-text">
-                                    Strength: <span className={passwordValidation.strength === 3 ? 'strong' : (passwordValidation.strength === 2 ? 'medium' : 'weak')}>
-                                        {passwordValidation.strength === 3 ? 'Strong' : (passwordValidation.strength === 2 ? 'Medium' : 'Weak')}
-                                    </span>
-                                </div>
+                        {mode === 'register' && password.length > 0 && !passwordValidation.isValid && (
+                            <div className="auth-password-warning">
+                                <AlertTriangle size={15} />
+                                <span><strong>Weak password:</strong> Must contain at least 6 characters, 1 number, and 1 special character.</span>
                             </div>
                         )}
                     </div>
@@ -184,29 +167,23 @@ export default function AuthPage() {
 
                     <button
                         type="submit"
-                        className="auth-submit"
+                        className={`auth-submit ${mode === 'login' ? 'submit-login' : 'submit-register'}`}
                         disabled={loading || (mode === 'register' && password.length > 0 && !passwordValidation.isValid)}
                     >
                         {loading ? (
                             <span className="auth-spinner" />
                         ) : (
                             <>
-                                <Zap size={18} />
-                                {mode === 'login' ? 'ENTER THE ARENA' : 'BEGIN CAREER'}
+                                {mode === 'login' ? <PlayCircle size={18} /> : <Trophy size={18} />}
+                                {mode === 'login' ? 'START MANAGER MODE' : 'BEGIN YOUR CAREER'}
                             </>
                         )}
                     </button>
                 </form>
 
-                <div className="auth-features">
-                    <div className="auth-feat"><Shield size={13} />Cloud Save</div>
-                    <div className="auth-feat"><Trophy size={13} />Match History</div>
-                    <div className="auth-feat"><Star size={13} />Transfer Market</div>
-                </div>
-
-                <p className="auth-skip" onClick={() => router.push('/')}>
-                    Continue as guest — progress won&apos;t be saved
-                </p>
+                <button type="button" className="auth-guest-btn" onClick={() => router.push('/')}>
+                    Continue as Guest
+                </button>
             </div>
 
             <style>{`
@@ -215,52 +192,22 @@ export default function AuthPage() {
                     background: #051015; position: relative; overflow: hidden; padding: 2rem;
                 }
                 
-                /* Stadium Background - Football Field Pattern */
+                /* Stadium Background - Image with Animation */
                 .auth-stadium-bg {
                     position: fixed; inset: 0; z-index: 0;
                     background: 
-                        /* Field lines pattern */
-                        repeating-linear-gradient(
-                            90deg,
-                            rgba(34,197,94,0.08) 0px,
-                            rgba(34,197,94,0.08) 60px,
-                            transparent 60px,
-                            transparent 120px
-                        ),
-                        /* Horizontal lines */
-                        repeating-linear-gradient(
-                            0deg,
-                            rgba(34,197,94,0.06) 0px,
-                            rgba(34,197,94,0.06) 40px,
-                            transparent 40px,
-                            transparent 80px
-                        ),
-                        /* Base stadium gradient */
-                        linear-gradient(to bottom,
-                            rgba(10,35,50,0.4) 0%,
-                            rgba(15,42,60,0.35) 20%,
-                            rgba(5,30,45,0.3) 50%,
-                            rgba(15,42,60,0.35) 80%,
-                            rgba(10,35,50,0.4) 100%
-                        ),
-                        /* Green field overlay */
-                        linear-gradient(135deg,
-                            rgba(34,197,94,0.15) 0%,
-                            rgba(34,197,94,0.08) 50%,
-                            rgba(34,197,94,0.12) 100%
-                        ),
-                        /* Radial light effect */
-                        radial-gradient(ellipse 150% 100% at 50% 30%, rgba(0,255,136,0.12) 0%, transparent 60%),
-                        /* Corner stadium lights */
-                        radial-gradient(circle at 5% 10%, rgba(245,158,11,0.1) 0%, transparent 20%),
-                        radial-gradient(circle at 95% 10%, rgba(59,130,246,0.1) 0%, transparent 20%),
-                        radial-gradient(circle at 5% 90%, rgba(59,130,246,0.1) 0%, transparent 20%),
-                        radial-gradient(circle at 95% 90%, rgba(236,72,153,0.1) 0%, transparent 20%),
-                        /* Center circle highlight */
-                        radial-gradient(circle at 50% 50%, rgba(34,197,94,0.08) 0%, transparent 40%);
-                    background-size: 120px 100%, 100% 80px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
-                    background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+                        radial-gradient(circle at 50% 50%, rgba(5,16,21,0.1) 0%, rgba(5,16,21,0.65) 100%),
+                        url('/login-bg.png') no-repeat center center;
+                    background-size: cover;
                     background-attachment: fixed;
+                    filter: contrast(1.1) brightness(1.15) saturate(1.1);
+                    transform: scale(1.05); /* Slight zoom for a dynamic feel */
+                    animation: subtlePan 35s ease-in-out infinite alternate;
+                }
+
+                @keyframes subtlePan {
+                    0% { transform: scale(1.05) translate(0, 0); }
+                    100% { transform: scale(1.1) translate(-20px, 15px); }
                 }
                 
                 /* Enhanced Gradient Overlay */
@@ -275,6 +222,8 @@ export default function AuthPage() {
                             rgba(10,25,35,0.3) 70%,
                             rgba(5,20,30,0.5) 100%
                         ),
+                        /* Center darken for card */
+                        radial-gradient(circle at 50% 50%, rgba(3,9,14,0.4) 0%, transparent 50%),
                         /* Subtle top glow */
                         radial-gradient(ellipse 100% 80% at 50% -10%, rgba(0,255,136,0.15) 0%, transparent 60%),
                         /* Bottom stadium effect */
@@ -356,14 +305,14 @@ export default function AuthPage() {
                 /* Card - With stadiums light effect */
                 .auth-card {
                     position: relative; width: 100%; max-width: 440px; z-index: 30;
-                    background: rgba(5,12,22,0.95); backdrop-filter: blur(50px);
-                    border: 1.5px solid rgba(0,255,136,.25); border-radius: 32px;
-                    padding: 3rem 2.5rem; 
+                    background: rgba(5,12,22,0.35); backdrop-filter: blur(16px);
+                    border: 1px solid rgba(0,255,136,.2); border-radius: 32px;
+                    padding: 2rem 2.5rem; 
                     box-shadow: 
-                        0 50px 150px -30px rgba(0,0,0,.95), 
-                        0 0 80px rgba(0,255,136,.15),
+                        0 40px 100px -20px rgba(0,0,0,.6), 
+                        0 0 60px rgba(0,255,136,.08),
                         inset 0 1px 2px rgba(255,255,255,.08),
-                        0 0 40px rgba(0,255,136,.08);
+                        0 0 40px rgba(0,255,136,.04);
                     animation: cardIn .8s cubic-bezier(0.23, 1, 0.32, 1) backwards;
                 }
                 
@@ -373,9 +322,9 @@ export default function AuthPage() {
                 }
 
                 /* Brand */
-                .auth-brand { text-align: center; margin-bottom: 2rem; }
+                .auth-brand { text-align: center; margin-bottom: 1.5rem; }
                 .auth-logo {
-                    width: 70px; height: 70px; border-radius: 20px; margin: 0 auto 1rem;
+                    width: 60px; height: 60px; border-radius: 20px; margin: 0 auto .75rem;
                     background: linear-gradient(135deg, rgba(0,255,136,.25), rgba(0,255,136,.1));
                     border: 1.5px solid rgba(0,255,136,.5); display: flex; align-items: center; justify-content: center;
                     color: #00ff88; 
@@ -395,8 +344,9 @@ export default function AuthPage() {
                 /* Tabs */
                 .auth-tabs {
                     position: relative; display: grid; grid-template-columns: 1fr 1fr;
-                    background: rgba(0,255,136,.05); border-radius: 14px;
-                    border: 1px solid rgba(0,255,136,.2); padding: 3px; margin-bottom: 2rem; overflow: hidden;
+                    background: rgba(0,255,136,.02); border-radius: 14px;
+                    border: 1px solid rgba(0,255,136,.15); padding: 3px; margin-bottom: 1.5rem; overflow: hidden;
+                    backdrop-filter: blur(8px);
                 }
                 .auth-tab {
                     position: relative; z-index: 2; padding: .7rem; border-radius: 11px;
@@ -413,23 +363,26 @@ export default function AuthPage() {
                 }
 
                 /* Form */
-                .auth-form { display: flex; flex-direction: column; gap: 1.25rem; }
-                .auth-field { display: flex; flex-direction: column; gap: .5rem; }
+                .auth-form { display: flex; flex-direction: column; gap: 1rem; }
+                .auth-field { display: flex; flex-direction: column; gap: .4rem; }
                 .auth-label { font-size: .55rem; font-weight: 900; letter-spacing: .18em; color: rgba(255,255,255,.4); }
                 .auth-input-wrap { position: relative; display: flex; align-items: center; }
                 .auth-input-icon { position: absolute; left: 1rem; color: rgba(0,255,136,.5); pointer-events: none; }
                 .auth-input {
-                    width: 100%; padding: 1rem 1rem 1rem 3rem; border-radius: 14px;
-                    background: rgba(0,255,136,.06); border: 1.5px solid rgba(0,255,136,.2);
+                    width: 100%; padding: .85rem 1rem .85rem 2.8rem; border-radius: 14px;
+                    background: rgba(0,255,136,.03); border: 1px solid rgba(0,255,136,.15);
                     color: white; font-size: .95rem; font-weight: 500; outline: none;
+                    backdrop-filter: blur(8px);
                     transition: border-color .3s, box-shadow .3s, background .3s;
                 }
                 .auth-input:focus {
-                    border-color: rgba(0,255,136,.6);
-                    background: rgba(0,255,136,.1);
-                    box-shadow: 0 0 0 4px rgba(0,255,136,.1), 0 0 20px rgba(0,255,136,.15);
+                    border-color: rgba(0,255,136,.8);
+                    background: rgba(0,255,136,.08);
+                    box-shadow: 0 0 15px rgba(0,255,136,.4), inset 0 0 10px rgba(0,255,136,.15);
+                    transform: translateY(-2px);
                 }
-                .auth-input::placeholder { color: rgba(255,255,255,.25); }
+                .auth-input::placeholder { color: rgba(255,255,255,.25); transition: color .3s ease; }
+                .auth-input:focus::placeholder { color: transparent; }
                 .auth-toggle-pwd {
                     position: absolute; right: 1rem; background: none; border: none;
                     color: rgba(0,255,136,.5); cursor: pointer; padding: .25rem;
@@ -444,117 +397,93 @@ export default function AuthPage() {
                     color: #fecaca; font-size: .8rem; font-weight: 700;
                 }
 
-                /* Password Requirements */
-                .auth-password-requirements {
-                    display: flex; flex-direction: column; gap: .65rem;
-                    padding: 1rem; border-radius: 12px;
-                    background: rgba(0,255,136,.08); border: 1px solid rgba(0,255,136,.2);
-                    margin-top: .5rem;
+                /* Password Warning Box */
+                .auth-password-warning {
+                    display: flex; align-items: flex-start; gap: .5rem;
+                    padding: .85rem 1rem; border-radius: 12px; margin-top: .5rem;
+                    background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.4);
+                    color: rgba(251,191,36,.9); font-size: .75rem; font-weight: 500; line-height: 1.4;
                     animation: slideIn .3s ease-out;
+                    box-shadow: 0 0 15px rgba(251,191,36,.05);
                 }
+                .auth-password-warning strong { color: #fcd34d; font-weight: 800; display: block; margin-bottom: .2rem; }
+                .auth-password-warning svg { flex-shrink: 0; margin-top: .15rem; color: #fbbf24; }
                 
                 @keyframes slideIn {
                     from { opacity: 0; transform: translateY(-10px); }
                     to { opacity: 1; transform: translateY(0); }
                 }
-                
-                .req-item {
-                    display: flex; align-items: center; gap: .6rem;
-                    font-size: .75rem; font-weight: 600; transition: all .2s;
-                    padding: .4rem .5rem; border-radius: 8px;
-                }
-                .req-item.met {
-                    color: #86efac;
-                    background: rgba(134,239,172,.08);
-                }
-                .req-item.unmet {
-                    color: rgba(255,255,255,.5);
-                    background: rgba(239,68,68,.05);
-                }
-                .req-item strong {
-                    color: inherit;
-                    font-weight: 700;
-                }
-                .req-item svg {
-                    flex-shrink: 0;
-                    min-width: 14px;
-                    animation: fadeIn .3s ease;
-                }
-                
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                
-                /* Strength Bar */
-                .req-strength-bar {
-                    width: 100%; height: 4px; border-radius: 4px;
-                    background: rgba(255,255,255,.1); overflow: hidden;
-                    margin-top: .25rem;
-                }
-                .strength-bar-fill {
-                    height: 100%; border-radius: 4px;
-                    transition: width .3s ease, background-color .3s ease;
-                    box-shadow: 0 0 10px currentColor;
-                }
-                
-                .req-strength-text {
-                    font-size: .65rem; font-weight: 700;
-                    color: rgba(255,255,255,.5); text-align: center;
-                    margin-top: .25rem;
-                }
-                .req-strength-text span.strong {
-                    color: #86efac;
-                }
-                .req-strength-text span.medium {
-                    color: #fbbf24;
-                }
-                .req-strength-text span.weak {
-                    color: #f87171;
-                }
 
+                /* Submits */
                 .auth-submit {
                     display: flex; align-items: center; justify-content: center; gap: .75rem;
                     padding: 1.2rem; border-radius: 16px; border: none; cursor: pointer;
+                    font-weight: 950; font-size: 1rem; letter-spacing: .05em;
+                    margin-top: .5rem; transition: all .3s cubic-bezier(0.23, 1, 0.32, 1); 
+                }
+                
+                /* Login Button Style (Green) */
+                .submit-login {
                     background: linear-gradient(135deg, #00ff88, #059669);
-                    color: #01160d; font-weight: 950; font-size: 1rem; letter-spacing: .05em;
-                    margin-top: .5rem; transition: all .3s; 
-                    box-shadow: 
-                        0 15px 40px rgba(0,255,136,.35), 
-                        0 0 30px rgba(0,255,136,.15),
-                        inset 0 1px 2px rgba(255,255,255,.2);
+                    color: #01160d;
+                    animation: pulseGlowBtnLogin 3s infinite alternate;
                 }
-                .auth-submit:hover:not(:disabled) { 
+                @keyframes pulseGlowBtnLogin {
+                    0% { box-shadow: 0 10px 30px rgba(0,255,136,.25), 0 0 20px rgba(0,255,136,.1), inset 0 1px 2px rgba(255,255,255,.1); }
+                    100% { box-shadow: 0 15px 45px rgba(0,255,136,.4), 0 0 40px rgba(0,255,136,.25), inset 0 1px 2px rgba(255,255,255,.3); }
+                }
+                .submit-login:hover:not(:disabled) { 
                     transform: translateY(-4px); 
-                    box-shadow: 
-                        0 20px 50px rgba(0,255,136,.5), 
-                        0 0 40px rgba(0,255,136,.25),
-                        inset 0 1px 2px rgba(255,255,255,.3);
+                    box-shadow: 0 20px 50px rgba(0,255,136,.6), 0 0 50px rgba(0,255,136,.4), inset 0 1px 2px rgba(255,255,255,.4);
+                    animation: none;
                 }
-                .auth-submit:disabled { opacity: .6; cursor: not-allowed; }
-                .auth-spinner {
-                    width: 20px; height: 20px; border-radius: 50%;
-                    border: 2px solid rgba(0,0,0,.3); border-top-color: #01160d;
-                    animation: spin .6s linear infinite;
-                }
-                @keyframes spin { to { transform: rotate(360deg); } }
 
-                /* Features row */
-                .auth-features {
-                    display: flex; justify-content: center; gap: 1.5rem;
-                    margin-top: 1.5rem; padding-top: 1.5rem;
-                    border-top: 1px solid rgba(0,255,136,.15);
+                /* Register Button Style (Gold) */
+                .submit-register {
+                    background: linear-gradient(135deg, #fbbf24, #d97706);
+                    color: #451a03;
+                    animation: pulseGlowBtnReg 3s infinite alternate;
                 }
-                .auth-feat {
-                    display: flex; align-items: center; gap: .4rem;
-                    font-size: .6rem; font-weight: 700; color: rgba(255,255,255,.35);
+                @keyframes pulseGlowBtnReg {
+                    0% { box-shadow: 0 10px 30px rgba(251,191,36,.25), 0 0 20px rgba(251,191,36,.1), inset 0 1px 2px rgba(255,255,255,.1); }
+                    100% { box-shadow: 0 15px 45px rgba(251,191,36,.4), 0 0 40px rgba(251,191,36,.25), inset 0 1px 2px rgba(255,255,255,.3); }
                 }
-                .auth-skip {
-                    text-align: center; margin-top: 1.25rem; font-size: .7rem;
-                    color: rgba(255,255,255,.3); cursor: pointer; transition: color .2s;
-                    font-weight: 600;
+                .submit-register:hover:not(:disabled) { 
+                    transform: translateY(-4px); 
+                    box-shadow: 0 20px 50px rgba(251,191,36,.6), 0 0 50px rgba(251,191,36,.4), inset 0 1px 2px rgba(255,255,255,.4);
+                    animation: none;
                 }
-                .auth-skip:hover { color: rgba(255,255,255,.7); }
+
+                .auth-submit:disabled { opacity: .6; cursor: not-allowed; animation: none; box-shadow: none; filter: grayscale(0.5); transform: none !important; }
+
+                /* Avatar Preview */
+                .auth-avatar-preview {
+                    display: flex; align-items: center; gap: 1rem;
+                    background: rgba(0,255,136,.05); border: 1px solid rgba(0,255,136,.2);
+                    padding: .85rem 1.25rem; border-radius: 16px; margin-bottom: 1.5rem;
+                    animation: slideDown .4s cubic-bezier(0.23, 1, 0.32, 1);
+                    backdrop-filter: blur(8px);
+                }
+                @keyframes slideDown {
+                    from { opacity: 0; transform: translateY(-10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .avatar-icon { color: #00ff88; filter: drop-shadow(0 0 10px rgba(0,255,136,.4)); }
+                .avatar-text { display: flex; flex-direction: column; }
+                .avatar-title { font-size: .65rem; color: rgba(255,255,255,.4); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
+                .avatar-username { color: white; font-size: 1rem; font-weight: 800; letter-spacing: .02em; }
+
+                /* Guest Option */
+                .auth-guest-btn {
+                    width: 100%; margin-top: 1.25rem; padding: 1rem; border-radius: 14px;
+                    background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.1);
+                    color: rgba(255,255,255,.6); font-weight: 600; font-size: .85rem;
+                    cursor: pointer; transition: all .3s; backdrop-filter: blur(8px);
+                }
+                .auth-guest-btn:hover {
+                    background: rgba(255,255,255,.08); color: white; border-color: rgba(255,255,255,.2);
+                    transform: translateY(-2px);
+                }
             `}</style>
         </div>
     );

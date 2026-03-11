@@ -1,7 +1,8 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Trophy, Users, LayoutDashboard, Search, LogOut, ArrowLeftRight, User } from 'lucide-react';
+import { Trophy, Users, LayoutDashboard, Search, LogOut, ArrowLeftRight, User, Home, Crosshair } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import './navbar.css';
 
@@ -13,6 +14,7 @@ function fmt(n) {
 
 export default function Navbar() {
     const { user, budget, logout, isLoggedIn } = useAuth();
+    const pathname = usePathname();
     const username = user?.userName || user?.username || 'Manager';
 
     return (
@@ -25,20 +27,20 @@ export default function Navbar() {
             </Link>
 
             <div className="navbar-links">
-                <Link href="/dashboard" className="navbar-link">
-                    <LayoutDashboard className="navbar-icon" /> Dashboard
+                <Link href="/dashboard" className={`navbar-link ${pathname === '/dashboard' ? 'active' : ''}`}>
+                    <Home className="navbar-icon" /> Dashboard
                 </Link>
-                <Link href="/league" className="navbar-link">
+                <Link href="/league" className={`navbar-link ${pathname === '/league' ? 'active' : ''}`}>
                     <Search className="navbar-icon" /> Discover
                 </Link>
-                <Link href="/squad/review" className="navbar-link">
+                <Link href="/squad/review" className={`navbar-link ${pathname === '/squad/review' ? 'active' : ''}`}>
                     <Users className="navbar-icon" /> My Squad
                 </Link>
-                <Link href="/transfer" className="navbar-link">
+                <Link href="/transfer" className={`navbar-link ${pathname === '/transfer' ? 'active' : ''}`}>
                     <ArrowLeftRight className="navbar-icon" /> Transfers
                 </Link>
-                <Link href="/tactics" className="navbar-link">
-                    <LayoutDashboard className="navbar-icon" /> Tactics
+                <Link href="/tactics" className={`navbar-link ${pathname === '/tactics' ? 'active' : ''}`}>
+                    <Crosshair className="navbar-icon" /> Tactics
                 </Link>
             </div>
 

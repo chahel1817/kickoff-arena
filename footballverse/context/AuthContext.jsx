@@ -7,9 +7,11 @@ const AuthCtx = createContext(null);
 
 // Central accessor for squad data — tries server first, falls back to localStorage
 function lsGet(key) {
+    if (typeof window === 'undefined') return null;
     try { return JSON.parse(localStorage.getItem(key)); } catch { return null; }
 }
 function lsSet(key, val) {
+    if (typeof window === 'undefined') return;
     try { localStorage.setItem(key, JSON.stringify(val)); } catch { }
 }
 
@@ -17,7 +19,6 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(undefined); // undefined = loading
     const [budget, setBudget] = useState(() => lsGet('budget') ?? 0);
     const [transfers, setTransfers] = useState(() => lsGet('transfers') ?? []);
-    const [matchHistory, setMatchHistory] = useState(() => lsGet('matchHistory') ?? []);
     const [teams, setTeams] = useState(() => lsGet('teams') ?? []);
     const [activeTeam, setActiveTeam] = useState(() => lsGet('activeTeam') ?? null);
 
@@ -55,7 +56,6 @@ export function AuthProvider({ children }) {
                 setUser(d);
                 setBudget(d.budget ?? 0);
                 setTransfers(d.transfers ?? []);
-                setMatchHistory(d.matchHistory ?? []);
                 setTeams(d.teams ?? []);
                 setActiveTeam(d.activeTeamId ?? null);
                 syncToLocalStorage(d);
@@ -68,12 +68,10 @@ export function AuthProvider({ children }) {
         }
     }, []);
 
-
-
     useEffect(() => { fetchMe(); }, [fetchMe]);
 
     function syncToLocalStorage(u) {
-        if (!u) return;
+        if (!u || typeof window === 'undefined') return;
         if (u.userName) localStorage.setItem('userName', u.userName);
         if (u.displayName) localStorage.setItem('displayName', u.displayName);
         if (u.email) localStorage.setItem('email', u.email);
@@ -93,6 +91,7 @@ export function AuthProvider({ children }) {
 
     // Persist a squad field to the backend
     const saveSquad = useCallback(async (patch) => {
+        if (typeof window === 'undefined') return;
         // Optimistically update localStorage
         for (const [k, v] of Object.entries(patch)) {
             if (typeof v === 'string') localStorage.setItem(k, v);
@@ -114,36 +113,6 @@ export function AuthProvider({ children }) {
             console.warn('[saveSquad] sync failed', e);
         }
     }, [user, emitSquadUpdate]);
-
-
-    const saveMatchResult = useCallback(async (result) => {
-        const reward = (result.score || 0) * 3_500_000;
-
-        setMatchHistory(prev => {
-            const next = [{ ...result, reward }, ...prev].slice(0, 50);
-            lsSet('matchHistory', next);
-            return next;
-        });
-
-        setBudget(prev => {
-            const next = prev + reward;
-            lsSet('budget', next);
-            return next;
-        });
-
-        if (!user) return;
-
-        try {
-            const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/matches`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(result),
-                credentials: 'include'
-            });
-            const d = await r.json();
-            if (d && d.budget !== undefined) setBudget(d.budget);
-        } catch { }
-    }, [user]);
 
     const executeTransfer = useCallback(async (position, playerOut, playerIn) => {
         const fee = calculatePlayerValue(playerIn.rating);
@@ -185,16 +154,9 @@ export function AuthProvider({ children }) {
         return d;
     }, [user, budget, transfers, fetchMe]);
 
-
     const login = useCallback(async (username, password) => {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
         const apiUrl = `${baseUrl}/auth/login`;
-        console.log('[Auth] Attempting login at:', apiUrl);
-
-        if (baseUrl && !baseUrl.endsWith('/api')) {
-            console.warn('[Auth] WARNING: NEXT_PUBLIC_API_URL does not end with "/api". This often causes 404 errors.');
-        }
-
 
         const r = await fetch(apiUrl, {
             method: 'POST',
@@ -203,19 +165,15 @@ export function AuthProvider({ children }) {
             credentials: 'include'
         });
 
-
         const contentType = r.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
-            const text = await r.text();
-            console.error('Non-JSON response:', text);
-            throw new Error('Server returned an invalid response. The API might be starting up or under maintenance.');
+            throw new Error('Server returned an invalid response.');
         }
 
         const d = await r.json();
         if (!r.ok) throw new Error(d.error || 'Login failed');
         await fetchMe();
         return d;
-
     }, [fetchMe]);
 
     const register = useCallback(async (username, password) => {
@@ -228,16 +186,13 @@ export function AuthProvider({ children }) {
 
         const contentType = r.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
-            const text = await r.text();
-            console.error('Non-JSON response:', text);
-            throw new Error('Server returned an invalid response. The API might be starting up or under maintenance.');
+            throw new Error('Server returned an invalid response.');
         }
 
         const d = await r.json();
         if (!r.ok) throw new Error(d.error || 'Registration failed');
         await fetchMe();
         return d;
-
     }, [fetchMe]);
 
     const logout = useCallback(async () => {
@@ -245,11 +200,10 @@ export function AuthProvider({ children }) {
             method: 'POST',
             credentials: 'include'
         });
-        localStorage.clear();
+        if (typeof window !== 'undefined') localStorage.clear();
         setUser(null);
         setBudget(0);
         setTransfers([]);
-        setMatchHistory([]);
         setTeams([]);
         setActiveTeam(null);
         window.location.href = '/';
@@ -257,12 +211,9 @@ export function AuthProvider({ children }) {
 
     const setActiveTeamId = useCallback(async (teamId) => {
         if (!user) return;
-
-        // Update local state
         setActiveTeam(teamId);
-        localStorage.setItem('activeTeam', teamId);
+        if (typeof window !== 'undefined') localStorage.setItem('activeTeam', teamId);
 
-        // Sync to backend
         try {
             await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
                 method: 'PATCH',
@@ -277,7 +228,6 @@ export function AuthProvider({ children }) {
 
     const fetchTeams = useCallback(async () => {
         if (!user) return;
-
         try {
             const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/teams`, {
                 credentials: 'include'
@@ -292,11 +242,10 @@ export function AuthProvider({ children }) {
         }
     }, [user]);
 
-
     return (
         <AuthCtx.Provider value={{
-            user, budget, transfers, matchHistory, teams, activeTeam,
-            saveSquad, saveMatchResult, executeTransfer,
+            user, budget, transfers, teams, activeTeam,
+            saveSquad, executeTransfer,
             login, register, logout, setActiveTeamId, fetchTeams,
             isLoading: user === undefined,
             isLoggedIn: !!user,

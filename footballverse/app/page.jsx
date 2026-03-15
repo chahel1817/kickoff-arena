@@ -169,18 +169,17 @@ export default function EntryPage() {
                     <div className="info-panel-premium glow-green">
                         <div className="panel-header">
                             <Zap className="card-icon" style={{ color: '#00ff88', filter: 'drop-shadow(0 0 12px rgba(0,255,136,0.4))' }} />
-                            <h2 className="text-600">Match Day Arena</h2>
+                            <h2 className="text-600">Dynamic Strategy</h2>
                         </div>
                         <div className="panel-content">
                             <p className="text-400">
-                                Take your dream squad into the arena and test your skill in high-pressure
-                                environments. From clinical penalty shootouts to tactical simulations,
-                                your squad&apos;s chemistry and individual talent are put to the ultimate test.
+                                Your tactical adjustments happen in real-time. Adapt to your opponent's
+                                formation and exploit weaknesses on the fly with our deep strategy engine.
                             </p>
                             <ul className="feature-bullets">
-                                <li className="text-500">• Interactive Mini-Games</li>
-                                <li className="text-500">• Skill-Based Performance</li>
-                                <li className="text-500">• Clinical Finish Training</li>
+                                <li className="text-500">• Real-Time Tactics</li>
+                                <li className="text-500">• Deep Formation Control</li>
+                                <li className="text-500">• Advanced Player Roles</li>
                             </ul>
                         </div>
                     </div>
@@ -262,19 +261,6 @@ export default function EntryPage() {
             {/* Footer System Text */}
             <div className="footer-exploration">
                 <div className="exploration-divider"></div>
-                <button
-                    type="button"
-                    className="explore-btn-pillar"
-                    onClick={() => {
-                        const el = document.getElementById('features-section');
-                        el?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                >
-                    <span className="pillar-halo"></span>
-                    <Trophy size={20} className="pillar-icon" />
-                    <span>EXPLORE THE ARENA</span>
-                    <ChevronDown size={20} />
-                </button>
                 <div className="footer-info">
                     <p className="text-300">System v1.0 • Authorized Access • Kickoff Arena 2026</p>
                 </div>

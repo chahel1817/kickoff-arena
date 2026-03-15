@@ -1,14 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useMemo, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useMemo, useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Zap, Trophy, Users, Shield, Layers, Play, ChevronRight, Activity, Star, Rocket, Wallet, ArrowLeftRight } from 'lucide-react';
 import leagues from '../../data/leagues.json';
 import { useAuth } from '@/context/AuthContext';
 import { getSafePlayerImage } from '@/lib/playerImage';
 import { computeSquadChemistry } from '@/lib/squadChemistry';
+import OnboardingModal from '@/components/modals/OnboardingModal';
 import './dashboard.css';
 
 function fmt(n) {
@@ -36,11 +37,26 @@ const itemVariants = {
     }
 };
 
-export default function DashboardPage() {
+function DashboardContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { user, budget, matchHistory, isLoggedIn, isLoading } = useAuth();
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [localSnapshot, setLocalSnapshot] = useState({});
+    const [showOnboarding, setShowOnboarding] = useState(false);
+
+    useEffect(() => {
+        if (searchParams.get('new') === 'true') {
+            console.log('[Dashboard] New user registered - preparing onboarding');
+            setShowOnboarding(true);
+
+            // Clean URL after a delay to ensure state is settled
+            const timer = setTimeout(() => {
+                router.replace('/dashboard', { scroll: false });
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [searchParams, router]);
 
     useEffect(() => {
         if (typeof window === 'undefined') return undefined;
@@ -136,7 +152,6 @@ export default function DashboardPage() {
     const attOvr = ovr ? Math.min(99, ovr + 2) : 0;
     const midOvr = ovr ? Math.max(0, ovr - 1) : 0;
     const defOvr = ovr ? Math.min(99, ovr + 1) : 0;
-    const winRate = matchHistory?.length ? Math.round((matchHistory.filter(m => m.score >= 3).length / matchHistory.length) * 100) : 0;
 
     const handleMouseMove = (e) => {
         if (typeof window !== 'undefined') {
@@ -234,7 +249,7 @@ export default function DashboardPage() {
                         </motion.div>
 
                         <motion.div variants={itemVariants} className="dash-cta-grid">
-                            <Link href={nextStep.href} className="cta-action-card highlight">
+                            <Link href={nextStep.href} className="cta-action-card">
                                 <div className="cta-icon-box">{nextStep.icon}</div>
                                 <div className="cta-info">
                                     <span className="cta-label">NEXT MANDATE</span>
@@ -242,26 +257,16 @@ export default function DashboardPage() {
                                 </div>
                                 <ChevronRight className="cta-arrow" />
                             </Link>
-                            <div
-                                onClick={() => {
-                                    if (readiness < 100) {
-                                        alert("Make the team first and complete all necessary alignments before entering the Match Arena.");
-                                    } else {
-                                        router.push('/match');
-                                    }
-                                }}
-                                className="cta-action-card highlight"
-                                style={{ cursor: 'pointer' }}
-                            >
-                                <div className="cta-icon-box" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
-                                    <Play size={24} fill="currentColor" />
+                            <Link href="/squad/review" className="cta-action-card highlight">
+                                <div className="cta-icon-box" style={{ background: 'rgba(0, 255, 136, 0.1)', color: '#00ff88' }}>
+                                    <Users size={24} />
                                 </div>
                                 <div className="cta-info">
-                                    <span className="cta-label">LIVE ACTION</span>
-                                    <h3>Enter Match Arena</h3>
+                                    <span className="cta-label">SQUAD CORE</span>
+                                    <h3>Manage Squad</h3>
                                 </div>
                                 <ChevronRight className="cta-arrow" />
-                            </div>
+                            </Link>
                             <Link href="/transfer" className="cta-action-card">
                                 <div className="cta-icon-box" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
                                     <ArrowLeftRight size={24} />
@@ -269,16 +274,6 @@ export default function DashboardPage() {
                                 <div className="cta-info">
                                     <span className="cta-label">RECRUITMENT</span>
                                     <h3>Transfer Market</h3>
-                                </div>
-                                <ChevronRight className="cta-arrow" />
-                            </Link>
-                            <Link href="/matches" className="cta-action-card">
-                                <div className="cta-icon-box" style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>
-                                    <Activity size={24} />
-                                </div>
-                                <div className="cta-info">
-                                    <span className="cta-label">ANALYTICS</span>
-                                    <h3>Match History</h3>
                                 </div>
                                 <ChevronRight className="cta-arrow" />
                             </Link>
@@ -356,32 +351,22 @@ export default function DashboardPage() {
 
                             <div className="info-widget glass">
                                 <div className="widget-header">
-                                    <span>PERFORMANCE</span>
+                                    <span>SEASON STATUS</span>
                                 </div>
                                 <div className="dash-momentum-row">
                                     <div className="momentum-stat">
-                                        <span className="mom-val">{matchHistory?.length || 0}</span>
-                                        <span className="mom-lab">PLD</span>
+                                        <span className="mom-val">ACTIVE</span>
+                                        <span className="mom-lab">STATUS</span>
                                     </div>
                                     <div className="momentum-stat">
-                                        <span className="mom-val">{winRate}%</span>
-                                        <span className="mom-lab">WIN %</span>
+                                        <span className="mom-val">V1.0</span>
+                                        <span className="mom-lab">VERSION</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </motion.div>
                 </div>
-
-                {/* Explore Arena Footer */}
-                <motion.div variants={itemVariants} className="dash-explore-footer">
-                    <Link href="/league" className="dash-explore-btn">
-                        <div className="explore-glow" />
-                        <Rocket size={32} />
-                        <span>ENTERING THE ARENA</span>
-                        <ChevronRight size={32} />
-                    </Link>
-                </motion.div>
             </motion.div>
 
             {!isLoggedIn && (
@@ -390,7 +375,20 @@ export default function DashboardPage() {
                     <span>Using Guest Mode. <Link href="/auth">Sign in</Link> to sync your career to the cloud.</span>
                 </div>
             )}
+
+            <OnboardingModal
+                isOpen={showOnboarding}
+                onClose={() => setShowOnboarding(false)}
+            />
         </div>
+    );
+}
+
+export default function DashboardPage() {
+    return (
+        <Suspense fallback={null}>
+            <DashboardContent />
+        </Suspense>
     );
 }
 

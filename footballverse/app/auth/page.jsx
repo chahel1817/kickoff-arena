@@ -13,6 +13,7 @@ export default function AuthPage() {
     const [password, setPassword] = useState('');
     const [showPwd, setShowPwd] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [redirecting, setRedirecting] = useState(false);
     const [error, setError] = useState('');
 
     // Password validation
@@ -36,12 +37,12 @@ export default function AuthPage() {
         };
     }, [password]);
 
-    // Redirect to dashboard if already logged in
+    // Redirect to dashboard if already logged in (but not while we're processing a login/register or just registered)
     useEffect(() => {
-        if (!isLoading && isLoggedIn) {
+        if (!isLoading && isLoggedIn && !loading && !redirecting) {
             router.push('/dashboard');
         }
-    }, [isLoggedIn, isLoading, router]);
+    }, [isLoggedIn, isLoading, router, loading, redirecting]);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -57,10 +58,12 @@ export default function AuthPage() {
         try {
             if (mode === 'login') {
                 await login(username.trim(), password);
+                setRedirecting(true);
                 router.push('/dashboard');
             } else {
                 await register(username.trim(), password);
-                router.push('/welcome');
+                setRedirecting(true);
+                router.push('/dashboard?new=true');
             }
         } catch (err) {
             setError(err.message || 'Something went wrong');
@@ -171,7 +174,10 @@ export default function AuthPage() {
                         disabled={loading || (mode === 'register' && password.length > 0 && !passwordValidation.isValid)}
                     >
                         {loading ? (
-                            <span className="auth-spinner" />
+                            <>
+                                <span className="auth-spinner" />
+                                <span>{mode === 'login' ? 'SIGNING IN...' : 'CREATING ACCOUNT...'}</span>
+                            </>
                         ) : (
                             <>
                                 {mode === 'login' ? <PlayCircle size={18} /> : <Trophy size={18} />}
@@ -483,6 +489,27 @@ export default function AuthPage() {
                 .auth-guest-btn:hover {
                     background: rgba(255,255,255,.08); color: white; border-color: rgba(255,255,255,.2);
                     transform: translateY(-2px);
+                }
+
+                .auth-spinner {
+                    width: 20px; height: 20px; border: 2.5px solid rgba(0,0,0,0.1);
+                    border-top-color: currentColor; border-radius: 50%;
+                    animation: auth-spin 0.8s linear infinite;
+                }
+
+                @keyframes auth-spin {
+                    to { transform: rotate(360deg); }
+                }
+
+                .auth-submit:disabled {
+                    cursor: not-allowed;
+                    opacity: 0.8;
+                }
+
+                .auth-submit span {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
                 }
             `}</style>
         </div>

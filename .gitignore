@@ -1,5 +1,6 @@
 # dependencies
 node_modules/
+**/node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -19,11 +20,42 @@ node_modules/
 /build
 dist/
 
+# Images and Media (Generic)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.avif
+*.svg
+*.ico
+*.mp4
+*.webm
+*.mov
+*.pdf
+
+# Project Specific Media Folders
+**/public/assets/
+**/public/images/
+**/public/mockups/
+**/public/screenshots/
+
+# ignore specific uploaded images if any
+/public/*.jpg
+/public/*.png
+/footballverse/public/*.jpg
+/footballverse/public/*.png
+/footballverse/public/*.webp
+/footballverse/public/*.avif
+
 # misc
 .DS_Store
 *.pem
 Thumbs.db
 *.log
+*.zip
+*.tar.gz
+*.rar
 
 # debug
 npm-debug.log*
@@ -38,6 +70,7 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 .env*.local
+**/.env*
 
 # vercel
 .vercel
@@ -51,7 +84,11 @@ next-env.d.ts
 .idea/
 *.swp
 *.swo
+*.sublime-project
+*.sublime-workspace
 
 # OS
 ehthumbs.db
 Icon?
+desktop.ini
+
